@@ -1,0 +1,124 @@
+# Stock Chart Analyzer - Enhanced AI-Powered Pattern Recognition
+
+## Overview
+
+Stock Chart Analyzer is a sophisticated full-stack web application that provides AI-powered stock pattern recognition and analysis. The application features advanced chart analysis with 3-month historical data, confidence scoring, and breakout timing predictions. It supports 96+ stocks from both US and Indian markets, offering real-time analysis capabilities and custom chart upload functionality.
+
+## System Architecture
+
+### Frontend Architecture
+- **Framework**: React 18 with TypeScript
+- **Build Tool**: Vite with hot module replacement
+- **UI Framework**: Shadcn/ui components built on Radix UI primitives
+- **Styling**: Tailwind CSS with custom design system
+- **State Management**: TanStack Query for server state management
+- **Routing**: Wouter for lightweight client-side routing
+
+### Backend Architecture
+- **Runtime**: Node.js with Express.js framework
+- **Language**: TypeScript with ES modules
+- **API Design**: RESTful API with comprehensive error handling
+- **File Uploads**: Multer middleware for chart image processing
+- **Development**: Full-stack development with Vite integration
+
+### Database Layer
+- **ORM**: Drizzle ORM with PostgreSQL dialect
+- **Database**: PostgreSQL (Neon serverless integration)
+- **Schema Management**: Drizzle Kit for migrations and schema management
+- **Storage**: In-memory fallback with PostgreSQL production setup
+
+## Key Components
+
+### Data Models
+1. **Stocks Table**: Core stock information (symbol, name, market, pricing)
+2. **Stock Analysis Table**: AI analysis results with pattern recognition data
+3. **Chart Uploads Table**: Metadata for uploaded chart images
+
+### Frontend Components
+1. **Hero Section**: Primary call-to-action with gradient design
+2. **Demo Section**: Interactive stock search and chart upload interface
+3. **Analysis Results**: Comprehensive display of AI-generated insights
+4. **Stocks Showcase**: Market-segmented stock listing with real-time data
+5. **Educational Content**: Feature explanations and AI capabilities
+
+### Backend Services
+1. **Stock Management**: CRUD operations for stock data
+2. **Analysis Engine**: Pattern recognition and confidence scoring
+3. **File Upload Handler**: Chart image processing and storage
+4. **Market Data**: Real-time stock information retrieval
+
+## Data Flow
+
+1. **Stock Analysis Flow**:
+   - User searches for stock symbol or uploads chart
+   - Backend retrieves 3-month historical data
+   - AI engine processes chart patterns and generates analysis
+   - Results include confidence scores, breakout predictions, and timing
+   - Frontend displays comprehensive analysis with visual indicators
+
+2. **Chart Upload Flow**:
+   - User uploads chart image (JPG/PNG/GIF, max 10MB)
+   - Multer processes and validates file
+   - Custom analysis generates pattern recognition results
+   - Analysis results stored with chart metadata
+
+3. **Market Data Flow**:
+   - Pre-populated database with 96+ popular stocks
+   - Real-time price data integration
+   - Market segmentation (US vs Indian markets)
+   - Dynamic stock showcase with live updates
+
+## External Dependencies
+
+### Core Dependencies
+- **@neondatabase/serverless**: PostgreSQL serverless database connection
+- **drizzle-orm**: Type-safe ORM for database operations
+- **@tanstack/react-query**: Server state management and caching
+- **multer**: File upload handling middleware
+
+### UI Dependencies
+- **@radix-ui/***: Comprehensive primitive components
+- **tailwindcss**: Utility-first CSS framework
+- **class-variance-authority**: Component variant management
+- **lucide-react**: Icon system
+
+### Development Tools
+- **tsx**: TypeScript execution for development
+- **esbuild**: Fast JavaScript bundler for production
+- **vite**: Development server with HMR
+
+## Deployment Strategy
+
+### Development Environment
+- Vite development server with hot module replacement
+- Express server with middleware integration
+- TypeScript compilation with incremental builds
+- File uploads to local uploads directory
+
+### Production Build
+- Vite builds client to `dist/public`
+- esbuild bundles server code to `dist/index.js`
+- Static file serving from Express
+- Database migrations via Drizzle Kit
+
+### Environment Configuration
+- **DATABASE_URL**: PostgreSQL connection string (required)
+- **NODE_ENV**: Environment specification (development/production)
+- **REPL_ID**: Replit-specific development features
+
+### File Structure
+```
+├── client/          # React frontend application
+├── server/          # Express backend with API routes
+├── shared/          # Shared TypeScript schemas and types
+├── uploads/         # Chart upload storage directory
+├── migrations/      # Database migration files
+└── dist/           # Production build output
+```
+
+## Changelog
+- July 07, 2025. Initial setup
+
+## User Preferences
+
+Preferred communication style: Simple, everyday language.
