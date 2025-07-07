@@ -88,6 +88,8 @@ export class MemStorage implements IStorage {
     const stock: Stock = {
       id: this.currentStockId++,
       ...insertStock,
+      currentPrice: insertStock.currentPrice ?? null,
+      changePercent: insertStock.changePercent ?? null,
       lastUpdated: new Date(),
     };
     this.stocks.set(stock.symbol, stock);
@@ -124,6 +126,15 @@ export class MemStorage implements IStorage {
     const analysis: StockAnalysis = {
       id: this.currentAnalysisId++,
       ...insertAnalysis,
+      patternType: insertAnalysis.patternType ?? null,
+      confidence: insertAnalysis.confidence ?? null,
+      breakoutDirection: insertAnalysis.breakoutDirection ?? null,
+      breakoutTimeframe: insertAnalysis.breakoutTimeframe ?? null,
+      breakoutProbability: insertAnalysis.breakoutProbability ?? null,
+      targetPrice: insertAnalysis.targetPrice ?? null,
+      stopLoss: insertAnalysis.stopLoss ?? null,
+      riskReward: insertAnalysis.riskReward ?? null,
+      analysisData: insertAnalysis.analysisData ?? null,
       createdAt: new Date(),
     };
     this.stockAnalyses.set(analysis.stockSymbol.toUpperCase(), analysis);
@@ -140,6 +151,7 @@ export class MemStorage implements IStorage {
     const upload: ChartUpload = {
       id: this.currentUploadId++,
       ...insertUpload,
+      analysisId: insertUpload.analysisId ?? null,
       uploadedAt: new Date(),
     };
     this.chartUploads.set(upload.id, upload);

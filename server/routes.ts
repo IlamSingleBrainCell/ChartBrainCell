@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { stockSearchSchema, insertStockAnalysisSchema } from "@shared/schema";
 import multer from "multer";
+import type { Request } from "express";
 import path from "path";
 import fs from "fs";
 
@@ -17,7 +18,7 @@ const upload = multer({
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB limit
   },
-  fileFilter: (req, file, cb) => {
+  fileFilter: (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
@@ -125,7 +126,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Upload chart image
-  app.post("/api/upload-chart", upload.single('chart'), async (req, res) => {
+  app.post("/api/upload-chart", upload.single('chart'), async (req: Request & { file?: Express.Multer.File }, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });

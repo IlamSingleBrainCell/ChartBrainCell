@@ -13,7 +13,7 @@ export function Footer() {
               </div>
               <div>
                 <h3 className="text-xl font-bold">Stock Chart Analyzer</h3>
-                <p className="text-gray-400 text-sm">v2.0 Enhanced</p>
+                <p className="text-gray-400 text-sm">AI-Powered Analysis</p>
               </div>
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed max-w-md">
@@ -60,9 +60,10 @@ export function Footer() {
         
         {/* Bottom Bar */}
         <div className="border-t border-gray-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">
-            © 2025 Stock Chart Analyzer v2.0. All rights reserved.
-          </p>
+          <div className="text-gray-400 text-sm space-y-1">
+            <p>© 2025 Stock Chart Analyzer. All rights reserved.</p>
+            <p>Developed by Ilam</p>
+          </div>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
             <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>

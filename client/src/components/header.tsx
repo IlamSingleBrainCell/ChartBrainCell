@@ -13,7 +13,7 @@ export function Header() {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-brand-dark">Stock Chart Analyzer</h1>
-                <p className="text-sm text-brand-gray">v2.0 Enhanced</p>
+                <p className="text-sm text-brand-gray">AI-Powered Analysis</p>
               </div>
             </div>
           </Link>
