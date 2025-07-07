@@ -117,7 +117,10 @@ Stock Chart Analyzer is a sophisticated full-stack web application that provides
 ```
 
 ## Changelog
-- July 07, 2025. Initial setup
+- July 07, 2025: Initial setup
+- January 07, 2025: Removed "v2.0 Enhanced" branding, added "Developed by Ilam" credit
+- January 07, 2025: Fixed View Demo button icon rendering issue
+- January 07, 2025: Decided to keep as free service (no subscription model)
 
 ## User Preferences
 
