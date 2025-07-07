@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Rocket, CheckCircle, Play, BarChart3 } from "lucide-react";
+import { Rocket, CheckCircle, PlayCircle, BarChart3 } from "lucide-react";
 
 interface HeroSectionProps {
   onStartAnalysis: () => void;
@@ -41,7 +41,7 @@ export function HeroSection({ onStartAnalysis, onViewDemo }: HeroSectionProps) {
                 className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/10 transition-colors"
                 size="lg"
               >
-                <Play className="mr-2" size={20} />
+                <PlayCircle className="mr-2" size={20} />
                 View Demo
               </Button>
             </div>
