@@ -97,10 +97,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const timeframes = ["5-10 days", "10-15 days", "15-30 days", "30-45 days"];
       const breakoutTimeframe = timeframes[Math.floor(symbolHash % timeframes.length)];
       
-      // Calculate dynamic prices with book value consideration
-      const currentPrice = stock.currentPrice || 150;
+      // Calculate dynamic prices with book value consideration based on market
+      const isIndian = stock.market === 'Indian';
+      const currentPrice = stock.currentPrice || (isIndian ? 2500 : 150);
       const bookValue = currentPrice * (0.7 + (symbolHash % 30) / 100); // Simulate book value
       const tenYearGrowth = 8 + (symbolHash % 15); // 8-23% historical growth
+      
+      // Adjust target and stop loss based on market and currency
+      const targetMultiplier = breakoutDirection === "upward" ? (1.1 + Math.random() * 0.2) : (0.85 + Math.random() * 0.1);
+      const stopLossMultiplier = 0.85 + Math.random() * 0.1;
       
       // Buy/Sell recommendation logic
       const priceToBook = currentPrice / bookValue;
@@ -115,8 +120,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         breakoutDirection,
         breakoutTimeframe,
         breakoutProbability: Math.round((confidence - 10 + Math.random() * 15) * 10) / 10,
-        targetPrice: breakoutDirection === "upward" ? currentPrice * (1.1 + Math.random() * 0.2) : currentPrice * (0.85 + Math.random() * 0.1),
-        stopLoss: currentPrice * (0.85 + Math.random() * 0.1),
+        targetPrice: currentPrice * targetMultiplier,
+        stopLoss: currentPrice * stopLossMultiplier,
         riskReward: `1:${(1.5 + Math.random() * 1.5).toFixed(1)}`,
         analysisData: {
           technicalScore: Math.round(65 + Math.random() * 30),

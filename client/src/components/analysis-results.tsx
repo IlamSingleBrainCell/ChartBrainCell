@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Target, Shield, AlertTriangle, ShoppingCart } from "lucide-react";
 import { StockChart } from "./stock-chart";
+import { PatternVisualization } from "./pattern-visualization";
 
 interface AnalysisResultsProps {
   analysis: any;
@@ -46,7 +47,7 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                     </div>
                   </div>
                   
-                  <StockChart symbol={analysis.stockSymbol} analysisData={analysis} />
+                  <StockChart symbol={analysis.stockSymbol} analysisData={analysis} stock={stock} />
                   
                   {!isCustomChart && stock && (
                     <div className="grid grid-cols-4 gap-4">
@@ -87,7 +88,7 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                     <TrendingUp className="text-blue-600 mr-2" size={20} />
                     <h4 className="text-lg font-semibold text-brand-dark">Pattern Recognition</h4>
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <div className="flex justify-between items-center">
                       <span className="text-brand-gray">{analysis.patternType}</span>
                       <span className="font-semibold text-green-600">{analysis.confidence}%</span>
@@ -98,6 +99,10 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                         style={{ width: `${analysis.confidence}%` }}
                       />
                     </div>
+                    <PatternVisualization 
+                      patternType={analysis.patternType} 
+                      confidence={analysis.confidence} 
+                    />
                   </div>
                 </CardContent>
               </Card>
