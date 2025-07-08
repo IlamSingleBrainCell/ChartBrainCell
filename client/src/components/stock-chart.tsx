@@ -39,65 +39,76 @@ export function StockChart({ symbol, analysisData }: StockChartProps) {
   const targetPrice = analysisData.targetPrice;
 
   return (
-    <div className="w-full h-80 bg-white p-4 rounded-lg border">
-      <div className="mb-4">
+    <div className="w-full bg-white rounded-lg border">
+      <div className="p-4 border-b">
         <h3 className="text-lg font-semibold text-gray-800">{symbol} - 3 Month Chart</h3>
         <p className="text-sm text-gray-600">{analysisData.patternType} Pattern Detected</p>
       </div>
       
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-          <XAxis 
-            dataKey="date" 
-            stroke="#666"
-            fontSize={12}
-            interval="preserveStartEnd"
-          />
-          <YAxis 
-            stroke="#666"
-            fontSize={12}
-            domain={['dataMin - 5', 'dataMax + 5']}
-          />
-          <Tooltip 
-            contentStyle={{ 
-              backgroundColor: '#fff', 
-              border: '1px solid #ccc',
-              borderRadius: '8px'
-            }}
-            formatter={(value: any) => [`$${value}`, 'Price']}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="price" 
-            stroke="#2563eb" 
-            strokeWidth={2}
-            dot={false}
-            activeDot={{ r: 4, fill: '#2563eb' }}
-          />
-          {targetPrice && (
-            <ReferenceLine 
-              y={targetPrice} 
-              stroke="#10b981" 
-              strokeDasharray="5 5"
-              label={{ value: `Target: $${targetPrice.toFixed(2)}`, position: 'right' }}
-            />
-          )}
-        </LineChart>
-      </ResponsiveContainer>
-      
-      <div className="mt-4 grid grid-cols-3 gap-4 text-sm">
-        <div className="text-center">
-          <div className="font-semibold text-blue-600">${currentPrice?.toFixed(2)}</div>
-          <div className="text-gray-500">Current</div>
+      <div className="p-4">
+        <div className="h-64 mb-6">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <XAxis 
+                dataKey="date" 
+                stroke="#666"
+                fontSize={11}
+                interval="preserveStartEnd"
+                tick={{ fontSize: 11 }}
+              />
+              <YAxis 
+                stroke="#666"
+                fontSize={11}
+                domain={['dataMin - 5', 'dataMax + 5']}
+                tick={{ fontSize: 11 }}
+              />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: '#fff', 
+                  border: '1px solid #ccc',
+                  borderRadius: '8px',
+                  fontSize: '12px'
+                }}
+                formatter={(value: any) => [`$${value}`, 'Price']}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="price" 
+                stroke="#2563eb" 
+                strokeWidth={2}
+                dot={false}
+                activeDot={{ r: 4, fill: '#2563eb' }}
+              />
+              {targetPrice && (
+                <ReferenceLine 
+                  y={targetPrice} 
+                  stroke="#10b981" 
+                  strokeDasharray="5 5"
+                  label={{ value: `Target: $${targetPrice.toFixed(2)}`, position: 'topRight' }}
+                />
+              )}
+            </LineChart>
+          </ResponsiveContainer>
         </div>
-        <div className="text-center">
-          <div className="font-semibold text-green-600">${targetPrice?.toFixed(2)}</div>
-          <div className="text-gray-500">Target</div>
-        </div>
-        <div className="text-center">
-          <div className="font-semibold text-purple-600">{analysisData.confidence}%</div>
-          <div className="text-gray-500">Confidence</div>
+        
+        <div className="grid grid-cols-4 gap-3">
+          <div className="text-center p-3 bg-green-50 rounded-lg">
+            <div className="text-lg font-bold text-green-600">+{((currentPrice - chartData[0]?.price) / chartData[0]?.price * 100).toFixed(1)}%</div>
+            <div className="text-xs text-gray-600">3M Return</div>
+          </div>
+          <div className="text-center p-3 bg-blue-50 rounded-lg">
+            <div className="text-lg font-bold text-blue-600">${currentPrice?.toFixed(2)}</div>
+            <div className="text-xs text-gray-600">Current Price</div>
+          </div>
+          <div className="text-center p-3 bg-orange-50 rounded-lg">
+            <div className="text-lg font-bold text-orange-600">${targetPrice?.toFixed(2)}</div>
+            <div className="text-xs text-gray-600">Target Price</div>
+          </div>
+          <div className="text-center p-3 bg-purple-50 rounded-lg">
+            <div className="text-lg font-bold text-purple-600">{analysisData.breakoutTimeframe}</div>
+            <div className="text-xs text-gray-600">Breakout Window</div>
+          </div>
         </div>
       </div>
     </div>

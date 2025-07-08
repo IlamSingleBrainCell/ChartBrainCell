@@ -121,6 +121,8 @@ Stock Chart Analyzer is a sophisticated full-stack web application that provides
 - January 07, 2025: Removed "v2.0 Enhanced" branding, added "Developed by Ilam" credit
 - January 07, 2025: Fixed View Demo button icon rendering issue
 - January 07, 2025: Decided to keep as free service (no subscription model)
+- January 08, 2025: Enhanced analysis with dynamic confidence scores, real chart visualization, working "View All Stocks" page, and buy/sell recommendations based on 10-year data, book value, and P/B ratios
+- January 08, 2025: Fixed chart UI layout issue with proper spacing and organized metrics display
 
 ## User Preferences
 
