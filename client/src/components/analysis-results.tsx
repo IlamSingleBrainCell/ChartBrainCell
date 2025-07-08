@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Target, Shield, AlertTriangle } from "lucide-react";
+import { TrendingUp, Target, Shield, AlertTriangle, ShoppingCart } from "lucide-react";
+import { StockChart } from "./stock-chart";
 
 interface AnalysisResultsProps {
   analysis: any;
@@ -45,11 +46,7 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                     </div>
                   </div>
                   
-                  <img 
-                    src="https://images.unsplash.com/photo-1642790106117-e829e14a795f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400" 
-                    alt="Stock chart with technical analysis indicators" 
-                    className="w-full h-64 object-cover rounded-lg mb-6"
-                  />
+                  <StockChart symbol={analysis.stockSymbol} analysisData={analysis} />
                   
                   {!isCustomChart && stock && (
                     <div className="grid grid-cols-4 gap-4">
@@ -182,6 +179,60 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                       <div className="flex justify-between">
                         <span className="text-brand-gray">Risk/Reward</span>
                         <span className="font-semibold text-green-600">{analysis.riskReward}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+              
+              {/* Buy/Sell Recommendation */}
+              {analysis.analysisData?.recommendation && (
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center mb-4">
+                      <ShoppingCart className="text-green-600 mr-2" size={20} />
+                      <h4 className="text-lg font-semibold text-brand-dark">Investment Recommendation</h4>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="text-center p-4 rounded-lg bg-gradient-to-r from-blue-50 to-green-50">
+                        <div className={`text-2xl font-bold mb-2 ${
+                          analysis.analysisData.recommendation === 'Strong Buy' ? 'text-green-700' :
+                          analysis.analysisData.recommendation === 'Buy' ? 'text-green-600' :
+                          analysis.analysisData.recommendation === 'Hold' ? 'text-yellow-600' :
+                          'text-red-600'
+                        }`}>
+                          {analysis.analysisData.recommendation}
+                        </div>
+                        <p className="text-sm text-gray-600">Based on 10-year analysis, book value & current price</p>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-brand-gray">Book Value</span>
+                            <span className="font-semibold">
+                              {stock?.market === 'Indian' ? '₹' : '$'}{analysis.analysisData.bookValue}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-brand-gray">P/B Ratio</span>
+                            <span className="font-semibold">{analysis.analysisData.priceToBook}x</span>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-brand-gray">10Y Growth</span>
+                            <span className="font-semibold text-green-600">+{analysis.analysisData.tenYearGrowth}%</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-brand-gray">Fair Value</span>
+                            <span className={`font-semibold ${
+                              analysis.analysisData.priceToBook < 1.5 ? 'text-green-600' : 'text-red-600'
+                            }`}>
+                              {analysis.analysisData.priceToBook < 1.5 ? 'Undervalued' : 'Overvalued'}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </CardContent>

@@ -123,7 +123,10 @@ export function StocksShowcase({ onStockSelect }: StocksShowcaseProps) {
         </div>
         
         <div className="text-center">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold">
+          <Button 
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold"
+            onClick={() => window.location.href = '/all-stocks'}
+          >
             View All 96+ Stocks
           </Button>
         </div>
