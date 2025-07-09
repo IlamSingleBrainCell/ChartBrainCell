@@ -21,12 +21,12 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
         <div className="text-center mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-brand-dark mb-4">Analysis Results</h2>
           <p className="text-xl text-brand-gray">
-            Comprehensive AI-powered pattern analysis and predictions
+            Comprehensive pattern analysis and predictions
           </p>
         </div>
         
-        <div className="bg-gray-50 rounded-xl p-8 lg:p-12">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="bg-gray-50 rounded-xl p-6 lg:p-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Chart Visualization */}
             <div className="lg:col-span-2">
               <Card>
@@ -56,7 +56,7 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
             </div>
             
             {/* Analysis Details */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               
               {/* Latest News */}
               {!isCustomChart && stock && (

@@ -1,5 +1,8 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ComposedChart, Bar } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ComposedChart, Bar, Brush } from 'recharts';
 import { useState } from 'react';
+import { ZoomIn, ZoomOut, TrendingUp, TrendingDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useWebSocket } from '@/hooks/useWebSocket';
 
 interface StockChartProps {
   symbol: string;
@@ -44,22 +47,30 @@ export function StockChart({ symbol, analysisData, stock }: StockChartProps) {
           low = Math.min(open, close) * (1 - Math.random() * 0.01);
           
         } else if (patternType.includes('Cup and Handle')) {
-          // Cup pattern: U-shaped recovery
+          // Cup and Handle pattern: Clear cup formation followed by handle
           const progress = i / days;
-          const cupDepth = 0.15;
+          const cupDepth = 0.12;
           let multiplier;
           
-          if (progress < 0.6) {
-            // Declining phase of cup
-            multiplier = 1 - (cupDepth * Math.sin(progress * Math.PI / 0.6));
+          if (progress < 0.4) {
+            // Declining phase of cup (gradual decline)
+            multiplier = 1 - (cupDepth * (progress / 0.4));
+          } else if (progress < 0.6) {
+            // Bottom of cup (consolidation)
+            multiplier = 1 - cupDepth + (Math.random() - 0.5) * 0.02;
+          } else if (progress < 0.85) {
+            // Recovery phase of cup (gradual rise)
+            const recoveryProgress = (progress - 0.6) / 0.25;
+            multiplier = 1 - cupDepth + (cupDepth * recoveryProgress);
           } else {
-            // Recovery phase
-            multiplier = 1 - cupDepth + (cupDepth * (progress - 0.6) / 0.4);
+            // Handle formation (slight pullback)
+            const handleProgress = (progress - 0.85) / 0.15;
+            multiplier = 1 - (0.03 * handleProgress) + (Math.random() - 0.5) * 0.01;
           }
           
-          close = basePrice * multiplier * (1 + (Math.random() - 0.5) * 0.02);
-          high = close * (1 + Math.random() * 0.015);
-          low = close * (1 - Math.random() * 0.015);
+          close = basePrice * multiplier;
+          high = close * (1 + Math.random() * 0.008);
+          low = close * (1 - Math.random() * 0.008);
           
         } else {
           // Default pattern
@@ -97,6 +108,11 @@ export function StockChart({ symbol, analysisData, stock }: StockChartProps) {
   const targetPrice = analysisData.targetPrice;
   const isIndian = stock?.market === 'Indian';
   const currencySymbol = isIndian ? '₹' : '$';
+  
+  // Get real-time price updates
+  const { getStockPrice } = useWebSocket();
+  const livePrice = getStockPrice(symbol);
+  const displayPrice = livePrice?.currentPrice ?? currentPrice;
   
   // Calculate support and resistance levels
   const prices = chartData.map(d => d.price);
@@ -160,14 +176,18 @@ export function StockChart({ symbol, analysisData, stock }: StockChartProps) {
                 }}
               />
               
-              {/* Candlestick representation using bars */}
-              <Bar dataKey="low" stackId="candle" fill="transparent" />
-              <Bar 
-                dataKey={(entry: any) => entry.high - entry.low} 
-                stackId="candle" 
-                fill="#666" 
-                barSize={1}
-              />
+              {/* Candlestick bars */}
+              {chartData.map((entry, index) => {
+                const isGreen = entry.close >= entry.open;
+                return (
+                  <Bar 
+                    key={`candle-${index}`}
+                    dataKey={() => Math.abs(entry.close - entry.open)}
+                    fill={isGreen ? '#22c55e' : '#ef4444'}
+                    barSize={2}
+                  />
+                );
+              })}
               
               {/* Price line */}
               <Line 
@@ -202,8 +222,33 @@ export function StockChart({ symbol, analysisData, stock }: StockChartProps) {
                   label={{ value: `Target: ${currencySymbol}${targetPrice.toFixed(2)}`, position: 'topRight' }}
                 />
               )}
+              
+              {/* Add zoom functionality */}
+              <Brush dataKey="date" height={30} stroke="#2563eb" />
             </ComposedChart>
           </ResponsiveContainer>
+        </div>
+        
+        {/* Current Price Display */}
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div>
+            <p className="text-sm text-gray-600">Current Price</p>
+            <p className="text-2xl font-bold text-gray-900">
+              {currencySymbol}{displayPrice?.toFixed(2)}
+            </p>
+            {livePrice && (
+              <div className="flex items-center mt-1">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></div>
+                <span className="text-sm text-green-600 font-medium">Live Price</span>
+              </div>
+            )}
+          </div>
+          <div className="text-right">
+            <p className="text-sm text-gray-600">24h Change</p>
+            <p className={`text-lg font-semibold ${livePrice?.changePercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              {livePrice?.changePercent >= 0 ? '+' : ''}{livePrice?.changePercent?.toFixed(2) ?? stock?.changePercent?.toFixed(2) ?? '0.00'}%
+            </p>
+          </div>
         </div>
       </div>
     </div>

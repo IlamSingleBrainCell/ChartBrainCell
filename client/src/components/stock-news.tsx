@@ -94,7 +94,17 @@ export function StockNews({ symbol, stock }: StockNewsProps) {
         
         <div className="space-y-4">
           {news.map((item, index) => (
-            <div key={index} className="border-l-2 border-blue-200 pl-4 pb-4">
+            <div 
+              key={index} 
+              className="border-l-2 border-blue-200 pl-4 pb-4 cursor-pointer hover:bg-gray-50 rounded-r-lg transition-colors"
+              onClick={() => {
+                // Create a more realistic news URL simulation
+                const newsUrl = `https://example.com/news/${stock?.name?.replace(/\s+/g, '-').toLowerCase() || symbol.toLowerCase()}-${index + 1}`;
+                console.log(`Opening news article: ${item.title}`);
+                // In a real app, this would open the actual news URL
+                alert(`News article: ${item.title}\n\nThis would normally open the full article in a new tab.`);
+              }}
+            >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center space-x-2 mb-1">
                   {getSentimentIcon(item.sentiment)}
@@ -107,12 +117,15 @@ export function StockNews({ symbol, stock }: StockNewsProps) {
                   {item.sentiment}
                 </Badge>
               </div>
-              <h5 className="font-medium text-gray-900 mb-2 leading-snug">
+              <h5 className="font-medium text-gray-900 mb-2 leading-snug hover:text-blue-600 transition-colors">
                 {item.title}
               </h5>
               <p className="text-sm text-gray-600 leading-relaxed">
                 {item.summary}
               </p>
+              <div className="mt-2 text-xs text-blue-600 hover:text-blue-800 font-medium">
+                Click to read full article →
+              </div>
             </div>
           ))}
         </div>

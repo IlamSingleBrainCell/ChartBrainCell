@@ -23,13 +23,22 @@ export function PatternVisualization({ patternType, confidence }: PatternVisuali
         if (i > 15) y = Math.min(y, resistance); // resistance at top
         
       } else if (patternType.includes('Cup and Handle')) {
-        // U-shaped pattern
-        if (i < 8) {
-          y = 60 - (i * 3); // decline
-        } else if (i < 16) {
-          y = 36 + ((i - 8) * 3); // recovery
+        // Proper Cup and Handle pattern
+        const progress = i / points;
+        if (progress < 0.4) {
+          // Left side of cup (decline)
+          y = 65 - (progress / 0.4) * 20;
+        } else if (progress < 0.6) {
+          // Bottom of cup (consolidation)
+          y = 45 + (Math.random() - 0.5) * 4;
+        } else if (progress < 0.85) {
+          // Right side of cup (recovery)
+          const recoveryProgress = (progress - 0.6) / 0.25;
+          y = 45 + recoveryProgress * 20;
         } else {
-          y = 60 - ((i - 16) * 2); // handle formation
+          // Handle formation (slight pullback)
+          const handleProgress = (progress - 0.85) / 0.15;
+          y = 65 - handleProgress * 8;
         }
         
       } else if (patternType.includes('Bullish Flag')) {
