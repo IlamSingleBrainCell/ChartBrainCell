@@ -21,6 +21,7 @@ export function Header() {
             <Link href="/" className="text-brand-gray hover:text-brand-blue transition-colors">Home</Link>
             <Link href="/all-stocks" className="text-brand-gray hover:text-brand-blue transition-colors">All Stocks</Link>
             <Link href="/portfolio" className="text-brand-gray hover:text-brand-blue transition-colors">Portfolio</Link>
+            <Link href="/learn" className="text-brand-gray hover:text-brand-blue transition-colors">Learn</Link>
             <a href="#features" className="text-brand-gray hover:text-brand-blue transition-colors">Features</a>
           </nav>
         </div>
