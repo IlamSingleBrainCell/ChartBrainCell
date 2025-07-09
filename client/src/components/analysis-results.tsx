@@ -25,58 +25,57 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
           </p>
         </div>
         
-        <div className="bg-gray-50 rounded-xl p-6 lg:p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Chart Visualization */}
-            <div className="lg:col-span-2">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold text-brand-dark">
-                      {isCustomChart ? "Custom Chart Analysis" : `${analysis.stockSymbol} - 3 Month Analysis`}
+        <div className="bg-gradient-to-br from-gray-50 to-slate-100 rounded-xl p-6 lg:p-8">
+          {/* Main Chart Section */}
+          <div className="mb-8">
+            <Card className="border-l-4 border-l-indigo-500 bg-gradient-to-br from-slate-50 to-gray-50 shadow-xl">
+              <CardContent className="p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                      {isCustomChart ? "Custom Chart Analysis" : analysis.stockSymbol}
                     </h3>
-                    <div className="flex items-center space-x-2">
-                      <Badge 
-                        variant={analysis.breakoutDirection === 'upward' ? 'default' : 'secondary'}
-                        className={analysis.breakoutDirection === 'upward' ? 'bg-green-600' : 'bg-red-600'}
-                      >
-                        {analysis.breakoutDirection === 'upward' ? 'Bullish' : 'Bearish'} Pattern
-                      </Badge>
-                      <Badge variant="outline" className="text-blue-600 border-blue-600">
-                        {analysis.confidence >= 80 ? 'High' : analysis.confidence >= 60 ? 'Medium' : 'Low'} Confidence
-                      </Badge>
-                    </div>
+                    <p className="text-gray-600 font-medium">Real-time 3-Month Professional Analysis</p>
                   </div>
-                  
-                  <StockChart symbol={analysis.stockSymbol} analysisData={analysis} stock={stock} />
-                  
-
-                </CardContent>
-              </Card>
-            </div>
-            
-            {/* Analysis Details */}
-            <div className="space-y-4">
-              
-              {/* Latest News */}
-              {!isCustomChart && stock && (
-                <StockNews symbol={analysis.stockSymbol} stock={stock} />
-              )}
+                  <div className="flex gap-3">
+                    <Badge 
+                      variant="secondary"
+                      className={`px-4 py-2 text-sm font-bold ${
+                        analysis.breakoutDirection === 'upward' 
+                          ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white' 
+                          : 'bg-gradient-to-r from-red-500 to-rose-600 text-white'
+                      }`}
+                    >
+                      {analysis.breakoutDirection === 'upward' ? 'Bullish' : 'Bearish'} Pattern
+                    </Badge>
+                    <Badge variant="outline" className="px-4 py-2 text-sm font-bold text-blue-600 border-blue-600 bg-blue-50">
+                      {analysis.confidence >= 80 ? 'High' : analysis.confidence >= 60 ? 'Medium' : 'Low'} Confidence
+                    </Badge>
+                  </div>
+                </div>
+                
+                <StockChart symbol={analysis.stockSymbol} analysisData={analysis} stock={stock} />
+              </CardContent>
+            </Card>
+          </div>
+          
+          {/* Horizontal Analysis Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
               {/* Pattern Recognition */}
-              <Card className="border border-gray-200">
-                <CardContent className="p-4">
-                  <div className="flex items-center mb-3">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full mr-2"></div>
-                    <h4 className="text-sm font-semibold text-gray-800">Pattern Recognition</h4>
+              <Card className="border-l-4 border-l-purple-500 bg-gradient-to-br from-purple-50 to-indigo-50 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="w-3 h-3 bg-purple-500 rounded-full mr-3"></div>
+                    <h4 className="text-lg font-bold text-purple-900">Pattern Recognition</h4>
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-600">{analysis.patternType}</span>
-                      <span className="text-xs font-semibold text-green-600">{analysis.confidence}%</span>
+                      <span className="text-sm font-medium text-purple-700">{analysis.patternType}</span>
+                      <span className="text-lg font-bold text-green-600">{analysis.confidence}%</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-purple-200 rounded-full h-3">
                       <div 
-                        className="bg-green-600 h-2 rounded-full" 
+                        className="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full shadow-sm" 
                         style={{ width: `${analysis.confidence}%` }}
                       />
                     </div>
@@ -89,24 +88,24 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
               </Card>
               
               {/* Confidence Score */}
-              <Card className="border border-gray-200">
-                <CardContent className="p-4">
-                  <div className="flex items-center mb-3">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full mr-2"></div>
-                    <h4 className="text-sm font-semibold text-gray-800">Confidence Score</h4>
+              <Card className="border-l-4 border-l-blue-500 bg-gradient-to-br from-blue-50 to-cyan-50 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                    <h4 className="text-lg font-bold text-blue-900">Confidence Score</h4>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600 mb-1">{analysis.confidence}%</div>
-                    <div className="text-xs text-gray-600 mb-3">Overall Confidence</div>
+                    <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">{analysis.confidence}%</div>
+                    <div className="text-sm font-medium text-blue-700 mb-4">Overall Confidence</div>
                     {analysis.analysisData?.technicalScore && (
-                      <div className="grid grid-cols-2 gap-2 text-xs">
-                        <div>
-                          <div className="text-gray-500">Technical</div>
-                          <div className="font-semibold">{analysis.analysisData.technicalScore}%</div>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div className="bg-white/60 rounded-lg p-3">
+                          <div className="text-blue-600 font-medium">Technical</div>
+                          <div className="text-xl font-bold text-blue-900">{analysis.analysisData.technicalScore}%</div>
                         </div>
-                        <div>
-                          <div className="text-gray-500">Volume</div>
-                          <div className="font-semibold">{analysis.analysisData.volumeScore}%</div>
+                        <div className="bg-white/60 rounded-lg p-3">
+                          <div className="text-blue-600 font-medium">Volume</div>
+                          <div className="text-xl font-bold text-blue-900">{analysis.analysisData.volumeScore}%</div>
                         </div>
                       </div>
                     )}
@@ -115,28 +114,30 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
               </Card>
               
               {/* Breakout Prediction */}
-              <Card>
+              <Card className="border-l-4 border-l-emerald-500 bg-gradient-to-br from-emerald-50 to-teal-50 shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
-                    <Target className="text-purple-600 mr-2" size={20} />
-                    <h4 className="text-lg font-semibold text-brand-dark">Breakout Prediction</h4>
+                    <div className="w-3 h-3 bg-emerald-500 rounded-full mr-3"></div>
+                    <h4 className="text-lg font-bold text-emerald-900">Breakout Prediction</h4>
                   </div>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-brand-gray">Expected Direction</span>
-                      <span className={`font-semibold capitalize ${
-                        analysis.breakoutDirection === 'upward' ? 'text-green-600' : 'text-red-600'
+                  <div className="space-y-4">
+                    <div className="bg-white/60 rounded-lg p-3 flex justify-between items-center">
+                      <span className="text-sm font-medium text-emerald-700">Expected Direction</span>
+                      <span className={`font-bold text-lg px-3 py-1 rounded-full capitalize ${
+                        analysis.breakoutDirection === 'upward' 
+                          ? 'bg-green-100 text-green-700' 
+                          : 'bg-red-100 text-red-700'
                       }`}>
                         {analysis.breakoutDirection}
                       </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-brand-gray">Timeframe</span>
-                      <span className="font-semibold text-brand-dark">{analysis.breakoutTimeframe}</span>
+                    <div className="bg-white/60 rounded-lg p-3 flex justify-between">
+                      <span className="text-sm font-medium text-emerald-700">Timeframe</span>
+                      <span className="font-bold text-emerald-900">{analysis.breakoutTimeframe}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-brand-gray">Probability</span>
-                      <span className="font-semibold text-blue-600">{analysis.breakoutProbability}%</span>
+                    <div className="bg-white/60 rounded-lg p-3 flex justify-between">
+                      <span className="text-sm font-medium text-emerald-700">Probability</span>
+                      <span className="font-bold text-xl text-blue-600">{analysis.breakoutProbability}%</span>
                     </div>
                   </div>
                 </CardContent>
@@ -227,8 +228,14 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                   </CardContent>
                 </Card>
               )}
-            </div>
           </div>
+          
+          {/* Latest News - Full Width Below Horizontal Cards */}
+          {!isCustomChart && stock && (
+            <div className="mt-8">
+              <StockNews symbol={analysis.stockSymbol} stock={stock} />
+            </div>
+          )}
         </div>
       </div>
     </section>
