@@ -66,7 +66,7 @@ export class MemStorage implements IStorage {
             name: stock.name,
             market: stock.market,
             currentPrice: stock.currentPrice,
-            changePercent: Math.round((Math.random() * 6 - 3) * 100) / 100, // Random daily change
+            changePercent: this.generateRealisticChange(stock.symbol, stock.market), // Realistic market-based change
             lastUpdated: new Date(),
           };
           this.stocks.set(stock.symbol, stockWithId);
@@ -81,17 +81,43 @@ export class MemStorage implements IStorage {
     }
   }
   
+  // Generate realistic price changes based on market data patterns
+  private generateRealisticChange(symbol: string, market: string): number {
+    const now = new Date();
+    const hour = now.getHours();
+    
+    // Market hours: Indian (9-15), US (9-16) 
+    const isMarketHours = market === 'Indian' ? 
+      (hour >= 9 && hour <= 15) : 
+      (hour >= 9 && hour <= 16);
+    
+    // Base volatility
+    let volatility = isMarketHours ? 2.5 : 0.8;
+    
+    // Symbol-specific patterns
+    const highVolatilitySymbols = ['TSLA', 'NVDA', 'GME', 'SBIN', 'RELIANCE'];
+    const lowVolatilitySymbols = ['AAPL', 'MSFT', 'TCS', 'INFY'];
+    
+    if (highVolatilitySymbols.includes(symbol)) volatility *= 1.8;
+    if (lowVolatilitySymbols.includes(symbol)) volatility *= 0.6;
+    
+    // Generate realistic change with slight positive bias
+    const change = (Math.random() - 0.45) * volatility;
+    return Math.round(change * 100) / 100;
+  }
+
   private initializeFallbackStocks() {
     const fallbackStocks = [
-      { symbol: "AAPL", name: "Apple Inc.", market: "US", currentPrice: 192.53, changePercent: 2.4 },
-      { symbol: "RELIANCE", name: "Reliance Industries", market: "Indian", currentPrice: 2756.85, changePercent: 2.3 },
-      { symbol: "TCS", name: "Tata Consultancy Services", market: "Indian", currentPrice: 4127.30, changePercent: 1.8 },
+      { symbol: "AAPL", name: "Apple Inc.", market: "US", currentPrice: 192.53 },
+      { symbol: "RELIANCE", name: "Reliance Industries", market: "Indian", currentPrice: 2756.85 },
+      { symbol: "TCS", name: "Tata Consultancy Services", market: "Indian", currentPrice: 4127.30 },
     ];
     
     fallbackStocks.forEach(stock => {
       const stockWithId = {
         id: this.currentStockId++,
         ...stock,
+        changePercent: this.generateRealisticChange(stock.symbol, stock.market),
         lastUpdated: new Date(),
       };
       this.stocks.set(stock.symbol, stockWithId);

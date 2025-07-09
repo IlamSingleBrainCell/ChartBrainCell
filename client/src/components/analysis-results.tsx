@@ -63,16 +63,16 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                 <StockNews symbol={analysis.stockSymbol} stock={stock} />
               )}
               {/* Pattern Recognition */}
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    <TrendingUp className="text-blue-600 mr-2" size={20} />
-                    <h4 className="text-lg font-semibold text-brand-dark">Pattern Recognition</h4>
+              <Card className="border border-gray-200">
+                <CardContent className="p-4">
+                  <div className="flex items-center mb-3">
+                    <div className="w-2 h-2 bg-blue-600 rounded-full mr-2"></div>
+                    <h4 className="text-sm font-semibold text-gray-800">Pattern Recognition</h4>
                   </div>
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-brand-gray">{analysis.patternType}</span>
-                      <span className="font-semibold text-green-600">{analysis.confidence}%</span>
+                      <span className="text-xs text-gray-600">{analysis.patternType}</span>
+                      <span className="text-xs font-semibold text-green-600">{analysis.confidence}%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div 
@@ -89,20 +89,23 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
               </Card>
               
               {/* Confidence Score */}
-              <Card>
-                <CardContent className="p-6">
-                  <h4 className="text-lg font-semibold text-brand-dark mb-4">Confidence Score</h4>
+              <Card className="border border-gray-200">
+                <CardContent className="p-4">
+                  <div className="flex items-center mb-3">
+                    <div className="w-2 h-2 bg-blue-600 rounded-full mr-2"></div>
+                    <h4 className="text-sm font-semibold text-gray-800">Confidence Score</h4>
+                  </div>
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-blue-600 mb-2">{analysis.confidence}%</div>
-                    <div className="text-brand-gray mb-4">Overall Confidence</div>
+                    <div className="text-2xl font-bold text-blue-600 mb-1">{analysis.confidence}%</div>
+                    <div className="text-xs text-gray-600 mb-3">Overall Confidence</div>
                     {analysis.analysisData?.technicalScore && (
-                      <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div className="grid grid-cols-2 gap-2 text-xs">
                         <div>
-                          <div className="text-brand-gray">Technical</div>
+                          <div className="text-gray-500">Technical</div>
                           <div className="font-semibold">{analysis.analysisData.technicalScore}%</div>
                         </div>
                         <div>
-                          <div className="text-brand-gray">Volume</div>
+                          <div className="text-gray-500">Volume</div>
                           <div className="font-semibold">{analysis.analysisData.volumeScore}%</div>
                         </div>
                       </div>
