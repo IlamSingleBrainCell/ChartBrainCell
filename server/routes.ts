@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { stockSearchSchema, insertStockAnalysisSchema } from "@shared/schema";
 import multer from "multer";
@@ -212,5 +213,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+  
+  // Setup WebSocket server for real-time price updates
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  // Store connected clients
+  const clients = new Set<WebSocket>();
+  
+  wss.on('connection', (ws) => {
+    console.log('Client connected to WebSocket');
+    clients.add(ws);
+    
+    // Send initial stock prices
+    sendStockPrices(ws);
+    
+    ws.on('close', () => {
+      console.log('Client disconnected from WebSocket');
+      clients.delete(ws);
+    });
+    
+    ws.on('error', (error) => {
+      console.error('WebSocket error:', error);
+      clients.delete(ws);
+    });
+  });
+  
+  // Function to send stock prices to a specific client
+  async function sendStockPrices(ws: WebSocket) {
+    if (ws.readyState === WebSocket.OPEN) {
+      try {
+        const stocks = await storage.getStocks();
+        ws.send(JSON.stringify({
+          type: 'STOCK_PRICES',
+          data: stocks.map(stock => ({
+            symbol: stock.symbol,
+            currentPrice: stock.currentPrice,
+            changePercent: stock.changePercent,
+            lastUpdated: stock.lastUpdated
+          }))
+        }));
+      } catch (error) {
+        console.error('Error sending stock prices:', error);
+      }
+    }
+  }
+  
+  // Function to broadcast price updates to all clients
+  async function broadcastPriceUpdates() {
+    if (clients.size === 0) return;
+    
+    try {
+      // Get current stocks and simulate price changes
+      const stocks = await storage.getStocks();
+      const updatedStocks = [];
+      
+      for (const stock of stocks) {
+        // Simulate realistic price changes (-2% to +2%)
+        const changePercent = (Math.random() - 0.5) * 4;
+        const newPrice = stock.currentPrice * (1 + changePercent / 100);
+        
+        // Update stock in storage
+        await storage.updateStock(stock.symbol, {
+          currentPrice: Math.round(newPrice * 100) / 100,
+          changePercent: Math.round(changePercent * 100) / 100
+        });
+        
+        updatedStocks.push({
+          symbol: stock.symbol,
+          currentPrice: Math.round(newPrice * 100) / 100,
+          changePercent: Math.round(changePercent * 100) / 100,
+          lastUpdated: new Date()
+        });
+      }
+      
+      // Broadcast to all connected clients
+      const message = JSON.stringify({
+        type: 'PRICE_UPDATE',
+        data: updatedStocks
+      });
+      
+      clients.forEach(ws => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send(message);
+        } else {
+          clients.delete(ws);
+        }
+      });
+      
+      console.log(`Broadcasted price updates to ${clients.size} clients`);
+    } catch (error) {
+      console.error('Error broadcasting price updates:', error);
+    }
+  }
+  
+  // Start price update interval (every 30 seconds)
+  setInterval(broadcastPriceUpdates, 30000);
+  
   return httpServer;
 }

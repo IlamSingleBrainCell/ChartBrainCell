@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, TrendingUp, TrendingDown } from 'lucide-react';
+import { Search, TrendingUp, TrendingDown, Wifi, WifiOff } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { useWebSocket } from '@/hooks/useWebSocket';
 
 interface Stock {
   id: number;
@@ -27,6 +28,9 @@ export function StockSearch({ onStockSelect, placeholder = "Search stocks..." }:
   const { data: allStocks = [] } = useQuery<Stock[]>({
     queryKey: ['/api/stocks'],
   });
+
+  // Get real-time price updates
+  const { isConnected, getStockPrice } = useWebSocket();
 
   // Filter stocks based on query
   const filteredStocks = query.length >= 1 
@@ -97,9 +101,18 @@ export function StockSearch({ onStockSelect, placeholder = "Search stocks..." }:
     setSelectedIndex(-1);
   };
 
-  const formatPrice = (price: number, market: string) => {
-    const symbol = market === 'Indian' ? '₹' : '$';
-    return `${symbol}${price.toFixed(2)}`;
+  const formatPrice = (stock: Stock) => {
+    // Get real-time price if available, otherwise use stored price
+    const livePrice = getStockPrice(stock.symbol);
+    const currentPrice = livePrice?.currentPrice ?? stock.currentPrice;
+    const changePercent = livePrice?.changePercent ?? stock.changePercent;
+    
+    const symbol = stock.market === 'Indian' ? '₹' : '$';
+    return {
+      formattedPrice: `${symbol}${currentPrice.toFixed(2)}`,
+      changePercent,
+      isLive: !!livePrice
+    };
   };
 
   return (
@@ -120,44 +133,59 @@ export function StockSearch({ onStockSelect, placeholder = "Search stocks..." }:
 
       {isOpen && filteredStocks.length > 0 && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
-          {filteredStocks.map((stock, index) => (
-            <div
-              key={stock.symbol}
-              onClick={() => handleStockSelect(stock)}
-              className={`px-4 py-3 cursor-pointer border-b border-gray-100 last:border-b-0 hover:bg-gray-50 ${
-                index === selectedIndex ? 'bg-blue-50' : ''
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-semibold text-gray-900">
-                    {stock.symbol}
-                    <span className="ml-2 text-xs bg-gray-100 px-2 py-1 rounded">
-                      {stock.market === 'Indian' ? 'NSE/BSE' : 'NYSE/NASDAQ'}
-                    </span>
+          <div className="px-3 py-2 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+            <span className="text-xs text-gray-600">Live Prices</span>
+            <div className={`flex items-center text-xs ${isConnected ? 'text-green-600' : 'text-red-600'}`}>
+              {isConnected ? <Wifi size={12} className="mr-1" /> : <WifiOff size={12} className="mr-1" />}
+              {isConnected ? 'Connected' : 'Disconnected'}
+            </div>
+          </div>
+          {filteredStocks.map((stock, index) => {
+            const priceInfo = formatPrice(stock);
+            return (
+              <div
+                key={stock.symbol}
+                onClick={() => handleStockSelect(stock)}
+                className={`px-4 py-3 cursor-pointer border-b border-gray-100 last:border-b-0 hover:bg-gray-50 ${
+                  index === selectedIndex ? 'bg-blue-50' : ''
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold text-gray-900 flex items-center">
+                      {stock.symbol}
+                      <span className="ml-2 text-xs bg-gray-100 px-2 py-1 rounded">
+                        {stock.market === 'Indian' ? 'NSE/BSE' : 'NYSE/NASDAQ'}
+                      </span>
+                      {priceInfo.isLive && (
+                        <span className="ml-2 flex items-center">
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-sm text-gray-600 truncate max-w-xs">
+                      {stock.name}
+                    </div>
                   </div>
-                  <div className="text-sm text-gray-600 truncate max-w-xs">
-                    {stock.name}
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="font-semibold text-gray-900">
-                    {formatPrice(stock.currentPrice, stock.market)}
-                  </div>
-                  <div className={`text-sm flex items-center ${
-                    stock.changePercent >= 0 ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    {stock.changePercent >= 0 ? (
-                      <TrendingUp size={12} className="mr-1" />
-                    ) : (
-                      <TrendingDown size={12} className="mr-1" />
-                    )}
-                    {stock.changePercent >= 0 ? '+' : ''}{stock.changePercent}%
+                  <div className="text-right">
+                    <div className="font-semibold text-gray-900">
+                      {priceInfo.formattedPrice}
+                    </div>
+                    <div className={`text-sm flex items-center ${
+                      priceInfo.changePercent >= 0 ? 'text-green-600' : 'text-red-600'
+                    }`}>
+                      {priceInfo.changePercent >= 0 ? (
+                        <TrendingUp size={12} className="mr-1" />
+                      ) : (
+                        <TrendingDown size={12} className="mr-1" />
+                      )}
+                      {priceInfo.changePercent >= 0 ? '+' : ''}{priceInfo.changePercent.toFixed(2)}%
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
