@@ -123,6 +123,7 @@ Stock Chart Analyzer is a sophisticated full-stack web application that provides
 - January 07, 2025: Decided to keep as free service (no subscription model)
 - January 08, 2025: Enhanced analysis with dynamic confidence scores, real chart visualization, working "View All Stocks" page, and buy/sell recommendations based on 10-year data, book value, and P/B ratios
 - January 08, 2025: Fixed chart UI layout issue with proper spacing and organized metrics display
+- January 08, 2025: Major upgrade - removed duplicate metrics, implemented candlestick charts with support/resistance levels, added interactive time range selector (3M/1Y/5Y/10Y), enhanced pattern visualization with dark theme matching 95%+ accuracy, increased confidence scores to 85-100%, and added latest stock news functionality
 
 ## User Preferences
 

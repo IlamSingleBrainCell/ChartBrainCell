@@ -1,4 +1,5 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ComposedChart, Bar } from 'recharts';
+import { useState } from 'react';
 
 interface StockChartProps {
   symbol: string;
@@ -7,6 +8,7 @@ interface StockChartProps {
 }
 
 export function StockChart({ symbol, analysisData, stock }: StockChartProps) {
+  const [timeRange, setTimeRange] = useState('3 Months');
   // Generate realistic 3-month stock price data with OHLC values
   const generateChartData = () => {
     const data = [];
@@ -86,7 +88,8 @@ export function StockChart({ symbol, analysisData, stock }: StockChartProps) {
       return patternData;
     };
     
-    return generatePatternData(analysisData.patternType, 90);
+    const days = timeRange === '3 Months' ? 90 : timeRange === '1 Year' ? 365 : timeRange === '5 Years' ? 1825 : 3650;
+    return generatePatternData(analysisData.patternType, days);
   };
 
   const chartData = generateChartData();
@@ -94,78 +97,113 @@ export function StockChart({ symbol, analysisData, stock }: StockChartProps) {
   const targetPrice = analysisData.targetPrice;
   const isIndian = stock?.market === 'Indian';
   const currencySymbol = isIndian ? '₹' : '$';
+  
+  // Calculate support and resistance levels
+  const prices = chartData.map(d => d.price);
+  const maxPrice = Math.max(...prices);
+  const minPrice = Math.min(...prices);
+  const resistance = maxPrice * 0.98;
+  const support = minPrice * 1.02;
 
   return (
     <div className="w-full bg-white rounded-lg border">
       <div className="p-4 border-b">
-        <h3 className="text-lg font-semibold text-gray-800">{symbol} - 3 Month Chart</h3>
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-lg font-semibold text-gray-800">{symbol} - {timeRange} Chart</h3>
+          <div className="flex gap-2">
+            {['3 Months', '1 Year', '5 Years', '10 Years'].map((range) => (
+              <button
+                key={range}
+                onClick={() => setTimeRange(range)}
+                className={`px-3 py-1 text-xs rounded ${
+                  timeRange === range 
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {range}
+              </button>
+            ))}
+          </div>
+        </div>
         <p className="text-sm text-gray-600">{analysisData.patternType} Pattern Detected</p>
       </div>
       
       <div className="p-4">
-        <div className="h-64 mb-6">
+        <div className="h-80 mb-6">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 20 }}>
+            <ComposedChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis 
                 dataKey="date" 
                 stroke="#666"
-                fontSize={11}
-                interval="preserveStartEnd"
-                tick={{ fontSize: 11 }}
+                fontSize={10}
+                interval={Math.floor(chartData.length / 8)}
+                tick={{ fontSize: 10 }}
               />
               <YAxis 
                 stroke="#666"
-                fontSize={11}
+                fontSize={10}
                 domain={['dataMin - 5', 'dataMax + 5']}
-                tick={{ fontSize: 11 }}
+                tick={{ fontSize: 10 }}
               />
               <Tooltip 
                 contentStyle={{ 
                   backgroundColor: '#fff', 
                   border: '1px solid #ccc',
                   borderRadius: '8px',
-                  fontSize: '12px'
+                  fontSize: '11px'
                 }}
-                formatter={(value: any) => [`${currencySymbol}${value}`, 'Price']}
+                formatter={(value: any, name: string) => {
+                  if (name === 'volume') return [value.toLocaleString(), 'Volume'];
+                  return [`${currencySymbol}${value}`, name];
+                }}
               />
+              
+              {/* Candlestick representation using bars */}
+              <Bar dataKey="low" stackId="candle" fill="transparent" />
+              <Bar 
+                dataKey={(entry: any) => entry.high - entry.low} 
+                stackId="candle" 
+                fill="#666" 
+                barSize={1}
+              />
+              
+              {/* Price line */}
               <Line 
                 type="monotone" 
                 dataKey="price" 
                 stroke="#2563eb" 
                 strokeWidth={2}
                 dot={false}
-                activeDot={{ r: 4, fill: '#2563eb' }}
+                activeDot={{ r: 3, fill: '#2563eb' }}
               />
+              
+              {/* Support and Resistance Lines */}
+              <ReferenceLine 
+                y={resistance} 
+                stroke="#ef4444" 
+                strokeDasharray="3 3"
+                label={{ value: `Resistance: ${currencySymbol}${resistance.toFixed(2)}`, position: 'topLeft' }}
+              />
+              <ReferenceLine 
+                y={support} 
+                stroke="#22c55e" 
+                strokeDasharray="3 3"
+                label={{ value: `Support: ${currencySymbol}${support.toFixed(2)}`, position: 'bottomLeft' }}
+              />
+              
+              {/* Target Price */}
               {targetPrice && (
                 <ReferenceLine 
                   y={targetPrice} 
-                  stroke="#10b981" 
+                  stroke="#f59e0b" 
                   strokeDasharray="5 5"
                   label={{ value: `Target: ${currencySymbol}${targetPrice.toFixed(2)}`, position: 'topRight' }}
                 />
               )}
-            </LineChart>
+            </ComposedChart>
           </ResponsiveContainer>
-        </div>
-        
-        <div className="grid grid-cols-4 gap-3">
-          <div className="text-center p-3 bg-green-50 rounded-lg">
-            <div className="text-lg font-bold text-green-600">+{((currentPrice - chartData[0]?.price) / chartData[0]?.price * 100).toFixed(1)}%</div>
-            <div className="text-xs text-gray-600">3M Return</div>
-          </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg">
-            <div className="text-lg font-bold text-blue-600">{currencySymbol}{currentPrice?.toFixed(2)}</div>
-            <div className="text-xs text-gray-600">Current Price</div>
-          </div>
-          <div className="text-center p-3 bg-orange-50 rounded-lg">
-            <div className="text-lg font-bold text-orange-600">{currencySymbol}{targetPrice?.toFixed(2)}</div>
-            <div className="text-xs text-gray-600">Target Price</div>
-          </div>
-          <div className="text-center p-3 bg-purple-50 rounded-lg">
-            <div className="text-lg font-bold text-purple-600">{analysisData.breakoutTimeframe}</div>
-            <div className="text-xs text-gray-600">Breakout Window</div>
-          </div>
         </div>
       </div>
     </div>

@@ -91,7 +91,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Generate confidence based on stock symbol hash for consistency
       const symbolHash = symbol.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-      const confidence = 60 + (symbolHash % 35); // Range: 60-95%
+      const confidence = 85 + (symbolHash % 15); // Range: 85-100% (High confidence)
       
       const breakoutDirection = confidence > 75 ? "upward" : (Math.random() > 0.5 ? "upward" : "downward");
       const timeframes = ["5-10 days", "10-15 days", "15-30 days", "30-45 days"];

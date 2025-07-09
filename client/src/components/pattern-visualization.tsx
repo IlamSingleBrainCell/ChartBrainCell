@@ -73,9 +73,23 @@ export function PatternVisualization({ patternType, confidence }: PatternVisuali
         y = lowerBound + Math.random() * (upperBound - lowerBound);
       }
       
+      let supportLine = null;
+      let resistanceLine = null;
+      
+      // Add support and resistance lines for relevant patterns
+      if (patternType.includes('Ascending Triangle')) {
+        supportLine = 30 + (i * 1.5); // Rising support
+        resistanceLine = 70; // Flat resistance
+      } else if (patternType.includes('Wedge')) {
+        supportLine = 30 + (i * 1);
+        resistanceLine = 70 - (i * 1);
+      }
+      
       data.push({
         x,
-        y: Math.max(20, Math.min(80, y + (Math.random() * 4 - 2)))
+        y: Math.max(20, Math.min(80, y + (Math.random() * 2 - 1))),
+        supportLine,
+        resistanceLine
       });
     }
     
@@ -85,21 +99,53 @@ export function PatternVisualization({ patternType, confidence }: PatternVisuali
   const patternData = generatePatternData();
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border">
-      <div className="flex items-center justify-between mb-3">
-        <h4 className="font-semibold text-gray-800">{patternType}</h4>
-        <div className="text-sm font-medium text-blue-600">{confidence}% Match</div>
+    <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-4 border">
+      <div className="flex items-center mb-3">
+        <div className="w-4 h-4 bg-gradient-to-r from-blue-400 to-purple-500 rounded mr-2"></div>
+        <h4 className="font-semibold text-white">{patternType}</h4>
       </div>
       
-      <div className="h-32 mb-3">
+      <div className="text-xs text-yellow-400 mb-3 flex items-center">
+        💡 Compare the actual chart above with this pattern example below
+      </div>
+      
+      <div className="h-32 mb-3 bg-slate-800 rounded border border-slate-700">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={patternData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+          <LineChart data={patternData} margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
             <XAxis hide />
             <YAxis hide />
+            
+            {/* Support line for patterns that have one */}
+            {(patternType.includes('Ascending Triangle') || patternType.includes('Wedge')) && (
+              <Line 
+                type="linear" 
+                dataKey="supportLine" 
+                stroke="#22c55e" 
+                strokeWidth={2}
+                strokeDasharray="3 3"
+                dot={false}
+                connectNulls={false}
+              />
+            )}
+            
+            {/* Resistance line for patterns that have one */}
+            {(patternType.includes('Triangle') || patternType.includes('Wedge')) && (
+              <Line 
+                type="linear" 
+                dataKey="resistanceLine" 
+                stroke="#ef4444" 
+                strokeWidth={2}
+                strokeDasharray="3 3"
+                dot={false}
+                connectNulls={false}
+              />
+            )}
+            
+            {/* Main price line */}
             <Line 
               type="monotone" 
               dataKey="y" 
-              stroke="#2563eb" 
+              stroke="#60a5fa" 
               strokeWidth={2}
               dot={false}
               activeDot={false}
@@ -108,8 +154,12 @@ export function PatternVisualization({ patternType, confidence }: PatternVisuali
         </ResponsiveContainer>
       </div>
       
-      <div className="text-xs text-gray-600">
-        Pattern accuracy: {confidence >= 80 ? 'High' : confidence >= 60 ? 'Medium' : 'Low'} confidence match
+      <div className="flex items-center justify-between">
+        <div className="text-xs text-gray-400">
+          <input type="checkbox" checked className="mr-1" readOnly />
+          Typical {patternType.toLowerCase()} pattern example
+        </div>
+        <div className="text-xs font-medium text-emerald-400">{confidence}% Match</div>
       </div>
     </div>
   );

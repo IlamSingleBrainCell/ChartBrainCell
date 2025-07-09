@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Target, Shield, AlertTriangle, ShoppingCart } from "lucide-react";
 import { StockChart } from "./stock-chart";
 import { PatternVisualization } from "./pattern-visualization";
+import { StockNews } from "./stock-news";
 
 interface AnalysisResultsProps {
   analysis: any;
@@ -49,38 +50,18 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                   
                   <StockChart symbol={analysis.stockSymbol} analysisData={analysis} stock={stock} />
                   
-                  {!isCustomChart && stock && (
-                    <div className="grid grid-cols-4 gap-4">
-                      <div className="text-center p-4 bg-gray-50 rounded-lg">
-                        <div className="text-2xl font-bold text-green-600">+{analysis.analysisData?.threeMonthReturn || 12.5}%</div>
-                        <div className="text-sm text-brand-gray">3M Return</div>
-                      </div>
-                      <div className="text-center p-4 bg-gray-50 rounded-lg">
-                        <div className="text-2xl font-bold text-blue-600">
-                          {stock.market === 'Indian' ? '₹' : '$'}{stock.currentPrice?.toFixed(2)}
-                        </div>
-                        <div className="text-sm text-brand-gray">Current Price</div>
-                      </div>
-                      <div className="text-center p-4 bg-gray-50 rounded-lg">
-                        <div className="text-2xl font-bold text-orange-500">
-                          {analysis.targetPrice ? (
-                            `${stock.market === 'Indian' ? '₹' : '$'}${analysis.targetPrice.toFixed(2)}`
-                          ) : 'N/A'}
-                        </div>
-                        <div className="text-sm text-brand-gray">Target Price</div>
-                      </div>
-                      <div className="text-center p-4 bg-gray-50 rounded-lg">
-                        <div className="text-2xl font-bold text-purple-600">{analysis.breakoutTimeframe}</div>
-                        <div className="text-sm text-brand-gray">Breakout Window</div>
-                      </div>
-                    </div>
-                  )}
+
                 </CardContent>
               </Card>
             </div>
             
             {/* Analysis Details */}
             <div className="space-y-6">
+              
+              {/* Latest News */}
+              {!isCustomChart && stock && (
+                <StockNews symbol={analysis.stockSymbol} stock={stock} />
+              )}
               {/* Pattern Recognition */}
               <Card>
                 <CardContent className="p-6">
