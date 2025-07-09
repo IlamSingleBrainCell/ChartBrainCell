@@ -18,10 +18,10 @@ export function Header() {
             </div>
           </Link>
           <nav className="hidden md:flex space-x-8">
+            <Link href="/" className="text-brand-gray hover:text-brand-blue transition-colors">Home</Link>
+            <Link href="/all-stocks" className="text-brand-gray hover:text-brand-blue transition-colors">All Stocks</Link>
+            <Link href="/portfolio" className="text-brand-gray hover:text-brand-blue transition-colors">Portfolio</Link>
             <a href="#features" className="text-brand-gray hover:text-brand-blue transition-colors">Features</a>
-            <a href="#demo" className="text-brand-gray hover:text-brand-blue transition-colors">Demo</a>
-            <a href="#stocks" className="text-brand-gray hover:text-brand-blue transition-colors">Stocks</a>
-            <a href="#about" className="text-brand-gray hover:text-brand-blue transition-colors">About</a>
           </nav>
         </div>
       </div>

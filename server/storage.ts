@@ -1,4 +1,4 @@
-import { stocks, stockAnalysis, chartUploads, type Stock, type InsertStock, type StockAnalysis, type InsertStockAnalysis, type ChartUpload, type InsertChartUpload } from "@shared/schema";
+import { stocks, stockAnalysis, chartUploads, portfolio, portfolioTransactions, type Stock, type InsertStock, type StockAnalysis, type InsertStockAnalysis, type ChartUpload, type InsertChartUpload, type Portfolio, type InsertPortfolio, type PortfolioTransaction, type InsertPortfolioTransaction } from "@shared/schema";
 
 export interface IStorage {
   // Stock operations
@@ -17,23 +17,43 @@ export interface IStorage {
   // Chart upload operations
   createChartUpload(upload: InsertChartUpload): Promise<ChartUpload>;
   getChartUpload(id: number): Promise<ChartUpload | undefined>;
+  
+  // Portfolio operations
+  getPortfolio(userId?: string): Promise<Portfolio[]>;
+  addToPortfolio(portfolioItem: InsertPortfolio): Promise<Portfolio>;
+  updatePortfolioItem(id: number, updates: Partial<InsertPortfolio>): Promise<Portfolio | undefined>;
+  removeFromPortfolio(id: number): Promise<boolean>;
+  getPortfolioItem(id: number): Promise<Portfolio | undefined>;
+  
+  // Portfolio transaction operations
+  addTransaction(transaction: InsertPortfolioTransaction): Promise<PortfolioTransaction>;
+  getPortfolioTransactions(portfolioId: number): Promise<PortfolioTransaction[]>;
+  getPortfolioPerformance(userId?: string): Promise<any>;
 }
 
 export class MemStorage implements IStorage {
   private stocks: Map<string, Stock>;
   private stockAnalyses: Map<string, StockAnalysis>;
   private chartUploads: Map<number, ChartUpload>;
+  private portfolioItems: Map<number, Portfolio>;
+  private portfolioTransactions: Map<number, PortfolioTransaction>;
   private currentStockId: number;
   private currentAnalysisId: number;
   private currentUploadId: number;
+  private currentPortfolioId: number;
+  private currentTransactionId: number;
 
   constructor() {
     this.stocks = new Map();
     this.stockAnalyses = new Map();
     this.chartUploads = new Map();
+    this.portfolioItems = new Map();
+    this.portfolioTransactions = new Map();
     this.currentStockId = 1;
     this.currentAnalysisId = 1;
     this.currentUploadId = 1;
+    this.currentPortfolioId = 1;
+    this.currentTransactionId = 1;
     
     // Initialize with stocks from JSON files
     this.loadStockData();
@@ -212,6 +232,100 @@ export class MemStorage implements IStorage {
 
   async getChartUpload(id: number): Promise<ChartUpload | undefined> {
     return this.chartUploads.get(id);
+  }
+
+  // Portfolio operations
+  async getPortfolio(userId: string = "guest"): Promise<Portfolio[]> {
+    return Array.from(this.portfolioItems.values()).filter(item => item.userId === userId);
+  }
+
+  async addToPortfolio(portfolioItem: InsertPortfolio): Promise<Portfolio> {
+    const portfolio: Portfolio = {
+      id: this.currentPortfolioId++,
+      userId: portfolioItem.userId || "guest",
+      stockSymbol: portfolioItem.stockSymbol,
+      quantity: portfolioItem.quantity,
+      buyPrice: portfolioItem.buyPrice,
+      purchaseDate: portfolioItem.purchaseDate,
+      notes: portfolioItem.notes || null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    
+    this.portfolioItems.set(portfolio.id, portfolio);
+    return portfolio;
+  }
+
+  async updatePortfolioItem(id: number, updates: Partial<InsertPortfolio>): Promise<Portfolio | undefined> {
+    const existing = this.portfolioItems.get(id);
+    if (!existing) return undefined;
+
+    const updated: Portfolio = {
+      ...existing,
+      ...updates,
+      updatedAt: new Date(),
+    };
+    
+    this.portfolioItems.set(id, updated);
+    return updated;
+  }
+
+  async removeFromPortfolio(id: number): Promise<boolean> {
+    return this.portfolioItems.delete(id);
+  }
+
+  async getPortfolioItem(id: number): Promise<Portfolio | undefined> {
+    return this.portfolioItems.get(id);
+  }
+
+  // Portfolio transaction operations
+  async addTransaction(transaction: InsertPortfolioTransaction): Promise<PortfolioTransaction> {
+    const portfolioTransaction: PortfolioTransaction = {
+      id: this.currentTransactionId++,
+      portfolioId: transaction.portfolioId,
+      type: transaction.type,
+      quantity: transaction.quantity,
+      price: transaction.price,
+      transactionDate: transaction.transactionDate,
+      fees: transaction.fees || "0",
+      notes: transaction.notes || null,
+      createdAt: new Date(),
+    };
+    
+    this.portfolioTransactions.set(portfolioTransaction.id, portfolioTransaction);
+    return portfolioTransaction;
+  }
+
+  async getPortfolioTransactions(portfolioId: number): Promise<PortfolioTransaction[]> {
+    return Array.from(this.portfolioTransactions.values()).filter(t => t.portfolioId === portfolioId);
+  }
+
+  async getPortfolioPerformance(userId: string = "guest"): Promise<any> {
+    const userPortfolio = await this.getPortfolio(userId);
+    const performance = [];
+
+    for (const item of userPortfolio) {
+      const currentStock = await this.getStock(item.stockSymbol);
+      if (!currentStock) continue;
+
+      const currentValue = currentStock.currentPrice * item.quantity;
+      const investedValue = parseFloat(item.buyPrice) * item.quantity;
+      const gainLoss = currentValue - investedValue;
+      const gainLossPercent = (gainLoss / investedValue) * 100;
+
+      performance.push({
+        ...item,
+        currentPrice: currentStock.currentPrice,
+        currentValue: Math.round(currentValue * 100) / 100,
+        investedValue: Math.round(investedValue * 100) / 100,
+        gainLoss: Math.round(gainLoss * 100) / 100,
+        gainLossPercent: Math.round(gainLossPercent * 100) / 100,
+        stockName: currentStock.name,
+        market: currentStock.market
+      });
+    }
+
+    return performance;
   }
 }
 

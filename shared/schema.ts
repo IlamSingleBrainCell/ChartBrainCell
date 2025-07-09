@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, jsonb, real } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, jsonb, real, decimal } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -37,6 +37,31 @@ export const chartUploads = pgTable("chart_uploads", {
   uploadedAt: timestamp("uploaded_at").defaultNow(),
 });
 
+// User Portfolio Management
+export const portfolio = pgTable("portfolio", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().default("guest"), // For future user authentication
+  stockSymbol: text("stock_symbol").notNull(),
+  quantity: integer("quantity").notNull(),
+  buyPrice: decimal("buy_price", { precision: 10, scale: 2 }).notNull(),
+  purchaseDate: timestamp("purchase_date").notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const portfolioTransactions = pgTable("portfolio_transactions", {
+  id: serial("id").primaryKey(),
+  portfolioId: integer("portfolio_id").references(() => portfolio.id),
+  type: text("type").notNull(), // 'buy' or 'sell'
+  quantity: integer("quantity").notNull(),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  transactionDate: timestamp("transaction_date").notNull(),
+  fees: decimal("fees", { precision: 10, scale: 2 }).default("0"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertStockSchema = createInsertSchema(stocks).omit({
   id: true,
   lastUpdated: true,
@@ -56,6 +81,17 @@ export const stockSearchSchema = z.object({
   query: z.string().min(1, "Search query is required"),
 });
 
+export const insertPortfolioSchema = createInsertSchema(portfolio).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertPortfolioTransactionSchema = createInsertSchema(portfolioTransactions).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type Stock = typeof stocks.$inferSelect;
 export type InsertStock = z.infer<typeof insertStockSchema>;
 export type StockAnalysis = typeof stockAnalysis.$inferSelect;
@@ -63,3 +99,7 @@ export type InsertStockAnalysis = z.infer<typeof insertStockAnalysisSchema>;
 export type ChartUpload = typeof chartUploads.$inferSelect;
 export type InsertChartUpload = z.infer<typeof insertChartUploadSchema>;
 export type StockSearchRequest = z.infer<typeof stockSearchSchema>;
+export type Portfolio = typeof portfolio.$inferSelect;
+export type InsertPortfolio = z.infer<typeof insertPortfolioSchema>;
+export type PortfolioTransaction = typeof portfolioTransactions.$inferSelect;
+export type InsertPortfolioTransaction = z.infer<typeof insertPortfolioTransactionSchema>;

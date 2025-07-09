@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { stockSearchSchema, insertStockAnalysisSchema } from "@shared/schema";
+import { stockSearchSchema, insertStockAnalysisSchema, insertPortfolioSchema, insertPortfolioTransactionSchema } from "@shared/schema";
 import multer from "multer";
 import type { Request } from "express";
 import path from "path";
@@ -209,6 +209,117 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(analyses);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch latest analyses" });
+    }
+  });
+
+  // Portfolio Management Routes
+  
+  // Get user portfolio
+  app.get("/api/portfolio", async (req, res) => {
+    try {
+      const userId = req.query.userId as string || "guest";
+      const portfolio = await storage.getPortfolio(userId);
+      res.json(portfolio);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch portfolio" });
+    }
+  });
+
+  // Get portfolio performance
+  app.get("/api/portfolio/performance", async (req, res) => {
+    try {
+      const userId = req.query.userId as string || "guest";
+      const performance = await storage.getPortfolioPerformance(userId);
+      res.json(performance);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch portfolio performance" });
+    }
+  });
+
+  // Add stock to portfolio
+  app.post("/api/portfolio", async (req, res) => {
+    try {
+      const portfolioData = insertPortfolioSchema.parse(req.body);
+      const portfolioItem = await storage.addToPortfolio(portfolioData);
+      res.json(portfolioItem);
+    } catch (error: any) {
+      res.status(400).json({ message: "Invalid portfolio data", error: error.message });
+    }
+  });
+
+  // Update portfolio item
+  app.put("/api/portfolio/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = insertPortfolioSchema.partial().parse(req.body);
+      const updated = await storage.updatePortfolioItem(id, updates);
+      
+      if (!updated) {
+        return res.status(404).json({ message: "Portfolio item not found" });
+      }
+      
+      res.json(updated);
+    } catch (error: any) {
+      res.status(400).json({ message: "Invalid update data", error: error.message });
+    }
+  });
+
+  // Remove stock from portfolio
+  app.delete("/api/portfolio/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const removed = await storage.removeFromPortfolio(id);
+      
+      if (!removed) {
+        return res.status(404).json({ message: "Portfolio item not found" });
+      }
+      
+      res.json({ message: "Portfolio item removed successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove portfolio item" });
+    }
+  });
+
+  // Get portfolio item details
+  app.get("/api/portfolio/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const item = await storage.getPortfolioItem(id);
+      
+      if (!item) {
+        return res.status(404).json({ message: "Portfolio item not found" });
+      }
+      
+      res.json(item);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch portfolio item" });
+    }
+  });
+
+  // Add transaction to portfolio
+  app.post("/api/portfolio/:id/transactions", async (req, res) => {
+    try {
+      const portfolioId = parseInt(req.params.id);
+      const transactionData = insertPortfolioTransactionSchema.parse({
+        ...req.body,
+        portfolioId
+      });
+      
+      const transaction = await storage.addTransaction(transactionData);
+      res.json(transaction);
+    } catch (error: any) {
+      res.status(400).json({ message: "Invalid transaction data", error: error.message });
+    }
+  });
+
+  // Get portfolio transactions
+  app.get("/api/portfolio/:id/transactions", async (req, res) => {
+    try {
+      const portfolioId = parseInt(req.params.id);
+      const transactions = await storage.getPortfolioTransactions(portfolioId);
+      res.json(transactions);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch transactions" });
     }
   });
 

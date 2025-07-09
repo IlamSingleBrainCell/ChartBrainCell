@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Target, Shield, AlertTriangle, ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { TrendingUp, Target, Shield, AlertTriangle, ShoppingCart, Plus } from "lucide-react";
 import { StockChart } from "./stock-chart";
 import { PatternVisualization } from "./pattern-visualization";
 import { StockNews } from "./stock-news";
+import { AddToPortfolioDialog } from "./add-to-portfolio-dialog";
 
 interface AnalysisResultsProps {
   analysis: any;
@@ -11,6 +14,8 @@ interface AnalysisResultsProps {
 }
 
 export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
+  const [showAddToPortfolio, setShowAddToPortfolio] = useState(false);
+  
   if (!analysis) return null;
 
   const isCustomChart = analysis.stockSymbol === "CUSTOM_CHART";
@@ -53,6 +58,19 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                     </Badge>
                   </div>
                 </div>
+                
+                {/* Add to Portfolio Button */}
+                {!isCustomChart && stock && (
+                  <div className="mt-6 flex justify-center">
+                    <Button 
+                      onClick={() => setShowAddToPortfolio(true)}
+                      className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-2"
+                    >
+                      <Plus className="mr-2" size={16} />
+                      Add to Portfolio
+                    </Button>
+                  </div>
+                )}
                 
                 <StockChart symbol={analysis.stockSymbol} analysisData={analysis} stock={stock} />
               </CardContent>
@@ -237,6 +255,15 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
             </div>
           )}
         </div>
+        
+        {/* Add to Portfolio Dialog */}
+        {!isCustomChart && stock && (
+          <AddToPortfolioDialog 
+            open={showAddToPortfolio}
+            onOpenChange={setShowAddToPortfolio}
+            defaultStock={analysis.stockSymbol}
+          />
+        )}
       </div>
     </section>
   );

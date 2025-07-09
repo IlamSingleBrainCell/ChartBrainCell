@@ -33,19 +33,25 @@ Stock Chart Analyzer is a sophisticated full-stack web application that provides
 1. **Stocks Table**: Core stock information (symbol, name, market, pricing)
 2. **Stock Analysis Table**: AI analysis results with pattern recognition data
 3. **Chart Uploads Table**: Metadata for uploaded chart images
+4. **Portfolio Table**: User investment holdings with purchase details
+5. **Portfolio Transactions Table**: Buy/sell transaction history
 
 ### Frontend Components
 1. **Hero Section**: Primary call-to-action with gradient design
 2. **Demo Section**: Interactive stock search and chart upload interface
-3. **Analysis Results**: Comprehensive display of AI-generated insights
+3. **Analysis Results**: Comprehensive display of AI-generated insights with portfolio integration
 4. **Stocks Showcase**: Market-segmented stock listing with real-time data
 5. **Educational Content**: Feature explanations and AI capabilities
+6. **Portfolio Management**: Real-time portfolio tracking with performance analytics
+7. **Add to Portfolio Dialog**: Modal interface for adding stocks to portfolio
 
 ### Backend Services
 1. **Stock Management**: CRUD operations for stock data
 2. **Analysis Engine**: Pattern recognition and confidence scoring
 3. **File Upload Handler**: Chart image processing and storage
 4. **Market Data**: Real-time stock information retrieval
+5. **Portfolio Management**: Investment tracking and performance calculations
+6. **Transaction Recording**: Buy/sell transaction history management
 
 ## Data Flow
 
@@ -126,6 +132,7 @@ Stock Chart Analyzer is a sophisticated full-stack web application that provides
 - January 08, 2025: Major upgrade - removed duplicate metrics, implemented candlestick charts with support/resistance levels, added interactive time range selector (3M/1Y/5Y/10Y), enhanced pattern visualization with dark theme matching 95%+ accuracy, increased confidence scores to 85-100%, and added latest stock news functionality
 - January 09, 2025: Implemented real-time stock price updates via WebSocket - added live price streaming every 30 seconds, WebSocket connection status indicators, live price badges in search results, and automatic reconnection functionality
 - January 09, 2025: Major professional upgrade - implementing realistic stock price algorithms based on market hours and volatility patterns, enhanced UI with compact professional design, improved analysis results with real book values, P/E ratios, and P/B ratios, integrated market-specific pricing logic for Indian (₹) vs US ($) stocks
+- January 09, 2025: Implemented comprehensive portfolio tracking system with real-time performance monitoring, add/remove stocks functionality, gain/loss calculations, portfolio summary with attractive UI, and "Add to Portfolio" integration from analysis results
 
 ## User Preferences
 
