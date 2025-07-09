@@ -115,7 +115,7 @@ export function PatternVisualization({ patternType, confidence }: PatternVisuali
       </div>
       
       <div className="text-xs text-yellow-400 mb-3 flex items-center">
-        💡 Compare the actual chart above with this pattern example below
+        💡 Professional pattern visualization with key levels marked
       </div>
       
       <div className="h-32 mb-3 bg-slate-800 rounded border border-slate-700">
@@ -168,7 +168,7 @@ export function PatternVisualization({ patternType, confidence }: PatternVisuali
           <input type="checkbox" checked className="mr-1" readOnly />
           Typical {patternType.toLowerCase()} pattern example
         </div>
-        <div className="text-xs font-medium text-emerald-400">{confidence}% Match</div>
+        <div className="text-xs font-medium text-emerald-400">{confidence}% Accuracy</div>
       </div>
     </div>
   );

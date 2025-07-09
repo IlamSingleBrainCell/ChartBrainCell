@@ -1,4 +1,4 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ComposedChart, Bar, Brush } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ComposedChart, Bar, Brush, Cell } from 'recharts';
 import { useState } from 'react';
 import { ZoomIn, ZoomOut, TrendingUp, TrendingDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -114,12 +114,34 @@ export function StockChart({ symbol, analysisData, stock }: StockChartProps) {
   const livePrice = getStockPrice(symbol);
   const displayPrice = livePrice?.currentPrice ?? currentPrice;
   
-  // Calculate support and resistance levels
+  // Calculate pattern-specific levels and annotations
   const prices = chartData.map(d => d.price);
   const maxPrice = Math.max(...prices);
   const minPrice = Math.min(...prices);
   const resistance = maxPrice * 0.98;
   const support = minPrice * 1.02;
+  
+  // Pattern-specific calculations
+  const getPatternAnnotations = () => {
+    if (analysisData.patternType.includes('Cup and Handle')) {
+      const cupDepthPoint = Math.min(...prices.slice(Math.floor(prices.length * 0.3), Math.floor(prices.length * 0.7)));
+      const handleLow = Math.min(...prices.slice(Math.floor(prices.length * 0.85)));
+      const targetPrice = maxPrice * 1.15; // Target above resistance
+      
+      return {
+        cupDepth: cupDepthPoint,
+        handleLow: handleLow,
+        target: targetPrice,
+        cupStart: Math.floor(chartData.length * 0.1),
+        cupEnd: Math.floor(chartData.length * 0.85),
+        handleStart: Math.floor(chartData.length * 0.85),
+        handleEnd: chartData.length - 1
+      };
+    }
+    return null;
+  };
+  
+  const patternAnnotations = getPatternAnnotations();
 
   return (
     <div className="w-full bg-white rounded-lg border">
@@ -146,85 +168,183 @@ export function StockChart({ symbol, analysisData, stock }: StockChartProps) {
       </div>
       
       <div className="p-4">
-        <div className="h-80 mb-6">
+        <div className="h-96 mb-6">
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <ComposedChart data={chartData} margin={{ top: 20, right: 60, left: 20, bottom: 60 }}>
+              <defs>
+                {/* Pattern overlays */}
+                <pattern id="cupPattern" patternUnits="userSpaceOnUse" width="4" height="4">
+                  <rect width="4" height="4" fill="rgba(59, 130, 246, 0.1)"/>
+                </pattern>
+              </defs>
+              
+              <CartesianGrid strokeDasharray="2 2" stroke="#e5e7eb" />
               <XAxis 
                 dataKey="date" 
-                stroke="#666"
+                stroke="#6b7280"
                 fontSize={10}
-                interval={Math.floor(chartData.length / 8)}
-                tick={{ fontSize: 10 }}
+                interval={Math.floor(chartData.length / 6)}
+                tick={{ fontSize: 9 }}
+                angle={-45}
+                textAnchor="end"
+                height={60}
               />
               <YAxis 
-                stroke="#666"
+                stroke="#6b7280"
                 fontSize={10}
-                domain={['dataMin - 5', 'dataMax + 5']}
-                tick={{ fontSize: 10 }}
+                domain={['dataMin - 10', 'dataMax + 10']}
+                tick={{ fontSize: 9 }}
+                tickFormatter={(value) => `${currencySymbol}${value.toFixed(0)}`}
               />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: '#fff', 
-                  border: '1px solid #ccc',
+                  backgroundColor: '#1f2937', 
+                  border: 'none',
                   borderRadius: '8px',
-                  fontSize: '11px'
+                  fontSize: '12px',
+                  color: '#fff'
                 }}
                 formatter={(value: any, name: string) => {
                   if (name === 'volume') return [value.toLocaleString(), 'Volume'];
-                  return [`${currencySymbol}${value}`, name];
+                  if (name === 'open') return [`${currencySymbol}${value.toFixed(2)}`, 'Open'];
+                  if (name === 'high') return [`${currencySymbol}${value.toFixed(2)}`, 'High'];
+                  if (name === 'low') return [`${currencySymbol}${value.toFixed(2)}`, 'Low'];
+                  if (name === 'close') return [`${currencySymbol}${value.toFixed(2)}`, 'Close'];
+                  return [`${currencySymbol}${value.toFixed(2)}`, name];
                 }}
+                labelFormatter={(label) => `Date: ${label}`}
               />
               
-              {/* Candlestick bars */}
+              {/* Candlestick wicks (high-low lines) */}
+              <Line 
+                type="monotone" 
+                dataKey="high" 
+                stroke="transparent"
+                strokeWidth={0}
+                dot={false}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="low" 
+                stroke="transparent"
+                strokeWidth={0}
+                dot={false}
+              />
+              
+              {/* Custom candlestick bodies */}
               {chartData.map((entry, index) => {
                 const isGreen = entry.close >= entry.open;
+                const bodyHeight = Math.abs(entry.close - entry.open);
+                const wickTop = entry.high;
+                const wickBottom = entry.low;
+                const bodyTop = Math.max(entry.open, entry.close);
+                const bodyBottom = Math.min(entry.open, entry.close);
+                
                 return (
-                  <Bar 
-                    key={`candle-${index}`}
-                    dataKey={() => Math.abs(entry.close - entry.open)}
-                    fill={isGreen ? '#22c55e' : '#ef4444'}
-                    barSize={2}
-                  />
+                  <g key={`candle-${index}`}>
+                    {/* Wick lines */}
+                    <line
+                      x1={50 + (index * (600 / chartData.length))}
+                      y1={300 - ((wickTop - minPrice) / (maxPrice - minPrice)) * 250}
+                      x2={50 + (index * (600 / chartData.length))}
+                      y2={300 - ((wickBottom - minPrice) / (maxPrice - minPrice)) * 250}
+                      stroke="#6b7280"
+                      strokeWidth="1"
+                    />
+                  </g>
                 );
               })}
               
-              {/* Price line */}
+              {/* Main price line */}
               <Line 
                 type="monotone" 
-                dataKey="price" 
+                dataKey="close" 
                 stroke="#2563eb" 
-                strokeWidth={2}
+                strokeWidth={1.5}
                 dot={false}
-                activeDot={{ r: 3, fill: '#2563eb' }}
+                activeDot={{ r: 3, fill: '#2563eb', stroke: '#fff', strokeWidth: 2 }}
               />
+              
+              {/* Pattern-specific annotations */}
+              {patternAnnotations && analysisData.patternType.includes('Cup and Handle') && (
+                <>
+                  {/* Cup depth line */}
+                  <ReferenceLine 
+                    y={patternAnnotations.cupDepth} 
+                    stroke="#8b5cf6" 
+                    strokeDasharray="3 3"
+                    label={{ 
+                      value: `Cup Depth: ${currencySymbol}${patternAnnotations.cupDepth.toFixed(2)}`, 
+                      position: 'insideTopLeft',
+                      style: { fill: '#8b5cf6', fontWeight: 'bold', fontSize: '11px' }
+                    }}
+                  />
+                  
+                  {/* Handle low */}
+                  <ReferenceLine 
+                    y={patternAnnotations.handleLow} 
+                    stroke="#f59e0b" 
+                    strokeDasharray="2 2"
+                    label={{ 
+                      value: `Handle Low: ${currencySymbol}${patternAnnotations.handleLow.toFixed(2)}`, 
+                      position: 'insideTopRight',
+                      style: { fill: '#f59e0b', fontWeight: 'bold', fontSize: '11px' }
+                    }}
+                  />
+                  
+                  {/* Target price */}
+                  <ReferenceLine 
+                    y={patternAnnotations.target} 
+                    stroke="#10b981" 
+                    strokeDasharray="5 3"
+                    strokeWidth={2}
+                    label={{ 
+                      value: `Target: ${currencySymbol}${patternAnnotations.target.toFixed(2)}`, 
+                      position: 'topRight',
+                      style: { fill: '#10b981', fontWeight: 'bold', fontSize: '12px', backgroundColor: '#fff', padding: '2px' }
+                    }}
+                  />
+                  
+                  {/* Cup outline overlay */}
+                  <Line 
+                    type="monotone" 
+                    dataKey="close"
+                    stroke="#8b5cf6"
+                    strokeWidth={2}
+                    strokeDasharray="4 4"
+                    dot={false}
+                    connectNulls={false}
+                    data={chartData.slice(patternAnnotations.cupStart, patternAnnotations.cupEnd)}
+                  />
+                </>
+              )}
               
               {/* Support and Resistance Lines */}
               <ReferenceLine 
                 y={resistance} 
                 stroke="#ef4444" 
                 strokeDasharray="3 3"
-                label={{ value: `Resistance: ${currencySymbol}${resistance.toFixed(2)}`, position: 'topLeft' }}
+                strokeWidth={1}
+                label={{ 
+                  value: `Resistance: ${currencySymbol}${resistance.toFixed(2)}`, 
+                  position: 'topLeft',
+                  style: { fill: '#ef4444', fontSize: '10px' }
+                }}
               />
               <ReferenceLine 
                 y={support} 
                 stroke="#22c55e" 
-                strokeDasharray="3 3"
-                label={{ value: `Support: ${currencySymbol}${support.toFixed(2)}`, position: 'bottomLeft' }}
+                strokeDasharray="3 3" 
+                strokeWidth={1}
+                label={{ 
+                  value: `Support: ${currencySymbol}${support.toFixed(2)}`, 
+                  position: 'bottomLeft',
+                  style: { fill: '#22c55e', fontSize: '10px' }
+                }}
               />
               
-              {/* Target Price */}
-              {targetPrice && (
-                <ReferenceLine 
-                  y={targetPrice} 
-                  stroke="#f59e0b" 
-                  strokeDasharray="5 5"
-                  label={{ value: `Target: ${currencySymbol}${targetPrice.toFixed(2)}`, position: 'topRight' }}
-                />
-              )}
-              
-              {/* Add zoom functionality */}
-              <Brush dataKey="date" height={30} stroke="#2563eb" />
+              {/* Zoom brush */}
+              <Brush dataKey="date" height={25} stroke="#2563eb" startIndex={Math.max(0, chartData.length - 30)} />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
