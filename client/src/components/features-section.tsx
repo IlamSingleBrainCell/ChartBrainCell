@@ -4,8 +4,8 @@ export function FeaturesSection() {
   const features = [
     {
       icon: Brain,
-      title: "AI Pattern Recognition",
-      description: "Advanced machine learning algorithms analyze chart patterns with high accuracy and confidence scoring.",
+      title: "Pattern Recognition",
+      description: "Advanced algorithms analyze chart patterns with high accuracy and confidence scoring.",
       color: "bg-blue-600",
     },
     {
@@ -23,13 +23,13 @@ export function FeaturesSection() {
     {
       icon: Globe,
       title: "Global Markets",
-      description: "Support for 96+ stocks from both US and Indian markets with real-time data integration.",
+      description: "Support for 65+ stocks from NSE, NYSE, and BSE markets with real-time data integration.",
       color: "bg-orange-500",
     },
     {
       icon: Upload,
       title: "Chart Upload",
-      description: "Upload your own chart images for custom analysis with our advanced pattern recognition engine.",
+      description: "Upload your own chart images for custom analysis with our advanced pattern recognition system.",
       color: "bg-red-500",
     },
     {
@@ -46,7 +46,7 @@ export function FeaturesSection() {
         <div className="text-center mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-brand-dark mb-4">Enhanced Analysis Features</h2>
           <p className="text-xl text-brand-gray max-w-3xl mx-auto">
-            Advanced AI-powered pattern recognition with comprehensive market data analysis
+            Advanced pattern recognition with comprehensive market data analysis
           </p>
         </div>
         

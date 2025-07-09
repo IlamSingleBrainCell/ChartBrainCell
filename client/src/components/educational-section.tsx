@@ -7,10 +7,10 @@ export function EducationalSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <h2 className="text-3xl lg:text-4xl font-bold text-brand-dark mb-6">
-              Enhanced by Advanced AI Pattern Recognition
+              Enhanced by Advanced Pattern Recognition
             </h2>
             <p className="text-xl text-brand-gray mb-8 leading-relaxed">
-              Our cutting-edge AI technology analyzes complex market patterns, providing you with 
+              Our cutting-edge technology analyzes complex market patterns, providing you with 
               institutional-grade insights for smarter trading decisions.
             </p>
             
@@ -41,7 +41,7 @@ export function EducationalSection() {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-brand-dark mb-2">Breakout Timing Predictions</h3>
-                  <p className="text-brand-gray">Advanced algorithms predict potential breakout timing with high accuracy.</p>
+                  <p className="text-brand-gray">Mathematical algorithms predict potential breakout timing with high accuracy.</p>
                 </div>
               </div>
             </div>
@@ -57,7 +57,7 @@ export function EducationalSection() {
             <div className="absolute -bottom-4 -left-4 bg-white rounded-lg shadow-xl p-3">
               <div className="flex items-center space-x-2">
                 <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
-                <span className="text-sm font-medium text-brand-dark">AI Certified</span>
+                <span className="text-sm font-medium text-brand-dark">Pattern Certified</span>
               </div>
             </div>
             

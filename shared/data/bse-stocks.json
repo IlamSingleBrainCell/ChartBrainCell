@@ -1,0 +1,182 @@
+[
+  {
+    "symbol": "RELIANCE",
+    "name": "Reliance Industries Limited",
+    "sector": "Oil & Gas",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 2756.85,
+    "marketCap": "18,64,789 Cr"
+  },
+  {
+    "symbol": "TCS",
+    "name": "Tata Consultancy Services Limited",
+    "sector": "Information Technology",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 4127.30,
+    "marketCap": "15,04,321 Cr"
+  },
+  {
+    "symbol": "HDFCBANK",
+    "name": "HDFC Bank Limited",
+    "sector": "Banking",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 1734.95,
+    "marketCap": "13,21,456 Cr"
+  },
+  {
+    "symbol": "TATAMOTORS",
+    "name": "Tata Motors Limited",
+    "sector": "Automobile",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 789.45,
+    "marketCap": "2,89,567 Cr"
+  },
+  {
+    "symbol": "TATASTEEL",
+    "name": "Tata Steel Limited",
+    "sector": "Steel",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 145.75,
+    "marketCap": "1,78,234 Cr"
+  },
+  {
+    "symbol": "BAJAJFINSV",
+    "name": "Bajaj Finserv Limited",
+    "sector": "Financial Services",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 1689.30,
+    "marketCap": "2,69,876 Cr"
+  },
+  {
+    "symbol": "HDFCLIFE",
+    "name": "HDFC Life Insurance Company Limited",
+    "sector": "Insurance",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 623.85,
+    "marketCap": "1,33,456 Cr"
+  },
+  {
+    "symbol": "SUNPHARMA",
+    "name": "Sun Pharmaceutical Industries Limited",
+    "sector": "Pharmaceuticals",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 1789.65,
+    "marketCap": "4,29,123 Cr"
+  },
+  {
+    "symbol": "ADANIPORTS",
+    "name": "Adani Ports and Special Economic Zone Limited",
+    "sector": "Infrastructure",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 1234.50,
+    "marketCap": "2,67,890 Cr"
+  },
+  {
+    "symbol": "ONGC",
+    "name": "Oil and Natural Gas Corporation Limited",
+    "sector": "Oil & Gas",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 256.80,
+    "marketCap": "3,23,456 Cr"
+  },
+  {
+    "symbol": "NTPC",
+    "name": "NTPC Limited",
+    "sector": "Power",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 345.95,
+    "marketCap": "3,35,678 Cr"
+  },
+  {
+    "symbol": "POWERGRID",
+    "name": "Power Grid Corporation of India Limited",
+    "sector": "Power",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 324.75,
+    "marketCap": "2,99,234 Cr"
+  },
+  {
+    "symbol": "COALINDIA",
+    "name": "Coal India Limited",
+    "sector": "Mining",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 423.60,
+    "marketCap": "2,61,789 Cr"
+  },
+  {
+    "symbol": "DRREDDY",
+    "name": "Dr. Reddy's Laboratories Limited",
+    "sector": "Pharmaceuticals",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 1298.45,
+    "marketCap": "2,16,543 Cr"
+  },
+  {
+    "symbol": "GRASIM",
+    "name": "Grasim Industries Limited",
+    "sector": "Cement",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 2567.80,
+    "marketCap": "1,71,234 Cr"
+  },
+  {
+    "symbol": "JSWSTEEL",
+    "name": "JSW Steel Limited",
+    "sector": "Steel",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 978.25,
+    "marketCap": "2,39,876 Cr"
+  },
+  {
+    "symbol": "BPCL",
+    "name": "Bharat Petroleum Corporation Limited",
+    "sector": "Oil & Gas",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 289.15,
+    "marketCap": "1,25,678 Cr"
+  },
+  {
+    "symbol": "DIVISLAB",
+    "name": "Divi's Laboratories Limited",
+    "sector": "Pharmaceuticals",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 6234.75,
+    "marketCap": "1,66,789 Cr"
+  },
+  {
+    "symbol": "BRITANNIA",
+    "name": "Britannia Industries Limited",
+    "sector": "FMCG",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 4987.60,
+    "marketCap": "1,20,345 Cr"
+  },
+  {
+    "symbol": "SHRIRAMFIN",
+    "name": "Shriram Finance Limited",
+    "sector": "Financial Services",
+    "market": "Indian",
+    "exchange": "BSE",
+    "currentPrice": 3156.85,
+    "marketCap": "1,19,876 Cr"
+  }
+]

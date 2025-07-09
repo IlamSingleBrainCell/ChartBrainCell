@@ -1,0 +1,227 @@
+[
+  {
+    "symbol": "AAPL",
+    "name": "Apple Inc.",
+    "sector": "Technology",
+    "market": "US",
+    "exchange": "NASDAQ",
+    "currentPrice": 192.53,
+    "marketCap": "$2.96T"
+  },
+  {
+    "symbol": "MSFT",
+    "name": "Microsoft Corporation",
+    "sector": "Technology",
+    "market": "US",
+    "exchange": "NASDAQ",
+    "currentPrice": 428.67,
+    "marketCap": "$3.18T"
+  },
+  {
+    "symbol": "GOOGL",
+    "name": "Alphabet Inc.",
+    "sector": "Technology",
+    "market": "US",
+    "exchange": "NASDAQ",
+    "currentPrice": 175.89,
+    "marketCap": "$2.17T"
+  },
+  {
+    "symbol": "AMZN",
+    "name": "Amazon.com Inc.",
+    "sector": "E-commerce",
+    "market": "US",
+    "exchange": "NASDAQ",
+    "currentPrice": 185.92,
+    "marketCap": "$1.94T"
+  },
+  {
+    "symbol": "NVDA",
+    "name": "NVIDIA Corporation",
+    "sector": "Semiconductors",
+    "market": "US",
+    "exchange": "NASDAQ",
+    "currentPrice": 147.63,
+    "marketCap": "$3.62T"
+  },
+  {
+    "symbol": "TSLA",
+    "name": "Tesla Inc.",
+    "sector": "Automobile",
+    "market": "US",
+    "exchange": "NASDAQ",
+    "currentPrice": 436.58,
+    "marketCap": "$1.39T"
+  },
+  {
+    "symbol": "META",
+    "name": "Meta Platforms Inc.",
+    "sector": "Social Media",
+    "market": "US",
+    "exchange": "NASDAQ",
+    "currentPrice": 598.44,
+    "marketCap": "$1.52T"
+  },
+  {
+    "symbol": "BRK.B",
+    "name": "Berkshire Hathaway Inc.",
+    "sector": "Conglomerate",
+    "market": "US",
+    "exchange": "NYSE",
+    "currentPrice": 464.89,
+    "marketCap": "$1.01T"
+  },
+  {
+    "symbol": "AVGO",
+    "name": "Broadcom Inc.",
+    "sector": "Semiconductors",
+    "market": "US",
+    "exchange": "NASDAQ",
+    "currentPrice": 234.78,
+    "marketCap": "$1.09T"
+  },
+  {
+    "symbol": "ORCL",
+    "name": "Oracle Corporation",
+    "sector": "Software",
+    "market": "US",
+    "exchange": "NYSE",
+    "currentPrice": 187.45,
+    "marketCap": "$523B"
+  },
+  {
+    "symbol": "WMT",
+    "name": "Walmart Inc.",
+    "sector": "Retail",
+    "market": "US",
+    "exchange": "NYSE",
+    "currentPrice": 96.78,
+    "marketCap": "$664B"
+  },
+  {
+    "symbol": "JPM",
+    "name": "JPMorgan Chase & Co.",
+    "sector": "Banking",
+    "market": "US",
+    "exchange": "NYSE",
+    "currentPrice": 247.31,
+    "marketCap": "$711B"
+  },
+  {
+    "symbol": "V",
+    "name": "Visa Inc.",
+    "sector": "Financial Services",
+    "market": "US",
+    "exchange": "NYSE",
+    "currentPrice": 322.45,
+    "marketCap": "$654B"
+  },
+  {
+    "symbol": "MA",
+    "name": "Mastercard Incorporated",
+    "sector": "Financial Services",
+    "market": "US",
+    "exchange": "NYSE",
+    "currentPrice": 543.67,
+    "marketCap": "$507B"
+  },
+  {
+    "symbol": "UNH",
+    "name": "UnitedHealth Group Incorporated",
+    "sector": "Healthcare",
+    "market": "US",
+    "exchange": "NYSE",
+    "currentPrice": 574.23,
+    "marketCap": "$530B"
+  },
+  {
+    "symbol": "XOM",
+    "name": "Exxon Mobil Corporation",
+    "sector": "Energy",
+    "market": "US",
+    "exchange": "NYSE",
+    "currentPrice": 118.95,
+    "marketCap": "$506B"
+  },
+  {
+    "symbol": "JNJ",
+    "name": "Johnson & Johnson",
+    "sector": "Healthcare",
+    "market": "US",
+    "exchange": "NYSE",
+    "currentPrice": 148.76,
+    "marketCap": "$348B"
+  },
+  {
+    "symbol": "PG",
+    "name": "Procter & Gamble Company",
+    "sector": "Consumer Goods",
+    "market": "US",
+    "exchange": "NYSE",
+    "currentPrice": 156.34,
+    "marketCap": "$371B"
+  },
+  {
+    "symbol": "HD",
+    "name": "The Home Depot Inc.",
+    "sector": "Retail",
+    "market": "US",
+    "exchange": "NYSE",
+    "currentPrice": 418.92,
+    "marketCap": "$426B"
+  },
+  {
+    "symbol": "CRM",
+    "name": "Salesforce Inc.",
+    "sector": "Software",
+    "market": "US",
+    "exchange": "NYSE",
+    "currentPrice": 338.74,
+    "marketCap": "$339B"
+  },
+  {
+    "symbol": "CVX",
+    "name": "Chevron Corporation",
+    "sector": "Energy",
+    "market": "US",
+    "exchange": "NYSE",
+    "currentPrice": 158.67,
+    "marketCap": "$287B"
+  },
+  {
+    "symbol": "COST",
+    "name": "Costco Wholesale Corporation",
+    "sector": "Retail",
+    "market": "US",
+    "exchange": "NASDAQ",
+    "currentPrice": 967.45,
+    "marketCap": "$429B"
+  },
+  {
+    "symbol": "NFLX",
+    "name": "Netflix Inc.",
+    "sector": "Entertainment",
+    "market": "US",
+    "exchange": "NASDAQ",
+    "currentPrice": 908.37,
+    "marketCap": "$392B"
+  },
+  {
+    "symbol": "AMD",
+    "name": "Advanced Micro Devices Inc.",
+    "sector": "Semiconductors",
+    "market": "US",
+    "exchange": "NASDAQ",
+    "currentPrice": 119.84,
+    "marketCap": "$194B"
+  },
+  {
+    "symbol": "TMO",
+    "name": "Thermo Fisher Scientific Inc.",
+    "sector": "Healthcare",
+    "market": "US",
+    "exchange": "NYSE",
+    "currentPrice": 534.78,
+    "marketCap": "$208B"
+  }
+]

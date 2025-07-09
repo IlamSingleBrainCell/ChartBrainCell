@@ -1,17 +1,17 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search, Upload, CloudUpload } from "lucide-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { Upload, CloudUpload } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { StockSearch } from "./stock-search";
 
 interface DemoSectionProps {
   onStockAnalyzed: (analysis: any) => void;
 }
 
 export function DemoSection({ onStockAnalyzed }: DemoSectionProps) {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedStock, setSelectedStock] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -78,20 +78,8 @@ export function DemoSection({ onStockAnalyzed }: DemoSectionProps) {
     },
   });
 
-  const handleSearch = () => {
-    if (!searchQuery.trim()) {
-      toast({
-        title: "Search Required",
-        description: "Please enter a stock symbol to search.",
-        variant: "destructive",
-      });
-      return;
-    }
-    searchStockMutation.mutate(searchQuery.trim().toUpperCase());
-  };
-
   const handleStockSelect = (symbol: string) => {
-    setSearchQuery(symbol);
+    setSelectedStock(symbol);
     searchStockMutation.mutate(symbol);
   };
 
@@ -132,7 +120,7 @@ export function DemoSection({ onStockAnalyzed }: DemoSectionProps) {
         <div className="text-center mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-brand-dark mb-4">Try Our Analysis Tools</h2>
           <p className="text-xl text-brand-gray">
-            Search for stocks or upload your own charts for instant AI-powered analysis
+            Search for stocks or upload your own charts for instant pattern analysis
           </p>
         </div>
         
@@ -140,32 +128,23 @@ export function DemoSection({ onStockAnalyzed }: DemoSectionProps) {
           {/* Stock Search Section */}
           <div className="bg-white rounded-xl shadow-lg p-8">
             <div className="flex items-center mb-6">
-              <Search className="text-blue-600 mr-3" size={24} />
+              <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
               <h3 className="text-2xl font-semibold text-brand-dark">Get Live Stock Chart</h3>
             </div>
             
-            <p className="text-brand-gray mb-6">Search from 96+ stocks including US and Indian markets</p>
+            <p className="text-brand-gray mb-6">Search from 65+ stocks from NSE, NYSE, and BSE markets</p>
             
             <div className="space-y-4">
-              <div className="relative">
-                <Input
-                  type="text"
-                  placeholder="Search stocks (e.g., AAPL, TCS, Reliance, HDFC)"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  className="w-full px-4 py-3 text-lg"
-                />
-                <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-brand-gray" size={20} />
-              </div>
+              <StockSearch 
+                onStockSelect={handleStockSelect}
+                placeholder="Search stocks (e.g., AAPL, TCS, Reliance, HDFC)"
+              />
               
-              <Button 
-                onClick={handleSearch}
-                disabled={searchStockMutation.isPending}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold"
-              >
-                {searchStockMutation.isPending ? "Analyzing..." : "Get Chart Analysis"}
-              </Button>
+              {selectedStock && (
+                <div className="text-sm text-gray-600">
+                  Selected: <strong>{selectedStock}</strong>
+                </div>
+              )}
             </div>
             
             <div className="mt-8">

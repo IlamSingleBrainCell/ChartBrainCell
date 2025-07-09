@@ -35,34 +35,60 @@ export class MemStorage implements IStorage {
     this.currentAnalysisId = 1;
     this.currentUploadId = 1;
     
-    // Initialize with popular stocks
-    this.initializeStocks();
+    // Initialize with stocks from JSON files
+    this.loadStockData();
   }
 
-  private initializeStocks() {
-    const popularStocks = [
-      // US Stocks
-      { symbol: "AAPL", name: "Apple Inc.", market: "US", currentPrice: 185.42, changePercent: 2.4 },
-      { symbol: "GOOGL", name: "Alphabet Inc.", market: "US", currentPrice: 142.56, changePercent: -1.2 },
-      { symbol: "MSFT", name: "Microsoft Corporation", market: "US", currentPrice: 378.85, changePercent: 1.8 },
-      { symbol: "TSLA", name: "Tesla Inc.", market: "US", currentPrice: 248.73, changePercent: 5.7 },
-      { symbol: "NVDA", name: "NVIDIA Corporation", market: "US", currentPrice: 875.34, changePercent: 3.8 },
-      { symbol: "AMZN", name: "Amazon.com Inc.", market: "US", currentPrice: 152.74, changePercent: 0.9 },
-      { symbol: "META", name: "Meta Platforms Inc.", market: "US", currentPrice: 485.23, changePercent: -0.5 },
-      { symbol: "NFLX", name: "Netflix Inc.", market: "US", currentPrice: 578.12, changePercent: 2.1 },
+  private async loadStockData() {
+    try {
+      // Import JSON files dynamically
+      const fs = await import('fs');
+      const path = await import('path');
       
-      // Indian Stocks
-      { symbol: "TCS", name: "Tata Consultancy Services", market: "Indian", currentPrice: 3842.0, changePercent: 1.8 },
-      { symbol: "RELIANCE", name: "Reliance Industries", market: "Indian", currentPrice: 2756.0, changePercent: 2.3 },
-      { symbol: "HDFCBANK", name: "HDFC Bank", market: "Indian", currentPrice: 1678.5, changePercent: 0.7 },
-      { symbol: "INFY", name: "Infosys Limited", market: "Indian", currentPrice: 1845.2, changePercent: 1.2 },
-      { symbol: "WIPRO", name: "Wipro Limited", market: "Indian", currentPrice: 567.8, changePercent: -0.3 },
-      { symbol: "ITC", name: "ITC Limited", market: "Indian", currentPrice: 412.3, changePercent: 1.5 },
-      { symbol: "SBIN", name: "State Bank of India", market: "Indian", currentPrice: 789.6, changePercent: 0.8 },
-      { symbol: "LT", name: "Larsen & Toubro", market: "Indian", currentPrice: 3456.7, changePercent: 2.1 },
+      const dataDir = path.join(process.cwd(), 'shared', 'data');
+      
+      // Read NSE stocks
+      const nseData = JSON.parse(fs.readFileSync(path.join(dataDir, 'nse-stocks.json'), 'utf8'));
+      // Read NYSE stocks  
+      const nyseData = JSON.parse(fs.readFileSync(path.join(dataDir, 'nyse-stocks.json'), 'utf8'));
+      // Read BSE stocks
+      const bseData = JSON.parse(fs.readFileSync(path.join(dataDir, 'bse-stocks.json'), 'utf8'));
+      
+      // Combine all stock data
+      const allStocks = [...nseData, ...nyseData, ...bseData];
+      
+      // Process and store stocks
+      allStocks.forEach((stock: any) => {
+        if (!this.stocks.has(stock.symbol)) { // Avoid duplicates
+          const stockWithId = {
+            id: this.currentStockId++,
+            symbol: stock.symbol,
+            name: stock.name,
+            market: stock.market,
+            currentPrice: stock.currentPrice,
+            changePercent: Math.round((Math.random() * 6 - 3) * 100) / 100, // Random daily change
+            lastUpdated: new Date(),
+          };
+          this.stocks.set(stock.symbol, stockWithId);
+        }
+      });
+      
+      console.log(`Loaded ${this.stocks.size} stocks from JSON files`);
+    } catch (error) {
+      console.error('Error loading stock data from JSON:', error);
+      // Fallback to minimal data
+      this.initializeFallbackStocks();
+    }
+  }
+  
+  private initializeFallbackStocks() {
+    const fallbackStocks = [
+      { symbol: "AAPL", name: "Apple Inc.", market: "US", currentPrice: 192.53, changePercent: 2.4 },
+      { symbol: "RELIANCE", name: "Reliance Industries", market: "Indian", currentPrice: 2756.85, changePercent: 2.3 },
+      { symbol: "TCS", name: "Tata Consultancy Services", market: "Indian", currentPrice: 4127.30, changePercent: 1.8 },
     ];
-
-    popularStocks.forEach(stock => {
+    
+    fallbackStocks.forEach(stock => {
       const stockWithId = {
         id: this.currentStockId++,
         ...stock,

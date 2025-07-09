@@ -18,12 +18,12 @@ export function HeroSection({ onStartAnalysis, onViewDemo }: HeroSectionProps) {
             </div>
             
             <h1 className="text-4xl lg:text-5xl font-bold leading-tight mb-6">
-              AI-Powered Stock Pattern Recognition
+              Advanced Stock Pattern Recognition
             </h1>
             
             <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-              Analyze live stock charts with enhanced 3-month data analysis and breakout timing prediction. 
-              Supporting 96+ stocks from US and Indian markets.
+              Analyze live stock charts with enhanced pattern recognition and breakout timing prediction. 
+              Supporting 65+ stocks from NSE, NYSE, and BSE markets.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
@@ -38,7 +38,7 @@ export function HeroSection({ onStartAnalysis, onViewDemo }: HeroSectionProps) {
               <Button 
                 onClick={onViewDemo}
                 variant="outline"
-                className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/10 transition-colors"
+                className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/10 transition-colors bg-transparent"
                 size="lg"
               >
                 <PlayCircle className="mr-2" size={20} />
@@ -49,7 +49,7 @@ export function HeroSection({ onStartAnalysis, onViewDemo }: HeroSectionProps) {
             <div className="flex items-center space-x-6 text-sm text-blue-100">
               <div className="flex items-center">
                 <CheckCircle className="text-green-400 mr-2" size={16} />
-                <span>96+ Stock Database</span>
+                <span>65+ Stock Database</span>
               </div>
               <div className="flex items-center">
                 <CheckCircle className="text-green-400 mr-2" size={16} />
@@ -75,7 +75,7 @@ export function HeroSection({ onStartAnalysis, onViewDemo }: HeroSectionProps) {
             </div>
             
             <div className="absolute -top-6 -right-6 bg-white rounded-lg shadow-xl p-4 text-brand-dark">
-              <div className="text-2xl font-bold text-blue-600">96+</div>
+              <div className="text-2xl font-bold text-blue-600">65+</div>
               <div className="text-sm text-brand-gray">Supported Stocks</div>
             </div>
           </div>

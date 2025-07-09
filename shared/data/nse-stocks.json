@@ -1,0 +1,182 @@
+[
+  {
+    "symbol": "RELIANCE",
+    "name": "Reliance Industries Limited",
+    "sector": "Oil & Gas",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 2756.85,
+    "marketCap": "18,64,789 Cr"
+  },
+  {
+    "symbol": "TCS",
+    "name": "Tata Consultancy Services Limited",
+    "sector": "Information Technology",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 4127.30,
+    "marketCap": "15,04,321 Cr"
+  },
+  {
+    "symbol": "HDFCBANK",
+    "name": "HDFC Bank Limited",
+    "sector": "Banking",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 1734.95,
+    "marketCap": "13,21,456 Cr"
+  },
+  {
+    "symbol": "INFY",
+    "name": "Infosys Limited",
+    "sector": "Information Technology",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 1889.75,
+    "marketCap": "7,89,234 Cr"
+  },
+  {
+    "symbol": "ICICIBANK",
+    "name": "ICICI Bank Limited",
+    "sector": "Banking",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 1289.40,
+    "marketCap": "9,12,567 Cr"
+  },
+  {
+    "symbol": "HINDUNILVR",
+    "name": "Hindustan Unilever Limited",
+    "sector": "FMCG",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 2398.15,
+    "marketCap": "5,64,890 Cr"
+  },
+  {
+    "symbol": "ITC",
+    "name": "ITC Limited",
+    "sector": "FMCG",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 456.20,
+    "marketCap": "5,67,123 Cr"
+  },
+  {
+    "symbol": "SBIN",
+    "name": "State Bank of India",
+    "sector": "Banking",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 821.75,
+    "marketCap": "7,32,456 Cr"
+  },
+  {
+    "symbol": "BHARTIARTL",
+    "name": "Bharti Airtel Limited",
+    "sector": "Telecommunications",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 1567.30,
+    "marketCap": "8,94,567 Cr"
+  },
+  {
+    "symbol": "KOTAKBANK",
+    "name": "Kotak Mahindra Bank Limited",
+    "sector": "Banking",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 1789.45,
+    "marketCap": "3,56,789 Cr"
+  },
+  {
+    "symbol": "LT",
+    "name": "Larsen & Toubro Limited",
+    "sector": "Infrastructure",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 3654.80,
+    "marketCap": "5,12,345 Cr"
+  },
+  {
+    "symbol": "ASIANPAINT",
+    "name": "Asian Paints Limited",
+    "sector": "Paints",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 2987.25,
+    "marketCap": "2,87,654 Cr"
+  },
+  {
+    "symbol": "MARUTI",
+    "name": "Maruti Suzuki India Limited",
+    "sector": "Automobile",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 11234.50,
+    "marketCap": "3,39,876 Cr"
+  },
+  {
+    "symbol": "HCLTECH",
+    "name": "HCL Technologies Limited",
+    "sector": "Information Technology",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 1876.90,
+    "marketCap": "5,09,123 Cr"
+  },
+  {
+    "symbol": "WIPRO",
+    "name": "Wipro Limited",
+    "sector": "Information Technology",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 567.85,
+    "marketCap": "3,12,456 Cr"
+  },
+  {
+    "symbol": "AXISBANK",
+    "name": "Axis Bank Limited",
+    "sector": "Banking",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 1123.75,
+    "marketCap": "3,45,678 Cr"
+  },
+  {
+    "symbol": "BAJFINANCE",
+    "name": "Bajaj Finance Limited",
+    "sector": "Financial Services",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 6789.30,
+    "marketCap": "4,21,987 Cr"
+  },
+  {
+    "symbol": "NESTLEIND",
+    "name": "Nestle India Limited",
+    "sector": "FMCG",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 2234.65,
+    "marketCap": "2,15,432 Cr"
+  },
+  {
+    "symbol": "TITAN",
+    "name": "Titan Company Limited",
+    "sector": "Consumer Goods",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 3456.20,
+    "marketCap": "3,06,789 Cr"
+  },
+  {
+    "symbol": "TECHM",
+    "name": "Tech Mahindra Limited",
+    "sector": "Information Technology",
+    "market": "Indian",
+    "exchange": "NSE",
+    "currentPrice": 1654.85,
+    "marketCap": "1,60,987 Cr"
+  }
+]
