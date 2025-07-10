@@ -297,6 +297,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // FMP Financial Modeling Prep API Integration
+  app.get("/api/fmp/financial-metrics/:symbol", async (req, res) => {
+    try {
+      const symbol = req.params.symbol.toUpperCase();
+      const fmpApiKey = "6Mdo6RRKRk0tofiGn2J4qVTBtCXu3zVC";
+      
+      // Clean symbol for FMP API (remove exchange suffixes)
+      let cleanSymbol = symbol.replace(/\.(NS|BO)$/, '');
+      
+      const [
+        ratiosResponse,
+        keyMetricsResponse,
+        dcfResponse,
+        growthResponse
+      ] = await Promise.all([
+        fetch(`https://financialmodelingprep.com/api/v3/ratios/${cleanSymbol}?limit=1&apikey=${fmpApiKey}`),
+        fetch(`https://financialmodelingprep.com/api/v3/key-metrics/${cleanSymbol}?limit=1&apikey=${fmpApiKey}`),
+        fetch(`https://financialmodelingprep.com/api/v3/discounted-cash-flow/${cleanSymbol}?apikey=${fmpApiKey}`),
+        fetch(`https://financialmodelingprep.com/api/v3/income-statement-growth/${cleanSymbol}?limit=10&apikey=${fmpApiKey}`)
+      ]);
+
+      const ratios = await ratiosResponse.json();
+      const keyMetrics = await keyMetricsResponse.json();
+      const dcf = await dcfResponse.json();
+      const growth = await growthResponse.json();
+
+      // Calculate 10-year growth if available
+      let tenYearGrowth = null;
+      if (growth && growth.length >= 10) {
+        const currentRevenue = growth[0]?.revenueGrowth || 0;
+        const tenYearAgoRevenue = growth[9]?.revenueGrowth || 0;
+        if (currentRevenue && tenYearAgoRevenue) {
+          tenYearGrowth = ((currentRevenue - tenYearAgoRevenue) / Math.abs(tenYearAgoRevenue)) * 100;
+        }
+      }
+
+      const financialMetrics = {
+        symbol: symbol,
+        bookValue: keyMetrics[0]?.bookValuePerShare || null,
+        pbRatio: ratios[0]?.priceToBookRatio || keyMetrics[0]?.pbRatio || null,
+        fairValue: dcf[0]?.dcf || null,
+        tenYearGrowth: tenYearGrowth,
+        marketCap: keyMetrics[0]?.marketCap || null,
+        peRatio: ratios[0]?.priceEarningsRatio || null,
+        roe: ratios[0]?.returnOnEquity || null,
+        currentRatio: ratios[0]?.currentRatio || null,
+        timestamp: new Date().toISOString()
+      };
+
+      res.json(financialMetrics);
+
+    } catch (error) {
+      console.error(`Error fetching FMP data for ${req.params.symbol}:`, error);
+      res.status(500).json({ 
+        error: 'Failed to fetch financial metrics',
+        symbol: req.params.symbol 
+      });
+    }
+  });
+
   // TickerTick News API Integration
   app.get("/api/news/:symbol", async (req, res) => {
     try {

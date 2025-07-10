@@ -24,6 +24,14 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
     queryFn: () => apiRequest('GET', `/api/yahoo/quote/${analysis.stockSymbol}`),
     enabled: !!analysis?.stockSymbol && analysis.stockSymbol !== "CUSTOM_CHART",
   });
+
+  // Fetch FMP Financial Metrics
+  const { data: fmpMetrics, isLoading: fmpLoading } = useQuery({
+    queryKey: [`/api/fmp/financial-metrics/${analysis?.stockSymbol}`],
+    queryFn: () => apiRequest('GET', `/api/fmp/financial-metrics/${analysis.stockSymbol}`),
+    enabled: !!analysis?.stockSymbol && analysis.stockSymbol !== "CUSTOM_CHART",
+    staleTime: 30 * 60 * 1000, // 30 minutes
+  });
   
   if (!analysis) return null;
 
@@ -106,6 +114,72 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
             </Card>
           </div>
           
+          {/* FMP Financial Metrics */}
+          {!isCustomChart && fmpMetrics && (
+            <div className="mb-8">
+              <Card className="border-l-4 border-l-orange-500 bg-gradient-to-br from-orange-50 to-amber-50 shadow-xl">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-6">
+                    <div className="w-3 h-3 bg-orange-500 rounded-full mr-3"></div>
+                    <h4 className="text-xl font-bold text-orange-900">Financial Metrics</h4>
+                    <Badge variant="outline" className="ml-auto text-xs text-orange-600 border-orange-300">
+                      FMP API
+                    </Badge>
+                  </div>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="bg-white/70 rounded-lg p-4 text-center">
+                      <div className="text-sm font-medium text-orange-700 mb-1">Book Value</div>
+                      <div className="text-xl font-bold text-orange-900">
+                        {fmpMetrics.bookValue ? `$${fmpMetrics.bookValue.toFixed(2)}` : 'N/A'}
+                      </div>
+                    </div>
+                    <div className="bg-white/70 rounded-lg p-4 text-center">
+                      <div className="text-sm font-medium text-orange-700 mb-1">P/B Ratio</div>
+                      <div className="text-xl font-bold text-orange-900">
+                        {fmpMetrics.pbRatio ? `${fmpMetrics.pbRatio.toFixed(2)}x` : 'N/A'}
+                      </div>
+                    </div>
+                    <div className="bg-white/70 rounded-lg p-4 text-center">
+                      <div className="text-sm font-medium text-orange-700 mb-1">10Y Growth</div>
+                      <div className={`text-xl font-bold ${fmpMetrics.tenYearGrowth && fmpMetrics.tenYearGrowth > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {fmpMetrics.tenYearGrowth ? `${fmpMetrics.tenYearGrowth.toFixed(1)}%` : 'N/A'}
+                      </div>
+                    </div>
+                    <div className="bg-white/70 rounded-lg p-4 text-center">
+                      <div className="text-sm font-medium text-orange-700 mb-1">Fair Value</div>
+                      <div className="text-xl font-bold text-orange-900">
+                        {fmpMetrics.fairValue ? `$${fmpMetrics.fairValue.toFixed(2)}` : 'N/A'}
+                      </div>
+                    </div>
+                  </div>
+                  {fmpMetrics.marketCap && (
+                    <div className="mt-4 pt-4 border-t border-orange-200">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-orange-700">Market Cap:</span>
+                        <span className="font-bold text-orange-900">
+                          ${(fmpMetrics.marketCap / 1e9).toFixed(1)}B
+                        </span>
+                        <span className="text-orange-700">P/E Ratio:</span>
+                        <span className="font-bold text-orange-900">
+                          {fmpMetrics.peRatio ? `${fmpMetrics.peRatio.toFixed(1)}x` : 'N/A'}
+                        </span>
+                        <span className="text-orange-700">ROE:</span>
+                        <span className={`font-bold ${fmpMetrics.roe && fmpMetrics.roe > 0.15 ? 'text-green-600' : 'text-orange-900'}`}>
+                          {fmpMetrics.roe ? `${(fmpMetrics.roe * 100).toFixed(1)}%` : 'N/A'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  {fmpLoading && (
+                    <div className="text-center py-4">
+                      <div className="text-sm text-orange-600">Loading financial metrics...</div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
           {/* Horizontal Analysis Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
               {/* Pattern Recognition */}
