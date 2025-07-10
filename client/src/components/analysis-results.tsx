@@ -50,6 +50,21 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                       {isCustomChart ? "Custom Chart Analysis" : analysis.stockSymbol}
                     </h3>
                     <p className="text-gray-600 font-medium">Real-time 3-Month Professional Analysis</p>
+                    {yahooQuote && (
+                      <div className="flex items-center gap-4 mt-2 text-sm">
+                        <span className="text-blue-600 font-medium">
+                          {yahooQuote.fullExchangeName || yahooQuote.exchange}
+                        </span>
+                        <span className="text-gray-500">•</span>
+                        <span className="text-gray-600">
+                          Market: {yahooQuote.marketState}
+                        </span>
+                        <span className="text-gray-500">•</span>
+                        <span className="text-gray-600">
+                          Currency: {yahooQuote.currency}
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <div className="flex gap-3">
                     <Badge 

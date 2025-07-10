@@ -8,6 +8,7 @@ import { StocksShowcase } from "@/components/stocks-showcase";
 import { EducationalSection } from "@/components/educational-section";
 import { DisclaimerSection } from "@/components/disclaimer-section";
 import { Footer } from "@/components/footer";
+import { MarketSummary } from "@/components/market-summary";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
@@ -63,7 +64,25 @@ export default function Home() {
         onViewDemo={handleViewDemo}
       />
       <FeaturesSection />
-      <DemoSection onStockAnalyzed={handleStockAnalyzed} />
+      
+      {/* Market Summary Section */}
+      <section className="py-16 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Real-Time Market Data
+            </h2>
+            <p className="text-lg text-gray-600">
+              Live prices from NASDAQ, NYSE, and NSE exchanges powered by Yahoo Finance
+            </p>
+          </div>
+          <MarketSummary />
+        </div>
+      </section>
+
+      <div id="demo">
+        <DemoSection onStockAnalyzed={handleStockAnalyzed} />
+      </div>
       
       {currentAnalysis && (
         <div id="analysis-results">

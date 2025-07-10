@@ -341,6 +341,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch quote from Yahoo Finance" });
     }
   });
+
+  // Get market summary for major exchanges
+  app.get("/api/yahoo/market-summary", async (req, res) => {
+    try {
+      const majorIndexes = [
+        '^GSPC',    // S&P 500 (US)
+        '^DJI',     // Dow Jones (US)
+        '^IXIC',    // NASDAQ Composite (US)
+        '^NSEI',    // NIFTY 50 (NSE India)
+        '^BSESN'    // SENSEX (BSE India)
+      ];
+      
+      const marketData = [];
+      
+      for (const index of majorIndexes) {
+        try {
+          const quote = await storage.getYahooQuote(index);
+          if (quote) {
+            marketData.push({
+              symbol: index,
+              name: getIndexName(index),
+              price: quote.regularMarketPrice,
+              change: quote.regularMarketChange,
+              changePercent: quote.regularMarketChangePercent,
+              exchange: quote.exchange,
+              marketState: quote.marketState
+            });
+          }
+        } catch (indexError) {
+          continue;
+        }
+      }
+      
+      res.json(marketData);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch market summary" });
+    }
+  });
+
+  function getIndexName(symbol: string): string {
+    const names: Record<string, string> = {
+      '^GSPC': 'S&P 500',
+      '^DJI': 'Dow Jones',
+      '^IXIC': 'NASDAQ',
+      '^NSEI': 'NIFTY 50',
+      '^BSESN': 'SENSEX'
+    };
+    return names[symbol] || symbol;
+  }
   
   // Get historical data from Yahoo Finance
   app.get("/api/yahoo/historical/:symbol", async (req, res) => {

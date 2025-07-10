@@ -17,6 +17,14 @@ export interface YahooQuote {
   longName: string;
   currency: string;
   exchange: string;
+  fullExchangeName: string;
+  marketState: string;
+  preMarketPrice?: number;
+  postMarketPrice?: number;
+  bid?: number;
+  ask?: number;
+  bidSize?: number;
+  askSize?: number;
 }
 
 export interface YahooHistoricalData {
@@ -31,14 +39,8 @@ export interface YahooHistoricalData {
 export class YahooFinanceService {
   async getQuote(symbol: string): Promise<YahooQuote | null> {
     try {
-      // Try different symbol formats for Indian stocks
-      const symbolsToTry = [symbol];
-      if (symbol.includes('.')) {
-        symbolsToTry.push(symbol.split('.')[0]);
-      } else {
-        // Try adding common Indian stock exchange suffixes
-        symbolsToTry.push(`${symbol}.NS`, `${symbol}.BO`);
-      }
+      // Enhanced symbol mapping for different exchanges
+      const symbolsToTry = this.getSymbolVariations(symbol);
 
       for (const symbolToTry of symbolsToTry) {
         try {
@@ -61,7 +63,15 @@ export class YahooFinanceService {
               shortName: quote.shortName || symbolToTry,
               longName: quote.longName || quote.shortName || symbolToTry,
               currency: quote.currency || 'USD',
-              exchange: quote.exchange || 'NASDAQ'
+              exchange: quote.exchange || 'NASDAQ',
+              fullExchangeName: quote.fullExchangeName || this.getExchangeName(quote.exchange || ''),
+              marketState: quote.marketState || 'REGULAR',
+              preMarketPrice: quote.preMarketPrice,
+              postMarketPrice: quote.postMarketPrice,
+              bid: quote.bid,
+              ask: quote.ask,
+              bidSize: quote.bidSize,
+              askSize: quote.askSize
             };
           }
         } catch (symbolError) {
@@ -75,6 +85,44 @@ export class YahooFinanceService {
       console.error(`Error fetching quote for ${symbol}:`, error);
       return null;
     }
+  }
+
+  private getSymbolVariations(symbol: string): string[] {
+    const variations = [symbol];
+    
+    // Remove existing suffix if present
+    const baseSymbol = symbol.includes('.') ? symbol.split('.')[0] : symbol;
+    
+    // Add exchange-specific suffixes
+    const exchangeSuffixes = [
+      '.NS',    // NSE (National Stock Exchange of India)
+      '.BO',    // BSE (Bombay Stock Exchange)
+      '',       // NASDAQ/NYSE (no suffix needed)
+    ];
+    
+    exchangeSuffixes.forEach(suffix => {
+      const symbolWithSuffix = baseSymbol + suffix;
+      if (!variations.includes(symbolWithSuffix)) {
+        variations.push(symbolWithSuffix);
+      }
+    });
+    
+    return variations;
+  }
+
+  private getExchangeName(exchangeCode: string): string {
+    const exchangeNames: Record<string, string> = {
+      'NMS': 'NASDAQ Global Select Market',
+      'NYQ': 'New York Stock Exchange',
+      'NSI': 'National Stock Exchange of India',
+      'BOM': 'Bombay Stock Exchange',
+      'NASDAQ': 'NASDAQ',
+      'NYSE': 'New York Stock Exchange',
+      'NSE': 'National Stock Exchange of India',
+      'BSE': 'Bombay Stock Exchange'
+    };
+    
+    return exchangeNames[exchangeCode] || exchangeCode;
   }
 
   async getMultipleQuotes(symbols: string[]): Promise<Record<string, YahooQuote>> {
@@ -109,13 +157,8 @@ export class YahooFinanceService {
 
   async getHistoricalData(symbol: string, period: '3mo' | '1y' | '5y' | '10y' = '3mo'): Promise<YahooHistoricalData[]> {
     try {
-      // Try different symbol formats for Indian stocks
-      const symbolsToTry = [symbol];
-      if (symbol.includes('.')) {
-        symbolsToTry.push(symbol.split('.')[0]);
-      } else {
-        symbolsToTry.push(`${symbol}.NS`, `${symbol}.BO`);
-      }
+      // Use enhanced symbol variations
+      const symbolsToTry = this.getSymbolVariations(symbol);
 
       for (const symbolToTry of symbolsToTry) {
         try {
