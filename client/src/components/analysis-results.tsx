@@ -244,36 +244,7 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                         }`}>
                           {analysis.analysisData.recommendation}
                         </div>
-                        <p className="text-sm text-gray-600">Based on 10-year analysis, book value & current price</p>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div className="space-y-2">
-                          <div className="flex justify-between">
-                            <span className="text-brand-gray">Book Value</span>
-                            <span className="font-semibold">
-                              {stock?.market === 'Indian' ? '₹' : '$'}{analysis.analysisData.bookValue}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-brand-gray">P/B Ratio</span>
-                            <span className="font-semibold">{analysis.analysisData.priceToBook}x</span>
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <div className="flex justify-between">
-                            <span className="text-brand-gray">10Y Growth</span>
-                            <span className="font-semibold text-green-600">+{analysis.analysisData.tenYearGrowth}%</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-brand-gray">Fair Value</span>
-                            <span className={`font-semibold ${
-                              analysis.analysisData.priceToBook < 1.5 ? 'text-green-600' : 'text-red-600'
-                            }`}>
-                              {analysis.analysisData.priceToBook < 1.5 ? 'Undervalued' : 'Overvalued'}
-                            </span>
-                          </div>
-                        </div>
+                        <p className="text-sm text-gray-600">Based on technical analysis and pattern recognition</p>
                       </div>
                     </div>
                   </CardContent>
