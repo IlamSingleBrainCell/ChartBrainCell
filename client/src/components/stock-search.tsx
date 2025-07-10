@@ -23,6 +23,7 @@ export function StockSearch({ onStockSelect, placeholder = "Search stocks..." }:
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [directSymbol, setDirectSymbol] = useState('');
 
   // Get all stocks for typeahead
   const { data: allStocks = [] } = useQuery<Stock[]>({
@@ -97,6 +98,7 @@ export function StockSearch({ onStockSelect, placeholder = "Search stocks..." }:
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
+    setDirectSymbol(value.toUpperCase());
     setIsOpen(value.length >= 1);
     setSelectedIndex(-1);
   };
@@ -191,8 +193,25 @@ export function StockSearch({ onStockSelect, placeholder = "Search stocks..." }:
 
       {isOpen && query.length >= 1 && filteredStocks.length === 0 && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-          <div className="px-4 py-3 text-gray-500 text-center">
-            No stocks found for "{query}"
+          <div className="px-4 py-3 text-center">
+            <div className="text-gray-500 text-sm mb-3">
+              No stocks found for "{query}"
+            </div>
+            <button
+              onClick={() => {
+                if (directSymbol.trim()) {
+                  onStockSelect(directSymbol.trim());
+                  setQuery('');
+                  setIsOpen(false);
+                }
+              }}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg text-sm transition-colors"
+            >
+              Get Chart & Analysis for "{directSymbol}"
+            </button>
+            <div className="text-xs text-gray-400 mt-2">
+              Powered by Yahoo Finance API
+            </div>
           </div>
         </div>
       )}

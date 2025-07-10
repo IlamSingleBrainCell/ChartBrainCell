@@ -77,14 +77,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Analyze stock (integrate with existing service)
+  // Analyze any stock symbol using Yahoo Finance API
   app.post("/api/stocks/:symbol/analyze", async (req, res) => {
     try {
       const { symbol } = req.params;
-      const stock = await storage.getStock(symbol);
+      let stock = await storage.getStock(symbol);
       
+      // If stock not found in database, try to fetch from Yahoo Finance
       if (!stock) {
-        return res.status(404).json({ message: "Stock not found" });
+        try {
+          const yahooQuote = await storage.getYahooQuote(symbol);
+          if (yahooQuote) {
+            // Create a temporary stock object from Yahoo data
+            stock = {
+              id: 0,
+              symbol: yahooQuote.symbol,
+              name: yahooQuote.shortName || yahooQuote.longName || symbol,
+              market: yahooQuote.exchange?.includes('NS') || yahooQuote.exchange?.includes('BO') ? 'Indian' : 'US',
+              currentPrice: yahooQuote.regularMarketPrice,
+              changePercent: yahooQuote.regularMarketChangePercent,
+              createdAt: new Date(),
+              updatedAt: new Date()
+            };
+          } else {
+            return res.status(404).json({ message: "Stock symbol not found in Yahoo Finance" });
+          }
+        } catch (error) {
+          return res.status(404).json({ message: "Stock symbol not found" });
+        }
       }
 
       // Generate dynamic analysis based on stock characteristics

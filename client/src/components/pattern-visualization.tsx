@@ -128,11 +128,16 @@ export function PatternVisualization({ patternType, confidence }: PatternVisuali
       </div>
       
       {/* Description */}
-      <div className="flex items-center text-xs text-gray-500">
-        <div className="w-3 h-3 bg-blue-100 border border-blue-300 rounded-sm mr-2 flex items-center justify-center">
-          <div className="w-1.5 h-1.5 bg-blue-500 rounded-sm"></div>
+      <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+        <div className="flex items-center text-xs text-blue-600 mb-1">
+          <div className="w-3 h-3 bg-blue-100 border border-blue-300 rounded-sm mr-2 flex items-center justify-center">
+            <div className="w-1.5 h-1.5 bg-blue-500 rounded-sm"></div>
+          </div>
+          <span className="font-medium">Compare the actual chart above with this pattern example below</span>
         </div>
-        <span>Typical {patternType.toLowerCase()} pattern example</span>
+        <div className="text-xs text-gray-500 mt-1">
+          💡 Typical {patternType.toLowerCase()} pattern example
+        </div>
       </div>
     </div>
   );
