@@ -28,7 +28,7 @@ export function StockChart({ symbol, analysisData, stock, isCustomChart = false 
   const { data: historicalData, isLoading, error } = useQuery({
     queryKey: [`/api/yahoo/historical/${symbol}`, timeRange],
     queryFn: () => apiRequest('GET', `/api/yahoo/historical/${symbol}?period=${timeRange}`),
-    enabled: !!symbol,
+    enabled: !!symbol && symbol !== "CUSTOM_CHART",
   });
   
   // Process historical data for chart display
