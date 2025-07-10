@@ -10,9 +10,10 @@ interface StockChartProps {
   symbol: string;
   analysisData: any;
   stock?: any;
+  isCustomChart?: boolean;
 }
 
-export function StockChart({ symbol, analysisData, stock }: StockChartProps) {
+export function StockChart({ symbol, analysisData, stock, isCustomChart = false }: StockChartProps) {
   const [timeRange, setTimeRange] = useState('3mo');
   const [timeRangeDisplay, setTimeRangeDisplay] = useState('3 Months');
   
@@ -429,26 +430,29 @@ export function StockChart({ symbol, analysisData, stock }: StockChartProps) {
         </div>
         
         {/* Current Price Display */}
-        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-          <div>
-            <p className="text-sm text-gray-600">Current Price</p>
-            <p className="text-2xl font-bold text-gray-900">
-              {currencySymbol}{displayPrice?.toFixed(2)}
-            </p>
-            {livePrice && (
-              <div className="flex items-center mt-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></div>
-                <span className="text-sm text-green-600 font-medium">Live Price</span>
-              </div>
-            )}
+        {/* Only show current price and 24h change for real stocks, not custom uploaded charts */}
+        {!isCustomChart && (
+          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div>
+              <p className="text-sm text-gray-600">Current Price</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {currencySymbol}{displayPrice?.toFixed(2)}
+              </p>
+              {livePrice && (
+                <div className="flex items-center mt-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></div>
+                  <span className="text-sm text-green-600 font-medium">Live Price</span>
+                </div>
+              )}
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-gray-600">24h Change</p>
+              <p className={`text-lg font-semibold ${livePrice?.changePercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {livePrice?.changePercent >= 0 ? '+' : ''}{livePrice?.changePercent?.toFixed(2) ?? stock?.changePercent?.toFixed(2) ?? '0.00'}%
+              </p>
+            </div>
           </div>
-          <div className="text-right">
-            <p className="text-sm text-gray-600">24h Change</p>
-            <p className={`text-lg font-semibold ${livePrice?.changePercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {livePrice?.changePercent >= 0 ? '+' : ''}{livePrice?.changePercent?.toFixed(2) ?? stock?.changePercent?.toFixed(2) ?? '0.00'}%
-            </p>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

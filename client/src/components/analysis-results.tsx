@@ -96,7 +96,12 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                   </div>
                 )}
                 
-                <StockChart symbol={analysis.stockSymbol} analysisData={analysis} stock={stock} />
+                <StockChart 
+                  symbol={analysis.stockSymbol} 
+                  analysisData={analysis} 
+                  stock={stock} 
+                  isCustomChart={isCustomChart}
+                />
               </CardContent>
             </Card>
           </div>
