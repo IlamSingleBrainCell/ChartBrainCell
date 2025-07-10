@@ -292,29 +292,11 @@ export function StockChart({ symbol, analysisData, stock, isCustomChart = false 
                 labelStyle={{ color: '#94a3b8' }}
               />
               
-              {/* Candlestick representation using bars */}
-              <Bar dataKey={(entry) => [entry.low, entry.high - entry.low]} fill="transparent" stroke="transparent">
-                {chartData.map((entry, index) => (
-                  <Cell key={`wick-${index}`} fill="transparent" stroke="#64748b" strokeWidth={1} />
-                ))}
-              </Bar>
-              
-              {/* Main price line */}
-              <Line 
-                type="monotone" 
-                dataKey="close"
-                stroke="#2563eb"
-                strokeWidth={2}
-                dot={false}
-                activeDot={{ r: 4, fill: '#2563eb' }}
-              />
-              
               {/* Volume bars at bottom */}
               <Bar 
                 dataKey="volume" 
                 fill="#e2e8f0" 
                 opacity={0.3}
-                yAxisId="volume"
               />
               
               {/* Pattern-specific annotations */}
