@@ -416,44 +416,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (clients.size === 0) return;
     
     try {
-      // Get current stocks and simulate price changes
+      // Get current stocks with real Yahoo Finance data
       const stocks = await storage.getStocks();
-      const updatedStocks = [];
-      
-      for (const stock of stocks) {
-        // Simulate realistic price changes (-2% to +2%)
-        const changePercent = (Math.random() - 0.5) * 4;
-        const newPrice = stock.currentPrice * (1 + changePercent / 100);
-        
-        // Update stock in storage
-        await storage.updateStock(stock.symbol, {
-          currentPrice: Math.round(newPrice * 100) / 100,
-          changePercent: Math.round(changePercent * 100) / 100
-        });
-        
-        updatedStocks.push({
-          symbol: stock.symbol,
-          currentPrice: Math.round(newPrice * 100) / 100,
-          changePercent: Math.round(changePercent * 100) / 100,
-          lastUpdated: new Date()
-        });
-      }
-      
-      // Broadcast to all connected clients
+      const pricesData = stocks.map(stock => ({
+        symbol: stock.symbol,
+        currentPrice: stock.currentPrice,
+        changePercent: stock.changePercent,
+        lastUpdated: stock.lastUpdated?.toISOString() || new Date().toISOString()
+      }));
+
       const message = JSON.stringify({
         type: 'PRICE_UPDATE',
-        data: updatedStocks
+        data: pricesData
       });
-      
-      clients.forEach(ws => {
-        if (ws.readyState === WebSocket.OPEN) {
-          ws.send(message);
+
+      clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(message);
         } else {
-          clients.delete(ws);
+          clients.delete(client);
         }
       });
-      
-      console.log(`Broadcasted price updates to ${clients.size} clients`);
+
+      console.log(`Broadcasted real Yahoo Finance prices to ${clients.size} clients`);
     } catch (error) {
       console.error('Error broadcasting price updates:', error);
     }
@@ -465,13 +450,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log('Scheduled Yahoo Finance price update...');
     try {
       await storage.updateStockPricesFromYahoo();
+      await broadcastPriceUpdates(); // Broadcast after updating prices
       console.log('Real-time prices updated from Yahoo Finance');
     } catch (error) {
       console.error('Scheduled price update failed:', error);
     }
   });
 
-  // Start price update interval (every 30 seconds)
+  // Update Yahoo Finance prices every 5 minutes and broadcast
+  setInterval(async () => {
+    try {
+      await storage.updateStockPricesFromYahoo();
+      await broadcastPriceUpdates();
+    } catch (error) {
+      console.error('Error in periodic Yahoo Finance update:', error);
+    }
+  }, 300000); // 5 minutes
+
+  // Broadcast current prices every 30 seconds to connected clients
   setInterval(broadcastPriceUpdates, 30000);
   
   return httpServer;

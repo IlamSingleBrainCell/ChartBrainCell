@@ -31,30 +31,46 @@ export interface YahooHistoricalData {
 export class YahooFinanceService {
   async getQuote(symbol: string): Promise<YahooQuote | null> {
     try {
-      const quote = await yahooFinance.quote(symbol);
-      
-      if (!quote || !quote.regularMarketPrice) {
-        return null;
+      // Try different symbol formats for Indian stocks
+      const symbolsToTry = [symbol];
+      if (symbol.includes('.')) {
+        symbolsToTry.push(symbol.split('.')[0]);
+      } else {
+        // Try adding common Indian stock exchange suffixes
+        symbolsToTry.push(`${symbol}.NS`, `${symbol}.BO`);
       }
 
-      return {
-        symbol: quote.symbol || symbol,
-        regularMarketPrice: quote.regularMarketPrice || 0,
-        regularMarketChange: quote.regularMarketChange || 0,
-        regularMarketChangePercent: quote.regularMarketChangePercent || 0,
-        regularMarketDayHigh: quote.regularMarketDayHigh || 0,
-        regularMarketDayLow: quote.regularMarketDayLow || 0,
-        regularMarketVolume: quote.regularMarketVolume || 0,
-        marketCap: quote.marketCap || 0,
-        trailingPE: quote.trailingPE || 0,
-        priceToBook: quote.priceToBook || 0,
-        fiftyTwoWeekHigh: quote.fiftyTwoWeekHigh || 0,
-        fiftyTwoWeekLow: quote.fiftyTwoWeekLow || 0,
-        shortName: quote.shortName || symbol,
-        longName: quote.longName || quote.shortName || symbol,
-        currency: quote.currency || 'USD',
-        exchange: quote.exchange || 'NASDAQ'
-      };
+      for (const symbolToTry of symbolsToTry) {
+        try {
+          const quote = await yahooFinance.quote(symbolToTry);
+          
+          if (quote && quote.regularMarketPrice) {
+            return {
+              symbol: quote.symbol || symbolToTry,
+              regularMarketPrice: quote.regularMarketPrice || 0,
+              regularMarketChange: quote.regularMarketChange || 0,
+              regularMarketChangePercent: quote.regularMarketChangePercent || 0,
+              regularMarketDayHigh: quote.regularMarketDayHigh || 0,
+              regularMarketDayLow: quote.regularMarketDayLow || 0,
+              regularMarketVolume: quote.regularMarketVolume || 0,
+              marketCap: quote.marketCap || 0,
+              trailingPE: quote.trailingPE || 0,
+              priceToBook: quote.priceToBook || 0,
+              fiftyTwoWeekHigh: quote.fiftyTwoWeekHigh || 0,
+              fiftyTwoWeekLow: quote.fiftyTwoWeekLow || 0,
+              shortName: quote.shortName || symbolToTry,
+              longName: quote.longName || quote.shortName || symbolToTry,
+              currency: quote.currency || 'USD',
+              exchange: quote.exchange || 'NASDAQ'
+            };
+          }
+        } catch (symbolError) {
+          // Continue to next symbol format
+          continue;
+        }
+      }
+      
+      return null;
     } catch (error) {
       console.error(`Error fetching quote for ${symbol}:`, error);
       return null;
@@ -93,38 +109,56 @@ export class YahooFinanceService {
 
   async getHistoricalData(symbol: string, period: '3mo' | '1y' | '5y' | '10y' = '3mo'): Promise<YahooHistoricalData[]> {
     try {
-      const endDate = new Date();
-      const startDate = new Date();
-      
-      switch (period) {
-        case '3mo':
-          startDate.setMonth(endDate.getMonth() - 3);
-          break;
-        case '1y':
-          startDate.setFullYear(endDate.getFullYear() - 1);
-          break;
-        case '5y':
-          startDate.setFullYear(endDate.getFullYear() - 5);
-          break;
-        case '10y':
-          startDate.setFullYear(endDate.getFullYear() - 10);
-          break;
+      // Try different symbol formats for Indian stocks
+      const symbolsToTry = [symbol];
+      if (symbol.includes('.')) {
+        symbolsToTry.push(symbol.split('.')[0]);
+      } else {
+        symbolsToTry.push(`${symbol}.NS`, `${symbol}.BO`);
       }
 
-      const result = await yahooFinance.historical(symbol, {
-        period1: startDate,
-        period2: endDate,
-        interval: '1d'
-      });
+      for (const symbolToTry of symbolsToTry) {
+        try {
+          const endDate = new Date();
+          const startDate = new Date();
+          
+          switch (period) {
+            case '3mo':
+              startDate.setMonth(endDate.getMonth() - 3);
+              break;
+            case '1y':
+              startDate.setFullYear(endDate.getFullYear() - 1);
+              break;
+            case '5y':
+              startDate.setFullYear(endDate.getFullYear() - 5);
+              break;
+            case '10y':
+              startDate.setFullYear(endDate.getFullYear() - 10);
+              break;
+          }
 
-      return result.map(item => ({
-        date: item.date,
-        open: item.open || 0,
-        high: item.high || 0,
-        low: item.low || 0,
-        close: item.close || 0,
-        volume: item.volume || 0
-      }));
+          const result = await yahooFinance.historical(symbolToTry, {
+            period1: startDate,
+            period2: endDate,
+            interval: '1d'
+          });
+
+          if (result && result.length > 0) {
+            return result.map(item => ({
+              date: item.date,
+              open: item.open || 0,
+              high: item.high || 0,
+              low: item.low || 0,
+              close: item.close || 0,
+              volume: item.volume || 0
+            }));
+          }
+        } catch (symbolError) {
+          continue;
+        }
+      }
+      
+      return [];
     } catch (error) {
       console.error(`Error fetching historical data for ${symbol}:`, error);
       return [];
