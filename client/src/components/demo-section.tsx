@@ -132,7 +132,7 @@ export function DemoSection({ onStockAnalyzed }: DemoSectionProps) {
               <h3 className="text-2xl font-semibold text-brand-dark">Get Live Stock Chart</h3>
             </div>
             
-            <p className="text-brand-gray mb-6">Search from 65+ stocks from NSE, NYSE, and BSE markets</p>
+            <p className="text-brand-gray mb-6">Search from unlimited global stocks via Yahoo Finance API. 96+ sample stocks available for quick access.</p>
             
             <div className="space-y-4">
               <StockSearch 
@@ -165,7 +165,7 @@ export function DemoSection({ onStockAnalyzed }: DemoSectionProps) {
               
               <p className="text-sm text-brand-gray mt-4">
                 <strong>Examples:</strong> Try "TCS" (Indian IT), "Reliance" (Indian Oil), "AAPL" (US Tech), 
-                "HDFC" (Indian Banking), "NVDA" (US Semiconductors), or "Wipro" (Indian IT)
+                "HDFC" (Indian Banking), "NVDA" (US Semiconductors), or any global stock symbol via Yahoo Finance API
               </p>
             </div>
           </div>

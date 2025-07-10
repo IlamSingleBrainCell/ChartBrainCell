@@ -56,8 +56,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/stocks/search", async (req, res) => {
     try {
       const { query } = stockSearchSchema.parse(req.body);
-      const stocks = await storage.searchStocks(query);
-      res.json(stocks);
+      
+      // First search in local database (96+ sample stocks)
+      const localStocks = await storage.searchStocks(query);
+      
+      // Also search Yahoo Finance for unlimited global stock access
+      try {
+        const yahooResults = await yahooFinanceService.searchSymbols(query);
+        
+        // Combine results, prioritizing local stocks
+        const combinedResults = [...localStocks];
+        
+        // Add Yahoo results that aren't already in local database
+        for (const yahooStock of yahooResults) {
+          const exists = localStocks.some(local => 
+            local.symbol.toLowerCase() === yahooStock.symbol.toLowerCase()
+          );
+          
+          if (!exists && combinedResults.length < 20) {
+            // Add as a dynamic stock result
+            combinedResults.push({
+              id: -1, // Negative ID indicates Yahoo Finance result
+              symbol: yahooStock.symbol,
+              name: yahooStock.name,
+              market: yahooStock.exchange.includes('NSE') || yahooStock.exchange.includes('BSE') ? 'Indian' : 'US',
+              currentPrice: 0, // Will be fetched when selected
+              changePercent: 0,
+              yahooSource: true
+            });
+          }
+        }
+        
+        res.json(combinedResults);
+      } catch (yahooError) {
+        console.error("Yahoo Finance search error:", yahooError);
+        // Fallback to local search only
+        res.json(localStocks);
+      }
     } catch (error) {
       res.status(400).json({ message: "Invalid search query" });
     }

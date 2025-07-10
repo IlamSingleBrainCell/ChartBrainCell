@@ -8,12 +8,11 @@ interface HeroSectionProps {
 
 export function HeroSection({ onStartAnalysis, onViewDemo }: HeroSectionProps) {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 text-white py-28 neural-grid">
-      {/* Gen Z Animated background elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/10 via-purple-500/10 to-pink-500/10"></div>
-      <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-r from-cyan-400/20 to-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-r from-pink-400/20 to-purple-500/20 rounded-full blur-3xl animate-pulse delay-700"></div>
-      <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-gradient-to-r from-yellow-400/15 to-orange-500/15 rounded-full blur-3xl animate-pulse delay-1500"></div>
+    <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white py-24">
+      {/* Professional background elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-indigo-600/10"></div>
+      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -23,35 +22,35 @@ export function HeroSection({ onStartAnalysis, onViewDemo }: HeroSectionProps) {
               <span className="text-sm font-semibold tracking-wide">🚀 AI-Powered Analysis Live</span>
             </div>
             
-            <h1 className="text-6xl lg:text-8xl font-black leading-tight mb-8 bg-gradient-to-r from-cyan-300 via-white to-pink-300 bg-clip-text text-transparent">
-              Smart Stock Pattern Recognition 🚀
+            <h1 className="text-5xl lg:text-7xl font-bold leading-tight mb-8 text-white">
+              Smart Stock Pattern Recognition
             </h1>
             
-            <p className="text-2xl lg:text-3xl text-white/90 mb-12 leading-relaxed font-medium">
-              Unleash <span className="text-cyan-300 font-black">AI superpowers</span> to analyze live stock charts with 
-              <span className="text-yellow-300 font-black bg-yellow-300/20 px-3 py-1 rounded-full"> 98.5% accuracy</span> pattern recognition 
-              and <span className="text-pink-300 font-black">precise breakout predictions</span> ⚡
+            <p className="text-xl lg:text-2xl text-blue-100 mb-10 leading-relaxed">
+              Advanced AI technology to analyze live stock charts with 
+              <span className="text-blue-300 font-semibold"> 98.5% accuracy</span> pattern recognition 
+              and precise breakout timing predictions.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-8 mb-16">
+            <div className="flex flex-col sm:flex-row gap-6 mb-12">
               <Button 
                 onClick={onStartAnalysis}
-                className="button-modern bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 text-white px-12 py-6 rounded-3xl font-black text-xl hover:scale-110 transform transition-all duration-300 shadow-2xl glow-pulse focus-ring"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-lg font-semibold text-lg shadow-lg business-hover"
                 size="lg"
                 aria-label="Start analyzing stocks now"
               >
-                <BarChart3 className="mr-4" size={28} />
-                Start Analysis Now 💎
+                <BarChart3 className="mr-3" size={24} />
+                Start Analysis Now
               </Button>
               <Button 
                 onClick={onViewDemo}
                 variant="outline"
-                className="button-modern border-3 border-white/40 text-white px-12 py-6 rounded-3xl font-black text-xl hover:bg-white/20 hover:border-white/60 bg-white/10 backdrop-blur-lg hover:scale-110 transform transition-all duration-300 shadow-xl focus-ring"
+                className="border-2 border-white/30 text-white px-10 py-4 rounded-lg font-semibold text-lg hover:bg-white/10 hover:border-white/50 bg-white/5 backdrop-blur-sm business-hover"
                 size="lg"
                 aria-label="Watch interactive demo"
               >
-                <PlayCircle className="mr-4" size={28} />
-                Watch Demo 🎬
+                <PlayCircle className="mr-3" size={24} />
+                Watch Demo
               </Button>
             </div>
             
