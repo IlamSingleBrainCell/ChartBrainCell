@@ -136,10 +136,20 @@ export function StockNews({ symbol, stock }: StockNewsProps) {
               key={item.id || index} 
               className="border-l-2 border-blue-200 pl-4 pb-4 cursor-pointer hover:bg-gray-50 rounded-r-lg transition-colors group"
               onClick={() => {
-                if (item.url && item.url !== '#') {
-                  window.open(item.url, '_blank', 'noopener,noreferrer');
-                }
                 console.log(`Opening news article: ${item.title}`);
+                
+                if (item.url && item.url !== '#' && item.url !== '') {
+                  // Real news article - open in new tab
+                  window.open(item.url, '_blank', 'noopener,noreferrer');
+                } else {
+                  // Fallback news - show informative message with search suggestion
+                  const searchQuery = encodeURIComponent(`${symbol} ${item.title.split(' ').slice(0, 5).join(' ')}`);
+                  const googleSearchUrl = `https://www.google.com/search?q=${searchQuery}`;
+                  
+                  if (window.confirm(`This is sample news data. Would you like to search for real "${symbol}" news on Google?`)) {
+                    window.open(googleSearchUrl, '_blank', 'noopener,noreferrer');
+                  }
+                }
               }}
             >
               <div className="flex items-start justify-between">
@@ -148,8 +158,12 @@ export function StockNews({ symbol, stock }: StockNewsProps) {
                     <h5 className="font-medium text-gray-900 line-clamp-2 flex-1">
                       {item.title}
                     </h5>
-                    {item.url && item.url !== '#' && (
+                    {item.url && item.url !== '#' && item.url !== '' ? (
                       <ExternalLink size={14} className="text-blue-500 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    ) : (
+                      <div className="text-xs text-gray-400 ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        Click to search
+                      </div>
                     )}
                   </div>
                   <p className="text-sm text-gray-600 mb-2 line-clamp-2">
