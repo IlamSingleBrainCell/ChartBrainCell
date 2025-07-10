@@ -110,53 +110,60 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
           
 
 
-          {/* Horizontal Analysis Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Enhanced Analysis Cards with Modern Design */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
               {/* Pattern Recognition */}
-              <Card className="border-l-4 border-l-purple-500 bg-gradient-to-br from-purple-50 to-indigo-50 shadow-lg">
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    <div className="w-3 h-3 bg-purple-500 rounded-full mr-3"></div>
-                    <h4 className="text-lg font-bold text-purple-900">Pattern Recognition</h4>
+              <Card className="card-hover border-0 bg-gradient-to-br from-purple-500 via-indigo-600 to-purple-700 text-white shadow-2xl overflow-hidden relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                <CardContent className="p-8 relative z-10">
+                  <div className="flex items-center mb-6">
+                    <div className="w-4 h-4 bg-yellow-400 rounded-full mr-4 glow-pulse"></div>
+                    <h4 className="text-xl font-black text-white">Pattern Recognition</h4>
                   </div>
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-purple-700">{analysis.patternType}</span>
-                      <span className="text-lg font-bold text-green-600">{analysis.confidence}%</span>
+                      <span className="text-sm font-semibold text-purple-100">{analysis.patternType}</span>
+                      <span className="text-2xl font-black text-yellow-300">{analysis.confidence}%</span>
                     </div>
-                    <div className="w-full bg-purple-200 rounded-full h-3">
+                    <div className="w-full bg-white/20 rounded-full h-4 overflow-hidden">
                       <div 
-                        className="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full shadow-sm" 
+                        className="bg-gradient-to-r from-yellow-400 to-orange-400 h-4 rounded-full shadow-lg transition-all duration-1000 ease-out" 
                         style={{ width: `${analysis.confidence}%` }}
                       />
                     </div>
-                    <PatternVisualization 
-                      patternType={analysis.patternType} 
-                      confidence={analysis.confidence} 
-                    />
+                    <div className="transform scale-105">
+                      <PatternVisualization 
+                        patternType={analysis.patternType} 
+                        confidence={analysis.confidence} 
+                      />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
               
               {/* Confidence Score */}
-              <Card className="border-l-4 border-l-blue-500 bg-gradient-to-br from-blue-50 to-cyan-50 shadow-lg">
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    <div className="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
-                    <h4 className="text-lg font-bold text-blue-900">Confidence Score</h4>
+              <Card className="card-hover border-0 bg-gradient-to-br from-blue-500 via-cyan-600 to-teal-700 text-white shadow-2xl overflow-hidden relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                <CardContent className="p-8 relative z-10">
+                  <div className="flex items-center mb-6">
+                    <div className="w-4 h-4 bg-cyan-300 rounded-full mr-4 glow-pulse"></div>
+                    <h4 className="text-xl font-black text-white">AI Confidence</h4>
                   </div>
                   <div className="text-center">
-                    <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">{analysis.confidence}%</div>
-                    <div className="text-sm font-medium text-blue-700 mb-4">Overall Confidence</div>
+                    <div className="relative">
+                      <div className="text-6xl font-black text-cyan-200 mb-3 scale-in">{analysis.confidence}%</div>
+                      <div className="absolute inset-0 text-6xl font-black bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent animate-pulse">{analysis.confidence}%</div>
+                    </div>
+                    <div className="text-lg font-bold text-cyan-100 mb-6">Neural Network Score</div>
                     {analysis.analysisData?.technicalScore && (
                       <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div className="bg-white/60 rounded-lg p-3">
-                          <div className="text-blue-600 font-medium">Technical</div>
-                          <div className="text-xl font-bold text-blue-900">{analysis.analysisData.technicalScore}%</div>
+                        <div className="glass-effect rounded-xl p-4 card-hover">
+                          <div className="text-cyan-200 font-bold text-xs uppercase tracking-wide">Technical</div>
+                          <div className="text-2xl font-black text-white">{analysis.analysisData.technicalScore}%</div>
                         </div>
-                        <div className="bg-white/60 rounded-lg p-3">
-                          <div className="text-blue-600 font-medium">Volume</div>
-                          <div className="text-xl font-bold text-blue-900">{analysis.analysisData.volumeScore}%</div>
+                        <div className="glass-effect rounded-xl p-4 card-hover">
+                          <div className="text-cyan-200 font-bold text-xs uppercase tracking-wide">Volume</div>
+                          <div className="text-2xl font-black text-white">{analysis.analysisData.volumeScore}%</div>
                         </div>
                       </div>
                     )}
@@ -165,35 +172,39 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
               </Card>
               
               {/* Breakout Prediction */}
-              <Card className="border-l-4 border-l-emerald-500 bg-gradient-to-br from-emerald-50 to-teal-50 shadow-lg">
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    <div className="w-3 h-3 bg-emerald-500 rounded-full mr-3"></div>
-                    <h4 className="text-lg font-bold text-emerald-900">Breakout Prediction</h4>
+              <Card className="card-hover border-0 bg-gradient-to-br from-emerald-500 via-green-600 to-teal-700 text-white shadow-2xl overflow-hidden relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                <CardContent className="p-8 relative z-10">
+                  <div className="flex items-center mb-6">
+                    <div className="w-4 h-4 bg-green-300 rounded-full mr-4 glow-pulse"></div>
+                    <h4 className="text-xl font-black text-white">Breakout Forecast</h4>
                   </div>
-                  <div className="space-y-4">
-                    <div className="bg-white/60 rounded-lg p-3 flex justify-between items-center">
-                      <span className="text-sm font-medium text-emerald-700">Expected Direction</span>
-                      <span className={`font-bold text-lg px-3 py-1 rounded-full capitalize ${
+                  <div className="space-y-6">
+                    <div className="glass-effect rounded-xl p-4 flex justify-between items-center card-hover">
+                      <span className="text-sm font-bold text-green-100 uppercase tracking-wide">Direction</span>
+                      <span className={`font-black text-xl px-4 py-2 rounded-xl capitalize ${
                         analysis.breakoutDirection === 'upward' 
-                          ? 'bg-green-100 text-green-700' 
-                          : 'bg-red-100 text-red-700'
+                          ? 'bg-green-400 text-green-900 shadow-lg' 
+                          : 'bg-red-400 text-red-900 shadow-lg'
                       }`}>
-                        {analysis.breakoutDirection}
+                        {analysis.breakoutDirection} 🚀
                       </span>
                     </div>
-                    <div className="bg-white/60 rounded-lg p-3 flex justify-between">
-                      <span className="text-sm font-medium text-emerald-700">Timeframe</span>
-                      <span className="font-bold text-emerald-900">{analysis.breakoutTimeframe}</span>
+                    <div className="glass-effect rounded-xl p-4 flex justify-between card-hover">
+                      <span className="text-sm font-bold text-green-100 uppercase tracking-wide">Timeframe</span>
+                      <span className="font-black text-white text-lg">{analysis.breakoutTimeframe}</span>
                     </div>
-                    <div className="bg-white/60 rounded-lg p-3 flex justify-between">
-                      <span className="text-sm font-medium text-emerald-700">Probability</span>
-                      <span className="font-bold text-xl text-blue-600">{analysis.breakoutProbability}%</span>
+                    <div className="glass-effect rounded-xl p-4 flex justify-between card-hover">
+                      <span className="text-sm font-bold text-green-100 uppercase tracking-wide">Probability</span>
+                      <span className="font-black text-xl text-green-300">{analysis.breakoutProbability}%</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
-              
+          </div>
+          
+          {/* Additional Cards Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
               {/* Risk Assessment */}
               {analysis.riskReward && (
                 <Card>

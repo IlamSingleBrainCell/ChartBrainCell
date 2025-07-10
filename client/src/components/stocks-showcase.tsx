@@ -46,39 +46,52 @@ export function StocksShowcase({ onStockSelect }: StocksShowcaseProps) {
   };
 
   return (
-    <section id="stocks" className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <h2 className="text-3xl lg:text-4xl font-bold text-brand-dark">65+ Supported Stocks</h2>
-            <div className={`flex items-center px-3 py-1 rounded-full text-sm ${
-              isConnected ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+    <section id="stocks" className="py-24 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 neural-grid opacity-30"></div>
+      <div className="absolute top-0 left-0 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl"></div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-20 fade-in">
+          <div className="flex items-center justify-center gap-6 mb-6">
+            <h2 className="text-4xl lg:text-6xl font-black text-gray-900 gradient-text">96+ Global Stocks</h2>
+            <div className={`flex items-center px-6 py-3 rounded-2xl text-lg font-bold shadow-lg card-hover ${
+              isConnected ? 'bg-green-500 text-white glow-pulse' : 'bg-red-500 text-white'
             }`}>
-              {isConnected ? <Wifi size={16} className="mr-2" /> : <WifiOff size={16} className="mr-2" />}
-              {isConnected ? 'Live Prices' : 'Offline'}
+              {isConnected ? <Wifi size={20} className="mr-3" /> : <WifiOff size={20} className="mr-3" />}
+              {isConnected ? '🔴 Live Data' : '⚠️ Offline'}
             </div>
           </div>
-          <p className="text-xl text-brand-gray">
-            Comprehensive coverage of NSE, NYSE, and BSE markets with real-time data
+          <p className="text-xl lg:text-2xl text-gray-600 font-light max-w-3xl mx-auto">
+            Real-time market data from NSE, NYSE, and BSE exchanges with instant price updates
           </p>
         </div>
         
-        {/* Market Tabs */}
-        <div className="flex justify-center mb-12">
-          <div className="bg-white rounded-lg p-1 shadow-sm">
+        {/* Enhanced Market Tabs */}
+        <div className="flex justify-center mb-16 scale-in">
+          <div className="glass-effect rounded-2xl p-2 shadow-2xl">
             <Button
               onClick={() => setSelectedMarket("US")}
               variant={selectedMarket === "US" ? "default" : "ghost"}
-              className={selectedMarket === "US" ? "bg-blue-600 text-white" : "text-brand-gray"}
+              className={`button-modern px-8 py-4 rounded-xl text-lg font-bold transition-all ${
+                selectedMarket === "US" 
+                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg" 
+                  : "text-gray-600 hover:bg-white/50"
+              }`}
             >
-              US Markets
+              🇺🇸 US Markets
             </Button>
             <Button
               onClick={() => setSelectedMarket("Indian")}
               variant={selectedMarket === "Indian" ? "default" : "ghost"}
-              className={selectedMarket === "Indian" ? "bg-blue-600 text-white" : "text-brand-gray"}
+              className={`button-modern px-8 py-4 rounded-xl text-lg font-bold transition-all ${
+                selectedMarket === "Indian" 
+                  ? "bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-lg" 
+                  : "text-gray-600 hover:bg-white/50"
+              }`}
             >
-              Indian Markets
+              🇮🇳 Indian Markets
             </Button>
           </div>
         </div>
