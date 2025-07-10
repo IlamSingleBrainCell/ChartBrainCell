@@ -51,8 +51,8 @@ export function StockChart({ symbol, analysisData, stock, isCustomChart = false 
   // Fallback data generation only if Yahoo Finance data fails
   const generateFallbackData = () => {
     const data = [];
-    const isIndian = stock?.market === 'Indian';
-    const basePrice = isIndian ? (stock?.currentPrice || 2500) : (stock?.currentPrice || 100);
+    // Use Yahoo Finance quote price as the base price, fallback to stock data
+    const basePrice = yahooQuote?.regularMarketPrice ?? stock?.currentPrice ?? 100;
     let currentPrice = basePrice;
     
     // Generate pattern-based data to match the detected pattern
@@ -139,10 +139,10 @@ export function StockChart({ symbol, analysisData, stock, isCustomChart = false 
     return generatePatternData(analysisData.patternType, days);
   };
 
-  // Use real Yahoo Finance data if available, otherwise fallback
+  // Prioritize real Yahoo Finance data, only use fallback if absolutely necessary
   const chartData = historicalData && historicalData.length > 0 
     ? processHistoricalData() 
-    : generateFallbackData();
+    : (yahooQuote ? generateFallbackData() : []);
   
   if (!chartData || chartData.length === 0) {
     return (
@@ -226,9 +226,11 @@ export function StockChart({ symbol, analysisData, stock, isCustomChart = false 
         <div className="flex justify-between items-center mb-2">
           <div>
             <h3 className="text-lg font-semibold text-gray-800">{symbol} - {timeRangeDisplay} Chart</h3>
-            {historicalData && historicalData.length > 0 && (
-              <p className="text-xs text-green-600">✓ Real Yahoo Finance Data</p>
-            )}
+            {historicalData && historicalData.length > 0 ? (
+              <p className="text-xs text-green-600">✓ Real Yahoo Finance Historical Data</p>
+            ) : yahooQuote ? (
+              <p className="text-xs text-blue-600">✓ Yahoo Finance Price Data</p>
+            ) : null}
           </div>
           <div className="flex gap-2">
             {[

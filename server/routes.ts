@@ -121,7 +121,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Use actual Yahoo Finance price for accurate analysis
       const isIndian = stock.market === 'Indian';
-      const currentPrice = stock.currentPrice; // Use real Yahoo Finance price
+      const currentPrice = stock.currentPrice; // This is now the real Yahoo Finance price from the stock object we created above
       const bookValue = currentPrice * (0.7 + (symbolHash % 30) / 100); // Simulate book value
       const tenYearGrowth = 8 + (symbolHash % 15); // 8-23% historical growth
       
