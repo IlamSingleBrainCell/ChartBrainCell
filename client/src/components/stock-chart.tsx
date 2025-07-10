@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { ZoomIn, ZoomOut, TrendingUp, TrendingDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useWebSocket } from '@/hooks/useWebSocket';
+import { useQuery } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 interface StockChartProps {
   symbol: string;
@@ -11,9 +13,35 @@ interface StockChartProps {
 }
 
 export function StockChart({ symbol, analysisData, stock }: StockChartProps) {
-  const [timeRange, setTimeRange] = useState('3 Months');
-  // Generate realistic 3-month stock price data with OHLC values
-  const generateChartData = () => {
+  const [timeRange, setTimeRange] = useState('3mo');
+  const [timeRangeDisplay, setTimeRangeDisplay] = useState('3 Months');
+  
+  // Fetch real Yahoo Finance historical data
+  const { data: historicalData, isLoading, error } = useQuery({
+    queryKey: [`/api/yahoo/historical/${symbol}`, timeRange],
+    queryFn: () => apiRequest('GET', `/api/yahoo/historical/${symbol}?period=${timeRange}`),
+    enabled: !!symbol,
+  });
+  
+  // Process historical data for chart display
+  const processHistoricalData = () => {
+    if (!historicalData || !Array.isArray(historicalData)) {
+      return [];
+    }
+    
+    return historicalData.map(item => ({
+      date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      open: Math.round(item.open * 100) / 100,
+      high: Math.round(item.high * 100) / 100,
+      low: Math.round(item.low * 100) / 100,
+      close: Math.round(item.close * 100) / 100,
+      price: Math.round(item.close * 100) / 100,
+      volume: item.volume,
+    }));
+  };
+
+  // Fallback data generation only if Yahoo Finance data fails
+  const generateFallbackData = () => {
     const data = [];
     const isIndian = stock?.market === 'Indian';
     const basePrice = isIndian ? (stock?.currentPrice || 2500) : (stock?.currentPrice || 100);
@@ -99,11 +127,25 @@ export function StockChart({ symbol, analysisData, stock }: StockChartProps) {
       return patternData;
     };
     
-    const days = timeRange === '3 Months' ? 90 : timeRange === '1 Year' ? 365 : timeRange === '5 Years' ? 1825 : 3650;
+    const days = timeRangeDisplay === '3 Months' ? 90 : timeRangeDisplay === '1 Year' ? 365 : timeRangeDisplay === '5 Years' ? 1825 : 3650;
     return generatePatternData(analysisData.patternType, days);
   };
 
-  const chartData = generateChartData();
+  // Use real Yahoo Finance data if available, otherwise fallback
+  const chartData = historicalData && historicalData.length > 0 
+    ? processHistoricalData() 
+    : generateFallbackData();
+  
+  if (!chartData || chartData.length === 0) {
+    return (
+      <div className="w-full bg-white rounded-lg border">
+        <div className="p-8 text-center">
+          <p className="text-gray-600">No chart data available</p>
+        </div>
+      </div>
+    );
+  }
+  
   const currentPrice = chartData[chartData.length - 1]?.price;
   const targetPrice = analysisData.targetPrice;
   const isIndian = stock?.market === 'Indian';
@@ -143,23 +185,60 @@ export function StockChart({ symbol, analysisData, stock }: StockChartProps) {
   
   const patternAnnotations = getPatternAnnotations();
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="w-full bg-white rounded-lg border">
+        <div className="p-8 text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading real-time chart data from Yahoo Finance...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state with fallback
+  if (error && (!historicalData || historicalData.length === 0)) {
+    return (
+      <div className="w-full bg-white rounded-lg border">
+        <div className="p-8 text-center">
+          <p className="text-amber-600 mb-4">Yahoo Finance data temporarily unavailable</p>
+          <p className="text-gray-600 text-sm">Using pattern-based analysis data</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full bg-white rounded-lg border">
       <div className="p-4 border-b">
         <div className="flex justify-between items-center mb-2">
-          <h3 className="text-lg font-semibold text-gray-800">{symbol} - {timeRange} Chart</h3>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800">{symbol} - {timeRangeDisplay} Chart</h3>
+            {historicalData && historicalData.length > 0 && (
+              <p className="text-xs text-green-600">✓ Real Yahoo Finance Data</p>
+            )}
+          </div>
           <div className="flex gap-2">
-            {['3 Months', '1 Year', '5 Years', '10 Years'].map((range) => (
+            {[
+              { label: '3 Months', value: '3mo' },
+              { label: '1 Year', value: '1y' },
+              { label: '5 Years', value: '5y' },
+              { label: '10 Years', value: '10y' }
+            ].map((range) => (
               <button
-                key={range}
-                onClick={() => setTimeRange(range)}
+                key={range.value}
+                onClick={() => {
+                  setTimeRange(range.value);
+                  setTimeRangeDisplay(range.label);
+                }}
                 className={`px-3 py-1 text-xs rounded ${
-                  timeRange === range 
+                  timeRange === range.value 
                     ? 'bg-blue-600 text-white' 
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                {range}
+                {range.label}
               </button>
             ))}
           </div>

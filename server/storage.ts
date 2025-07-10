@@ -1,4 +1,5 @@
 import { stocks, stockAnalysis, chartUploads, portfolio, portfolioTransactions, type Stock, type InsertStock, type StockAnalysis, type InsertStockAnalysis, type ChartUpload, type InsertChartUpload, type Portfolio, type InsertPortfolio, type PortfolioTransaction, type InsertPortfolioTransaction } from "@shared/schema";
+import { yahooFinanceService, type YahooQuote } from "./yahoo-finance";
 
 export interface IStorage {
   // Stock operations
@@ -8,6 +9,9 @@ export interface IStorage {
   createStock(stock: InsertStock): Promise<Stock>;
   updateStock(symbol: string, stock: Partial<InsertStock>): Promise<Stock | undefined>;
   searchStocks(query: string): Promise<Stock[]>;
+  updateStockPricesFromYahoo(): Promise<void>;
+  getYahooQuote(symbol: string): Promise<YahooQuote | null>;
+  getHistoricalData(symbol: string, period?: string): Promise<any[]>;
   
   // Stock analysis operations
   getStockAnalysis(stockSymbol: string): Promise<StockAnalysis | undefined>;
@@ -326,6 +330,66 @@ export class MemStorage implements IStorage {
     }
 
     return performance;
+  }
+
+  async updateStockPricesFromYahoo(): Promise<void> {
+    try {
+      const allStocks = Array.from(this.stocks.values());
+      const symbols = allStocks.map(stock => stock.symbol);
+      
+      console.log(`Updating prices for ${symbols.length} stocks from Yahoo Finance...`);
+      
+      const quotes = await yahooFinanceService.getMultipleQuotes(symbols);
+      
+      for (const [symbol, quote] of Object.entries(quotes)) {
+        const existingStock = this.stocks.get(symbol);
+        if (existingStock && quote) {
+          // Update with real Yahoo Finance data
+          const updatedStock: Stock = {
+            ...existingStock,
+            currentPrice: quote.regularMarketPrice,
+            changePercent: quote.regularMarketChangePercent,
+            dayHigh: quote.regularMarketDayHigh,
+            dayLow: quote.regularMarketDayLow,
+            volume: quote.regularMarketVolume,
+            marketCap: quote.marketCap,
+            peRatio: quote.trailingPE,
+            pbRatio: quote.priceToBook,
+            weekHigh52: quote.fiftyTwoWeekHigh,
+            weekLow52: quote.fiftyTwoWeekLow,
+            lastUpdated: new Date()
+          };
+          
+          this.stocks.set(symbol, updatedStock);
+        }
+      }
+      
+      console.log(`Successfully updated ${Object.keys(quotes).length} stock prices`);
+    } catch (error) {
+      console.error('Error updating stock prices from Yahoo Finance:', error);
+    }
+  }
+
+  async getYahooQuote(symbol: string): Promise<YahooQuote | null> {
+    try {
+      return await yahooFinanceService.getQuote(symbol);
+    } catch (error) {
+      console.error(`Error fetching Yahoo quote for ${symbol}:`, error);
+      return null;
+    }
+  }
+
+  async getHistoricalData(symbol: string, period: string = '3mo'): Promise<any[]> {
+    try {
+      const validPeriod = ['3mo', '1y', '5y', '10y'].includes(period) 
+        ? period as '3mo' | '1y' | '5y' | '10y' 
+        : '3mo';
+      
+      return await yahooFinanceService.getHistoricalData(symbol, validPeriod);
+    } catch (error) {
+      console.error(`Error fetching historical data for ${symbol}:`, error);
+      return [];
+    }
   }
 }
 

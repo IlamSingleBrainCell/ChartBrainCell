@@ -7,6 +7,8 @@ import { StockChart } from "./stock-chart";
 import { PatternVisualization } from "./pattern-visualization";
 import { StockNews } from "./stock-news";
 import { AddToPortfolioDialog } from "./add-to-portfolio-dialog";
+import { useQuery } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 interface AnalysisResultsProps {
   analysis: any;
@@ -15,6 +17,13 @@ interface AnalysisResultsProps {
 
 export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
   const [showAddToPortfolio, setShowAddToPortfolio] = useState(false);
+  
+  // Fetch real Yahoo Finance quote for additional data
+  const { data: yahooQuote, isLoading: quoteLoading } = useQuery({
+    queryKey: [`/api/yahoo/quote/${analysis?.stockSymbol}`],
+    queryFn: () => apiRequest('GET', `/api/yahoo/quote/${analysis.stockSymbol}`),
+    enabled: !!analysis?.stockSymbol && analysis.stockSymbol !== "CUSTOM_CHART",
+  });
   
   if (!analysis) return null;
 

@@ -66,5 +66,17 @@ app.use((req, res, next) => {
     reusePort: true,
   }, () => {
     log(`serving on port ${port}`);
+    
+    // Initialize Yahoo Finance price updates on startup
+    setTimeout(async () => {
+      try {
+        const { storage } = await import("./storage");
+        console.log("Initializing Yahoo Finance price updates...");
+        await storage.updateStockPricesFromYahoo();
+        console.log("Initial price update completed");
+      } catch (error) {
+        console.error("Initial price update failed:", error);
+      }
+    }, 5000); // Wait 5 seconds after server start
   });
 })();

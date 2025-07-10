@@ -7,6 +7,7 @@ import multer from "multer";
 import type { Request } from "express";
 import path from "path";
 import fs from "fs";
+import cron from "node-cron";
 
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), "uploads");
@@ -323,6 +324,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Yahoo Finance API Routes
+  
+  // Get real-time quote from Yahoo Finance
+  app.get("/api/yahoo/quote/:symbol", async (req, res) => {
+    try {
+      const { symbol } = req.params;
+      const quote = await storage.getYahooQuote(symbol);
+      
+      if (!quote) {
+        return res.status(404).json({ message: "Quote not found for symbol" });
+      }
+      
+      res.json(quote);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch quote from Yahoo Finance" });
+    }
+  });
+  
+  // Get historical data from Yahoo Finance
+  app.get("/api/yahoo/historical/:symbol", async (req, res) => {
+    try {
+      const { symbol } = req.params;
+      const { period = '3mo' } = req.query;
+      
+      const historicalData = await storage.getHistoricalData(symbol, period as string);
+      res.json(historicalData);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch historical data from Yahoo Finance" });
+    }
+  });
+  
+  // Manual trigger to update all stock prices from Yahoo Finance
+  app.post("/api/yahoo/update-prices", async (req, res) => {
+    try {
+      await storage.updateStockPricesFromYahoo();
+      res.json({ message: "Stock prices updated successfully from Yahoo Finance" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update stock prices from Yahoo Finance" });
+    }
+  });
+
   const httpServer = createServer(app);
   
   // Setup WebSocket server for real-time price updates
@@ -417,6 +459,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   }
   
+  // Schedule automatic price updates from Yahoo Finance
+  // Update every 15 minutes during market hours (9 AM - 4 PM EST, Monday-Friday)
+  cron.schedule('*/15 9-16 * * 1-5', async () => {
+    console.log('Scheduled Yahoo Finance price update...');
+    try {
+      await storage.updateStockPricesFromYahoo();
+      console.log('Real-time prices updated from Yahoo Finance');
+    } catch (error) {
+      console.error('Scheduled price update failed:', error);
+    }
+  });
+
   // Start price update interval (every 30 seconds)
   setInterval(broadcastPriceUpdates, 30000);
   
