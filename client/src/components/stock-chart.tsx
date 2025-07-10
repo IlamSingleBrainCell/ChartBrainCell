@@ -17,19 +17,20 @@ export function StockChart({ symbol, analysisData, stock, isCustomChart = false 
   const [timeRange, setTimeRange] = useState('3mo');
   const [timeRangeDisplay, setTimeRangeDisplay] = useState('3 Months');
   
-  // Fetch real Yahoo Finance quote for current price
+  // Always call hooks - never conditionally
   const { data: yahooQuote } = useQuery({
-    queryKey: [`/api/yahoo/quote/${symbol}`],
+    queryKey: [`/api/yahoo/quote/${symbol || 'PLACEHOLDER'}`],
     queryFn: () => apiRequest('GET', `/api/yahoo/quote/${symbol}`),
-    enabled: !!symbol && symbol !== "CUSTOM_CHART",
+    enabled: !!symbol && symbol !== "CUSTOM_CHART" && !isCustomChart,
   });
 
-  // Fetch real Yahoo Finance historical data
   const { data: historicalData, isLoading, error } = useQuery({
-    queryKey: [`/api/yahoo/historical/${symbol}`, timeRange],
+    queryKey: [`/api/yahoo/historical/${symbol || 'PLACEHOLDER'}`, timeRange],
     queryFn: () => apiRequest('GET', `/api/yahoo/historical/${symbol}?period=${timeRange}`),
-    enabled: !!symbol && symbol !== "CUSTOM_CHART",
+    enabled: !!symbol && symbol !== "CUSTOM_CHART" && !isCustomChart,
   });
+
+  const { getStockPrice } = useWebSocket();
   
   // Process historical data for chart display
   const processHistoricalData = () => {
@@ -162,7 +163,6 @@ export function StockChart({ symbol, analysisData, stock, isCustomChart = false 
   const currencySymbol = yahooQuote?.currency === 'INR' ? '₹' : (yahooQuote?.currency === 'USD' ? '$' : (isIndian ? '₹' : '$'));
   
   // Get real-time price updates, prioritize Yahoo Finance data
-  const { getStockPrice } = useWebSocket();
   const livePrice = getStockPrice(symbol);
   const displayPrice = yahooQuote?.regularMarketPrice ?? livePrice?.currentPrice ?? currentPrice;
   const changePercent = yahooQuote?.regularMarketChangePercent ?? livePrice?.changePercent ?? stock?.changePercent;
@@ -239,126 +239,86 @@ export function StockChart({ symbol, analysisData, stock, isCustomChart = false 
               { label: '5 Years', value: '5y' },
               { label: '10 Years', value: '10y' }
             ].map((range) => (
-              <button
+              <Button
                 key={range.value}
+                variant={timeRange === range.value ? 'default' : 'outline'}
+                size="sm"
                 onClick={() => {
                   setTimeRange(range.value);
                   setTimeRangeDisplay(range.label);
                 }}
-                className={`px-3 py-1 text-xs rounded ${
-                  timeRange === range.value 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
+                className="text-xs"
               >
                 {range.label}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
-        <p className="text-sm text-gray-600">{analysisData.patternType} Pattern Detected</p>
+        
+        <div className="text-xs text-gray-500">
+          {analysisData.patternType} pattern detected • Confidence: {analysisData.confidence}%
+        </div>
       </div>
       
       <div className="p-4">
-        <div className="h-96 mb-6">
+        <div className="h-80 mb-4">
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={chartData} margin={{ top: 20, right: 60, left: 20, bottom: 60 }}>
-              <defs>
-                {/* Pattern overlays */}
-                <pattern id="cupPattern" patternUnits="userSpaceOnUse" width="4" height="4">
-                  <rect width="4" height="4" fill="rgba(59, 130, 246, 0.1)"/>
-                </pattern>
-              </defs>
-              
-              <CartesianGrid strokeDasharray="2 2" stroke="#e5e7eb" />
+            <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
               <XAxis 
                 dataKey="date" 
-                stroke="#6b7280"
-                fontSize={10}
-                interval={Math.floor(chartData.length / 6)}
-                tick={{ fontSize: 9 }}
-                angle={-45}
-                textAnchor="end"
-                height={60}
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 11, fill: '#64748b' }}
               />
               <YAxis 
-                stroke="#6b7280"
-                fontSize={10}
-                domain={['dataMin - 10', 'dataMax + 10']}
-                tick={{ fontSize: 9 }}
-                tickFormatter={(value) => `${currencySymbol}${value.toFixed(0)}`}
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 11, fill: '#64748b' }}
+                domain={['dataMin - 5', 'dataMax + 5']}
               />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: '#1f2937', 
-                  border: 'none',
+                  backgroundColor: '#1e293b', 
+                  border: 'none', 
                   borderRadius: '8px',
-                  fontSize: '12px',
-                  color: '#fff'
+                  color: '#e2e8f0',
+                  fontSize: '12px'
                 }}
-                formatter={(value: any, name: string) => {
-                  if (name === 'volume') return [value.toLocaleString(), 'Volume'];
-                  if (name === 'open') return [`${currencySymbol}${value.toFixed(2)}`, 'Open'];
-                  if (name === 'high') return [`${currencySymbol}${value.toFixed(2)}`, 'High'];
-                  if (name === 'low') return [`${currencySymbol}${value.toFixed(2)}`, 'Low'];
-                  if (name === 'close') return [`${currencySymbol}${value.toFixed(2)}`, 'Close'];
-                  return [`${currencySymbol}${value.toFixed(2)}`, name];
-                }}
-                labelFormatter={(label) => `Date: ${label}`}
+                formatter={(value: any, name: string) => [
+                  `${currencySymbol}${Number(value).toFixed(2)}`,
+                  name === 'price' ? 'Close' : name.charAt(0).toUpperCase() + name.slice(1)
+                ]}
+                labelStyle={{ color: '#94a3b8' }}
               />
               
-              {/* Candlestick wicks (high-low lines) */}
-              <Line 
-                type="monotone" 
-                dataKey="high" 
-                stroke="transparent"
-                strokeWidth={0}
-                dot={false}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="low" 
-                stroke="transparent"
-                strokeWidth={0}
-                dot={false}
-              />
-              
-              {/* Custom candlestick bodies */}
-              {chartData.map((entry, index) => {
-                const isGreen = entry.close >= entry.open;
-                const bodyHeight = Math.abs(entry.close - entry.open);
-                const wickTop = entry.high;
-                const wickBottom = entry.low;
-                const bodyTop = Math.max(entry.open, entry.close);
-                const bodyBottom = Math.min(entry.open, entry.close);
-                
-                return (
-                  <g key={`candle-${index}`}>
-                    {/* Wick lines */}
-                    <line
-                      x1={50 + (index * (600 / chartData.length))}
-                      y1={300 - ((wickTop - minPrice) / (maxPrice - minPrice)) * 250}
-                      x2={50 + (index * (600 / chartData.length))}
-                      y2={300 - ((wickBottom - minPrice) / (maxPrice - minPrice)) * 250}
-                      stroke="#6b7280"
-                      strokeWidth="1"
-                    />
-                  </g>
-                );
-              })}
+              {/* Candlestick representation using bars */}
+              <Bar dataKey={(entry) => [entry.low, entry.high - entry.low]} fill="transparent" stroke="transparent">
+                {chartData.map((entry, index) => (
+                  <Cell key={`wick-${index}`} fill="transparent" stroke="#64748b" strokeWidth={1} />
+                ))}
+              </Bar>
               
               {/* Main price line */}
               <Line 
                 type="monotone" 
-                dataKey="close" 
-                stroke="#2563eb" 
-                strokeWidth={1.5}
+                dataKey="close"
+                stroke="#2563eb"
+                strokeWidth={2}
                 dot={false}
-                activeDot={{ r: 3, fill: '#2563eb', stroke: '#fff', strokeWidth: 2 }}
+                activeDot={{ r: 4, fill: '#2563eb' }}
+              />
+              
+              {/* Volume bars at bottom */}
+              <Bar 
+                dataKey="volume" 
+                fill="#e2e8f0" 
+                opacity={0.3}
+                yAxisId="volume"
               />
               
               {/* Pattern-specific annotations */}
-              {patternAnnotations && analysisData.patternType.includes('Cup and Handle') && (
+              {patternAnnotations && (
                 <>
                   {/* Cup depth line */}
                   <ReferenceLine 
