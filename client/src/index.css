@@ -24,12 +24,20 @@
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
 
-  /* Brand Colors */
+  /* Enhanced Brand Colors */
   --brand-blue: hsl(207, 90%, 54%);
+  --brand-blue-light: hsl(207, 90%, 64%);
+  --brand-blue-dark: hsl(207, 90%, 44%);
   --brand-green: hsl(159, 64%, 40%);
+  --brand-green-light: hsl(159, 64%, 50%);
   --brand-light: hsl(210, 40%, 98%);
   --brand-gray: hsl(215, 16%, 47%);
+  --brand-gray-light: hsl(215, 16%, 67%);
   --brand-dark: hsl(217, 33%, 17%);
+  --brand-purple: hsl(262, 83%, 58%);
+  --brand-purple-light: hsl(262, 83%, 68%);
+  --brand-orange: hsl(24, 95%, 53%);
+  --brand-orange-light: hsl(24, 95%, 63%);
 }
 
 .dark {
@@ -66,43 +74,52 @@
 }
 
 @layer utilities {
-  .brand-blue {
-    color: var(--brand-blue);
-  }
+  /* Enhanced Brand Color Utilities */
+  .brand-blue { color: var(--brand-blue); }
+  .bg-brand-blue { background-color: var(--brand-blue); }
+  .bg-brand-blue-light { background-color: var(--brand-blue-light); }
+  .bg-brand-blue-dark { background-color: var(--brand-blue-dark); }
+  .border-brand-blue { border-color: var(--brand-blue); }
   
-  .bg-brand-blue {
-    background-color: var(--brand-blue);
-  }
+  .brand-green { color: var(--brand-green); }
+  .bg-brand-green { background-color: var(--brand-green); }
+  .bg-brand-green-light { background-color: var(--brand-green-light); }
   
-  .border-brand-blue {
-    border-color: var(--brand-blue);
-  }
+  .bg-brand-light { background-color: var(--brand-light); }
+  .text-brand-gray { color: var(--brand-gray); }
+  .text-brand-gray-light { color: var(--brand-gray-light); }
+  .text-brand-dark { color: var(--brand-dark); }
   
-  .brand-green {
-    color: var(--brand-green);
-  }
+  .bg-brand-purple { background-color: var(--brand-purple); }
+  .bg-brand-purple-light { background-color: var(--brand-purple-light); }
+  .bg-brand-orange { background-color: var(--brand-orange); }
+  .bg-brand-orange-light { background-color: var(--brand-orange-light); }
   
-  .bg-brand-green {
-    background-color: var(--brand-green);
-  }
+  /* Enhanced Hover States */
+  .hover\:bg-brand-blue:hover { background-color: var(--brand-blue); }
+  .hover\:bg-brand-blue-light:hover { background-color: var(--brand-blue-light); }
+  .hover\:text-brand-blue:hover { color: var(--brand-blue); }
+  .hover\:scale-105:hover { transform: scale(1.05); }
+  .hover\:shadow-xl:hover { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
   
-  .bg-brand-light {
-    background-color: var(--brand-light);
-  }
+  /* Modern Gradient Backgrounds */
+  .bg-gradient-modern { background: linear-gradient(135deg, var(--brand-blue) 0%, var(--brand-purple) 100%); }
+  .bg-gradient-success { background: linear-gradient(135deg, var(--brand-green) 0%, var(--brand-blue) 100%); }
+  .bg-gradient-warning { background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-purple) 100%); }
+  .bg-gradient-glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
   
-  .text-brand-gray {
-    color: var(--brand-gray);
-  }
-  
-  .text-brand-dark {
-    color: var(--brand-dark);
-  }
-  
-  .hover\:bg-brand-blue:hover {
-    background-color: var(--brand-blue);
-  }
-  
-  .hover\:text-brand-blue:hover {
-    color: var(--brand-blue);
-  }
+  /* Enhanced Animation Classes */
+  .animate-float { animation: float 3s ease-in-out infinite; }
+  .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite alternate; }
+  .transition-all-smooth { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
+  100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8), 0 0 30px rgba(59, 130, 246, 0.4); }
 }

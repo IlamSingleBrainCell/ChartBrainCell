@@ -66,17 +66,52 @@ export default function Home() {
       <FeaturesSection />
       
       {/* Market Summary Section */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Real-Time Market Data
+      <section className="py-20 bg-gradient-to-br from-indigo-50 via-white to-purple-50 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23818cf8' fill-opacity='0.1'%3E%3Cpath d='M20 20h40v40H20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }} />
+        </div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center bg-gradient-modern text-white rounded-full px-6 py-3 mb-6 font-semibold text-sm shadow-lg">
+              <div className="w-2 h-2 bg-green-400 rounded-full mr-3 animate-pulse"></div>
+              Live Market Data
+            </div>
+            <h2 className="text-4xl lg:text-5xl font-bold text-brand-dark mb-6 leading-tight">
+              Real-Time Global Markets
             </h2>
-            <p className="text-lg text-gray-600">
-              Live prices from NASDAQ, NYSE, and NSE exchanges powered by Yahoo Finance
+            <p className="text-xl text-brand-gray max-w-3xl mx-auto leading-relaxed">
+              Track live prices from NASDAQ, NYSE, and NSE exchanges with authentic Yahoo Finance data 
+              updated every 30 seconds during market hours
             </p>
           </div>
-          <MarketSummary />
+          
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/50 p-8">
+            <MarketSummary />
+          </div>
+          
+          {/* Trust indicators */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-green-600 mb-2">Real-Time</div>
+              <div className="text-sm text-brand-gray">Data Updates</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-600 mb-2">Yahoo Finance</div>
+              <div className="text-sm text-brand-gray">Powered API</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-purple-600 mb-2">96+ Stocks</div>
+              <div className="text-sm text-brand-gray">Global Coverage</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-orange-600 mb-2">3 Exchanges</div>
+              <div className="text-sm text-brand-gray">NASDAQ, NYSE, NSE</div>
+            </div>
+          </div>
         </div>
       </section>
 

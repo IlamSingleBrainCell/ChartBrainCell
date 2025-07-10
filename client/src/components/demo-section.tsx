@@ -115,24 +115,45 @@ export function DemoSection({ onStockAnalyzed }: DemoSectionProps) {
   };
 
   return (
-    <section id="demo" className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-brand-dark mb-4">Try Our Analysis Tools</h2>
-          <p className="text-xl text-brand-gray">
-            Search for stocks or upload your own charts for instant pattern analysis
+    <section id="demo" className="py-24 bg-gradient-to-br from-white via-gray-50 to-blue-50 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234f46e5' fill-opacity='0.05'%3E%3Ccircle cx='50' cy='50' r='25'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }} />
+      </div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-20">
+          <div className="inline-flex items-center bg-gradient-modern text-white rounded-full px-6 py-3 mb-6 font-semibold text-sm shadow-lg">
+            <div className="w-2 h-2 bg-green-400 rounded-full mr-3 animate-pulse"></div>
+            Interactive Analysis Tools
+          </div>
+          <h2 className="text-4xl lg:text-5xl font-bold text-brand-dark mb-6 leading-tight">
+            Start Your Pattern Analysis
+          </h2>
+          <p className="text-xl text-brand-gray leading-relaxed max-w-4xl mx-auto">
+            Choose your preferred method: search from our comprehensive database of 96+ global stocks 
+            or upload your own chart images for custom AI-powered pattern recognition
           </p>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Stock Search Section */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <div className="flex items-center mb-6">
-              <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-              <h3 className="text-2xl font-semibold text-brand-dark">Get Live Stock Chart</h3>
+          <div className="group bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/50 p-10 hover:shadow-3xl transition-all-smooth hover:scale-105">
+            <div className="flex items-center mb-8">
+              <div className="w-16 h-16 bg-gradient-modern rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <div className="text-white text-2xl font-bold">📊</div>
+              </div>
+              <div className="ml-4">
+                <h3 className="text-3xl font-bold text-brand-dark">Live Stock Analysis</h3>
+                <p className="text-brand-gray-light font-medium">Real-time pattern recognition</p>
+              </div>
             </div>
             
-            <p className="text-brand-gray mb-6">Search from 65+ stocks from NSE, NYSE, and BSE markets</p>
+            <p className="text-brand-gray mb-8 text-lg leading-relaxed">
+              Instant analysis of live stock charts from NASDAQ, NYSE, and NSE markets with authentic Yahoo Finance data
+            </p>
             
             <div className="space-y-4">
               <StockSearch 
@@ -171,25 +192,37 @@ export function DemoSection({ onStockAnalyzed }: DemoSectionProps) {
           </div>
           
           {/* Chart Upload Section */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <div className="flex items-center mb-6">
-              <Upload className="text-green-600 mr-3" size={24} />
-              <h3 className="text-2xl font-semibold text-brand-dark">Upload Chart Image</h3>
+          <div className="group bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/50 p-10 hover:shadow-3xl transition-all-smooth hover:scale-105">
+            <div className="flex items-center mb-8">
+              <div className="w-16 h-16 bg-gradient-success rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <Upload className="text-white" size={28} />
+              </div>
+              <div className="ml-4">
+                <h3 className="text-3xl font-bold text-brand-dark">Custom Chart Analysis</h3>
+                <p className="text-brand-gray-light font-medium">AI-powered image recognition</p>
+              </div>
             </div>
             
-            <p className="text-brand-gray mb-6">Upload your own chart images for custom AI analysis</p>
+            <p className="text-brand-gray mb-8 text-lg leading-relaxed">
+              Upload your own trading charts for instant pattern analysis using our proprietary AI algorithms
+            </p>
             
             <div 
-              className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-600 transition-colors cursor-pointer"
+              className="group/upload border-2 border-dashed border-blue-200 rounded-2xl p-12 text-center hover:border-blue-400 hover:bg-blue-50/50 transition-all-smooth cursor-pointer backdrop-blur-sm"
               onClick={handleBrowseFiles}
             >
-              <CloudUpload className="text-4xl text-brand-gray mb-4 mx-auto" size={48} />
-              <p className="text-lg font-medium text-brand-dark mb-2">Drop your chart image here</p>
-              <p className="text-brand-gray mb-4">or click to browse</p>
-              <Button className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg">
-                Browse Files
+              <div className="relative">
+                <CloudUpload className="text-6xl text-blue-400 mb-6 mx-auto group-hover/upload:scale-110 transition-transform" size={64} />
+                <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full opacity-0 group-hover/upload:opacity-100 transition-opacity animate-pulse"></div>
+              </div>
+              <p className="text-2xl font-bold text-brand-dark mb-3">Drop your chart image here</p>
+              <p className="text-brand-gray mb-6 text-lg">or click to browse from your device</p>
+              <Button className="bg-gradient-success text-white px-8 py-4 rounded-xl font-bold hover:scale-105 transition-all-smooth shadow-lg text-lg">
+                📁 Browse Files
               </Button>
-              <p className="text-sm text-brand-gray mt-4">Supports JPG, PNG, GIF up to 10MB</p>
+              <p className="text-sm text-brand-gray-light mt-6 font-medium">
+                Supports JPG, PNG, GIF • Maximum 10MB • Instant AI analysis
+              </p>
             </div>
             
             <input

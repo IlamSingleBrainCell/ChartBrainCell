@@ -46,39 +46,54 @@ export function StocksShowcase({ onStockSelect }: StocksShowcaseProps) {
   };
 
   return (
-    <section id="stocks" className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <h2 className="text-3xl lg:text-4xl font-bold text-brand-dark">65+ Supported Stocks</h2>
-            <div className={`flex items-center px-3 py-1 rounded-full text-sm ${
-              isConnected ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+    <section id="stocks" className="py-24 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-modern opacity-5 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-warning opacity-5 rounded-full blur-3xl"></div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-20">
+          <div className="flex items-center justify-center gap-6 mb-6">
+            <h2 className="text-4xl lg:text-5xl font-bold text-brand-dark tracking-tight">96+ Global Stocks</h2>
+            <div className={`flex items-center px-6 py-3 rounded-2xl text-sm font-semibold shadow-lg ${
+              isConnected 
+                ? 'bg-green-500 text-white animate-pulse-glow' 
+                : 'bg-red-500 text-white'
             }`}>
-              {isConnected ? <Wifi size={16} className="mr-2" /> : <WifiOff size={16} className="mr-2" />}
-              {isConnected ? 'Live Prices' : 'Offline'}
+              {isConnected ? <Wifi size={18} className="mr-3" /> : <WifiOff size={18} className="mr-3" />}
+              {isConnected ? 'Live Real-Time Data' : 'Connection Lost'}
             </div>
           </div>
-          <p className="text-xl text-brand-gray">
-            Comprehensive coverage of NSE, NYSE, and BSE markets with real-time data
+          <p className="text-xl text-brand-gray leading-relaxed max-w-4xl mx-auto">
+            Professional coverage of NASDAQ, NYSE, and NSE markets with authentic Yahoo Finance integration 
+            and real-time WebSocket price streaming
           </p>
         </div>
         
-        {/* Market Tabs */}
-        <div className="flex justify-center mb-12">
-          <div className="bg-white rounded-lg p-1 shadow-sm">
+        {/* Enhanced Market Tabs */}
+        <div className="flex justify-center mb-16">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-2 shadow-2xl border border-white/50">
             <Button
               onClick={() => setSelectedMarket("US")}
               variant={selectedMarket === "US" ? "default" : "ghost"}
-              className={selectedMarket === "US" ? "bg-blue-600 text-white" : "text-brand-gray"}
+              className={`px-8 py-4 rounded-xl font-semibold text-lg transition-all-smooth ${
+                selectedMarket === "US" 
+                  ? "bg-gradient-modern text-white shadow-lg hover:scale-105" 
+                  : "text-brand-gray hover:bg-blue-50 hover:text-blue-600"
+              }`}
             >
-              US Markets
+              🇺🇸 US Markets
             </Button>
             <Button
               onClick={() => setSelectedMarket("Indian")}
               variant={selectedMarket === "Indian" ? "default" : "ghost"}
-              className={selectedMarket === "Indian" ? "bg-blue-600 text-white" : "text-brand-gray"}
+              className={`px-8 py-4 rounded-xl font-semibold text-lg transition-all-smooth ${
+                selectedMarket === "Indian" 
+                  ? "bg-gradient-modern text-white shadow-lg hover:scale-105" 
+                  : "text-brand-gray hover:bg-blue-50 hover:text-blue-600"
+              }`}
             >
-              Indian Markets
+              🇮🇳 Indian Markets
             </Button>
           </div>
         </div>

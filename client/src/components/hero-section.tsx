@@ -8,75 +8,104 @@ interface HeroSectionProps {
 
 export function HeroSection({ onStartAnalysis, onViewDemo }: HeroSectionProps) {
   return (
-    <section className="bg-gradient-to-br from-blue-600 to-blue-700 text-white py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <div className="inline-flex items-center bg-white/10 rounded-full px-4 py-2 mb-6">
-              <Rocket className="text-yellow-300 mr-2" size={16} />
-              <span className="text-sm font-medium">Enhanced Analysis Now Available</span>
+    <section className="relative bg-gradient-modern text-white py-24 overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }} />
+      </div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="space-y-8">
+            <div className="inline-flex items-center bg-gradient-glass rounded-full px-6 py-3 animate-pulse-glow">
+              <Rocket className="text-yellow-300 mr-3 animate-float" size={18} />
+              <span className="text-sm font-semibold tracking-wide">Enhanced Analysis Now Available</span>
             </div>
             
-            <h1 className="text-4xl lg:text-5xl font-bold leading-tight mb-6">
-              Advanced Stock Pattern Recognition
-            </h1>
+            <div className="space-y-6">
+              <h1 className="text-5xl lg:text-6xl font-bold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-white">
+                Advanced Stock Pattern Recognition
+              </h1>
+              
+              <p className="text-xl text-blue-100 leading-relaxed font-light">
+                Analyze live stock charts with enhanced pattern recognition and breakout timing prediction. 
+                Supporting 96+ stocks from NSE, NYSE, and BSE markets with real-time Yahoo Finance data.
+              </p>
+            </div>
             
-            <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-              Analyze live stock charts with enhanced pattern recognition and breakout timing prediction. 
-              Supporting 65+ stocks from NSE, NYSE, and BSE markets.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row gap-4">
               <Button 
                 onClick={onStartAnalysis}
-                className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                className="group bg-white text-blue-600 px-10 py-5 rounded-xl font-bold hover:bg-gray-50 transition-all-smooth hover:scale-105 hover:shadow-xl text-lg"
                 size="lg"
               >
-                <BarChart3 className="mr-2" size={20} />
+                <BarChart3 className="mr-3 group-hover:scale-110 transition-transform" size={22} />
                 Start Analysis
               </Button>
               <Button 
                 onClick={onViewDemo}
                 variant="outline"
-                className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/10 transition-colors bg-transparent"
+                className="group border-2 border-white/30 text-white px-10 py-5 rounded-xl font-bold hover:bg-white/20 transition-all-smooth hover:scale-105 bg-white/10 backdrop-blur-sm text-lg"
                 size="lg"
               >
-                <PlayCircle className="mr-2" size={20} />
+                <PlayCircle className="mr-3 group-hover:scale-110 transition-transform" size={22} />
                 View Demo
               </Button>
             </div>
             
-            <div className="flex items-center space-x-6 text-sm text-blue-100">
-              <div className="flex items-center">
-                <CheckCircle className="text-green-400 mr-2" size={16} />
-                <span>65+ Stock Database</span>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4">
+              <div className="flex items-center space-x-3 bg-white/10 rounded-lg p-4 backdrop-blur-sm">
+                <CheckCircle className="text-green-400 flex-shrink-0" size={20} />
+                <div>
+                  <div className="font-semibold">96+ Stocks</div>
+                  <div className="text-xs text-blue-200">Global Database</div>
+                </div>
               </div>
-              <div className="flex items-center">
-                <CheckCircle className="text-green-400 mr-2" size={16} />
-                <span>3-Month Analysis</span>
+              <div className="flex items-center space-x-3 bg-white/10 rounded-lg p-4 backdrop-blur-sm">
+                <CheckCircle className="text-green-400 flex-shrink-0" size={20} />
+                <div>
+                  <div className="font-semibold">Real-Time Data</div>
+                  <div className="text-xs text-blue-200">Yahoo Finance</div>
+                </div>
               </div>
-              <div className="flex items-center">
-                <CheckCircle className="text-green-400 mr-2" size={16} />
-                <span>Breakout Predictions</span>
+              <div className="flex items-center space-x-3 bg-white/10 rounded-lg p-4 backdrop-blur-sm">
+                <CheckCircle className="text-green-400 flex-shrink-0" size={20} />
+                <div>
+                  <div className="font-semibold">95%+ Accuracy</div>
+                  <div className="text-xs text-blue-200">Pattern Recognition</div>
+                </div>
               </div>
             </div>
           </div>
           
-          <div className="relative">
-            <img 
-              src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
-              alt="Professional trading workspace with multiple monitors" 
-              className="rounded-xl shadow-2xl w-full h-auto"
-            />
-            
-            <div className="absolute -bottom-6 -left-6 bg-white rounded-lg shadow-xl p-4 text-brand-dark">
-              <div className="text-2xl font-bold text-green-600">98.5%</div>
-              <div className="text-sm text-brand-gray">Pattern Accuracy</div>
+          <div className="relative lg:ml-8">
+            <div className="relative group">
+              <img 
+                src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
+                alt="Professional trading workspace with multiple monitors" 
+                className="rounded-2xl shadow-2xl w-full h-auto transform group-hover:scale-105 transition-all-smooth"
+              />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>
             
-            <div className="absolute -top-6 -right-6 bg-white rounded-lg shadow-xl p-4 text-brand-dark">
-              <div className="text-2xl font-bold text-blue-600">65+</div>
-              <div className="text-sm text-brand-gray">Supported Stocks</div>
+            {/* Floating Stats Cards */}
+            <div className="absolute -bottom-8 -left-8 bg-gradient-glass backdrop-blur-md rounded-2xl shadow-2xl p-6 text-white border border-white/20 animate-float">
+              <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-success">95.5%</div>
+              <div className="text-sm text-gray-200 font-medium">Pattern Accuracy</div>
+              <div className="w-8 h-1 bg-gradient-success rounded-full mt-2"></div>
+            </div>
+            
+            <div className="absolute -top-8 -right-8 bg-gradient-glass backdrop-blur-md rounded-2xl shadow-2xl p-6 text-white border border-white/20 animate-float" style={{ animationDelay: '1s' }}>
+              <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-warning">96+</div>
+              <div className="text-sm text-gray-200 font-medium">Supported Stocks</div>
+              <div className="w-8 h-1 bg-gradient-warning rounded-full mt-2"></div>
+            </div>
+            
+            <div className="absolute top-1/2 -right-12 transform -translate-y-1/2 bg-gradient-glass backdrop-blur-md rounded-2xl shadow-2xl p-4 text-white border border-white/20 animate-float" style={{ animationDelay: '2s' }}>
+              <div className="text-lg font-bold text-green-400">LIVE</div>
+              <div className="text-xs text-gray-200">Real-time</div>
             </div>
           </div>
         </div>
