@@ -297,6 +297,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // TickerTick News API Integration
+  app.get("/api/news/:symbol", async (req, res) => {
+    try {
+      const symbol = req.params.symbol.toUpperCase();
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+      
+      // Convert symbol for TickerTick API (remove exchange suffixes for Indian stocks)
+      let tickerSymbol = symbol;
+      if (symbol.endsWith('.NS') || symbol.endsWith('.BO')) {
+        // For Indian stocks, we'll try to get general market news since TickerTick focuses on US markets
+        tickerSymbol = symbol.replace(/\.(NS|BO)$/, '');
+      }
+      
+      const tickerTickUrl = `https://api.tickertick.com/feed?q=tt:${tickerSymbol.toLowerCase()}&n=${limit}`;
+      
+      // Fetch news from TickerTick API with proper error handling
+      const response = await fetch(tickerTickUrl);
+      
+      if (!response.ok) {
+        console.log(`TickerTick API error for ${symbol}: ${response.status}`);
+        // Return empty array if API fails
+        return res.json({ stories: [], source: 'tickertick', symbol });
+      }
+      
+      const data = await response.json();
+      
+      // Transform TickerTick data to our format
+      const transformedStories = (data.stories || []).map((story: any) => ({
+        id: story.id,
+        title: story.title,
+        summary: story.description || story.title,
+        url: story.url,
+        source: story.site,
+        time: new Date(story.time).toLocaleString(),
+        sentiment: 'neutral', // TickerTick doesn't provide sentiment
+        favicon: story.favicon_url,
+        tickers: story.tickers || [tickerSymbol.toLowerCase()]
+      }));
+      
+      res.json({
+        stories: transformedStories,
+        source: 'tickertick',
+        symbol: symbol,
+        total: transformedStories.length
+      });
+      
+    } catch (error) {
+      console.error(`Error fetching news for ${req.params.symbol}:`, error);
+      // Return empty array on error instead of failing
+      res.json({ 
+        stories: [], 
+        source: 'tickertick', 
+        symbol: req.params.symbol,
+        error: 'Failed to fetch news'
+      });
+    }
+  });
+
   // Add transaction to portfolio
   app.post("/api/portfolio/:id/transactions", async (req, res) => {
     try {
