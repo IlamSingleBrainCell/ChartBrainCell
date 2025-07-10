@@ -110,15 +110,15 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
           
 
 
-          {/* Enhanced Analysis Cards with Modern Design */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+          {/* Enhanced Analysis Cards with Gen Z Design */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-16">
               {/* Pattern Recognition */}
-              <Card className="card-hover border-0 bg-gradient-to-br from-purple-500 via-indigo-600 to-purple-700 text-white shadow-2xl overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-                <CardContent className="p-8 relative z-10">
-                  <div className="flex items-center mb-6">
-                    <div className="w-4 h-4 bg-yellow-400 rounded-full mr-4 glow-pulse"></div>
-                    <h4 className="text-xl font-black text-white">Pattern Recognition</h4>
+              <Card className="card-hover border-0 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 text-white shadow-2xl overflow-hidden relative neon-glow">
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/20 to-transparent"></div>
+                <CardContent className="p-10 relative z-10">
+                  <div className="flex items-center mb-8">
+                    <div className="w-6 h-6 bg-gradient-to-r from-cyan-400 to-yellow-400 rounded-full mr-4 glow-pulse"></div>
+                    <h4 className="text-2xl font-black text-white">Pattern Recognition 🎯</h4>
                   </div>
                   <div className="space-y-6">
                     <div className="flex justify-between items-center">
@@ -142,12 +142,12 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
               </Card>
               
               {/* Confidence Score */}
-              <Card className="card-hover border-0 bg-gradient-to-br from-blue-500 via-cyan-600 to-teal-700 text-white shadow-2xl overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-                <CardContent className="p-8 relative z-10">
-                  <div className="flex items-center mb-6">
-                    <div className="w-4 h-4 bg-cyan-300 rounded-full mr-4 glow-pulse"></div>
-                    <h4 className="text-xl font-black text-white">AI Confidence</h4>
+              <Card className="card-hover border-0 bg-gradient-to-br from-cyan-500 via-blue-600 to-purple-700 text-white shadow-2xl overflow-hidden relative neon-glow">
+                <div className="absolute inset-0 bg-gradient-to-br from-pink-400/20 to-transparent"></div>
+                <CardContent className="p-10 relative z-10">
+                  <div className="flex items-center mb-8">
+                    <div className="w-6 h-6 bg-gradient-to-r from-pink-400 to-cyan-400 rounded-full mr-4 glow-pulse"></div>
+                    <h4 className="text-2xl font-black text-white">AI Confidence 🤖</h4>
                   </div>
                   <div className="text-center">
                     <div className="relative">
@@ -172,12 +172,12 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
               </Card>
               
               {/* Breakout Prediction */}
-              <Card className="card-hover border-0 bg-gradient-to-br from-emerald-500 via-green-600 to-teal-700 text-white shadow-2xl overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-                <CardContent className="p-8 relative z-10">
-                  <div className="flex items-center mb-6">
-                    <div className="w-4 h-4 bg-green-300 rounded-full mr-4 glow-pulse"></div>
-                    <h4 className="text-xl font-black text-white">Breakout Forecast</h4>
+              <Card className="card-hover border-0 bg-gradient-to-br from-green-500 via-emerald-600 to-cyan-700 text-white shadow-2xl overflow-hidden relative neon-glow">
+                <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-transparent"></div>
+                <CardContent className="p-10 relative z-10">
+                  <div className="flex items-center mb-8">
+                    <div className="w-6 h-6 bg-gradient-to-r from-yellow-400 to-green-400 rounded-full mr-4 glow-pulse"></div>
+                    <h4 className="text-2xl font-black text-white">Breakout Forecast 🚀</h4>
                   </div>
                   <div className="space-y-6">
                     <div className="glass-effect rounded-xl p-4 flex justify-between items-center card-hover">

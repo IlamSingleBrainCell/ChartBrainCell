@@ -53,18 +53,19 @@ export function StocksShowcase({ onStockSelect }: StocksShowcaseProps) {
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl"></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-20 fade-in">
-          <div className="flex items-center justify-center gap-6 mb-6">
-            <h2 className="text-4xl lg:text-6xl font-black text-gray-900 gradient-text">96+ Global Stocks</h2>
-            <div className={`flex items-center px-6 py-3 rounded-2xl text-lg font-bold shadow-lg card-hover ${
-              isConnected ? 'bg-green-500 text-white glow-pulse' : 'bg-red-500 text-white'
+        <div className="text-center mb-24 fade-in">
+          <div className="flex flex-col items-center gap-8 mb-8">
+            <h2 className="text-5xl lg:text-7xl font-black gradient-text">96+ Global Stocks 🌍</h2>
+            <div className={`flex items-center px-8 py-4 rounded-3xl text-xl font-black shadow-2xl card-hover transition-all duration-300 ${
+              isConnected ? 'bg-gradient-to-r from-green-400 via-emerald-500 to-cyan-500 text-white glow-pulse neon-glow' : 'bg-gradient-to-r from-red-500 to-pink-500 text-white'
             }`}>
-              {isConnected ? <Wifi size={20} className="mr-3" /> : <WifiOff size={20} className="mr-3" />}
-              {isConnected ? '🔴 Live Data' : '⚠️ Offline'}
+              {isConnected ? <Wifi size={24} className="mr-4" /> : <WifiOff size={24} className="mr-4" />}
+              {isConnected ? '🔴 LIVE DATA STREAMING' : '⚠️ OFFLINE MODE'}
             </div>
           </div>
-          <p className="text-xl lg:text-2xl text-gray-600 font-light max-w-3xl mx-auto">
-            Real-time market data from NSE, NYSE, and BSE exchanges with instant price updates
+          <p className="text-2xl lg:text-3xl text-gray-700 font-medium max-w-4xl mx-auto leading-relaxed">
+            <span className="text-purple-600 font-black">Real-time market data</span> from NSE, NYSE, and BSE exchanges with 
+            <span className="text-cyan-600 font-black"> instant price updates</span> ⚡
           </p>
         </div>
         
@@ -74,24 +75,24 @@ export function StocksShowcase({ onStockSelect }: StocksShowcaseProps) {
             <Button
               onClick={() => setSelectedMarket("US")}
               variant={selectedMarket === "US" ? "default" : "ghost"}
-              className={`button-modern px-8 py-4 rounded-xl text-lg font-bold transition-all ${
+              className={`button-modern px-10 py-5 rounded-2xl text-xl font-black transition-all duration-300 ${
                 selectedMarket === "US" 
-                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg" 
-                  : "text-gray-600 hover:bg-white/50"
+                  ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-2xl glow-pulse transform scale-105" 
+                  : "text-gray-600 hover:bg-white/70 hover:scale-105"
               }`}
             >
-              🇺🇸 US Markets
+              <span className="text-2xl mr-3">🇺🇸</span> US Markets
             </Button>
             <Button
               onClick={() => setSelectedMarket("Indian")}
               variant={selectedMarket === "Indian" ? "default" : "ghost"}
-              className={`button-modern px-8 py-4 rounded-xl text-lg font-bold transition-all ${
+              className={`button-modern px-10 py-5 rounded-2xl text-xl font-black transition-all duration-300 ${
                 selectedMarket === "Indian" 
-                  ? "bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-lg" 
-                  : "text-gray-600 hover:bg-white/50"
+                  ? "bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 text-white shadow-2xl glow-pulse transform scale-105" 
+                  : "text-gray-600 hover:bg-white/70 hover:scale-105"
               }`}
             >
-              🇮🇳 Indian Markets
+              <span className="text-2xl mr-3">🇮🇳</span> Indian Markets
             </Button>
           </div>
         </div>
@@ -118,53 +119,53 @@ export function StocksShowcase({ onStockSelect }: StocksShowcaseProps) {
               const isLive = !!livePrice;
               
               return (
-                <Card 
+                <div 
                   key={stock.symbol} 
-                  className="hover:shadow-md transition-shadow cursor-pointer"
+                  className="glass-effect border-0 rounded-3xl shadow-2xl p-8 hover:shadow-2xl transition-all duration-300 cursor-pointer hover:border-purple-400/50 card-hover neon-glow group"
                   onClick={() => onStockSelect(stock.symbol)}
                 >
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getIconColor(stock.symbol)}`}>
-                        <span className="font-bold text-lg">{getStockIcon(stock.symbol)}</span>
-                      </div>
-                      <div className="flex items-center">
-                        {changePercent >= 0 ? (
-                          <TrendingUp className="text-green-600 mr-1" size={16} />
-                        ) : (
-                          <TrendingDown className="text-red-500 mr-1" size={16} />
-                        )}
-                        <span className={`text-sm font-medium ${
-                          changePercent >= 0 ? 'text-green-600' : 'text-red-500'
-                        }`}>
-                          {changePercent >= 0 ? '+' : ''}{changePercent.toFixed(2)}%
-                        </span>
-                        {isLive && (
-                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse ml-2"></div>
-                        )}
-                      </div>
+                  <div className="flex items-center justify-between mb-6">
+                    <div className={`w-16 h-16 rounded-full flex items-center justify-center shadow-xl ${getIconColor(stock.symbol)} group-hover:scale-110 transition-transform`}>
+                      <span className="font-black text-2xl text-white">{getStockIcon(stock.symbol)}</span>
                     </div>
-                    <h3 className="text-lg font-semibold text-brand-dark mb-1 truncate">{stock.name}</h3>
-                    <p className="text-brand-gray text-sm mb-3">{stock.symbol}</p>
-                    <div className="text-2xl font-bold text-brand-dark">
+                    <div className="flex items-center">
+                      {changePercent >= 0 ? (
+                        <TrendingUp className="text-green-500 mr-2" size={20} />
+                      ) : (
+                        <TrendingDown className="text-red-500 mr-2" size={20} />
+                      )}
+                      <span className={`text-lg font-black px-4 py-2 rounded-2xl ${
+                        changePercent >= 0 ? 'bg-green-400 text-green-900' : 'bg-red-400 text-red-900'
+                      }`}>
+                        {changePercent >= 0 ? '+' : ''}{changePercent.toFixed(2)}%
+                      </span>
+                      {isLive && (
+                        <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse ml-3 shadow-lg"></div>
+                      )}
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-black text-gray-900 mb-2 truncate group-hover:text-purple-600 transition-colors">{stock.name}</h3>
+                  <p className="text-purple-600 text-lg font-bold mb-4">{stock.symbol} • {stock.market === 'Indian' ? '🇮🇳 India' : '🇺🇸 USA'}</p>
+                  <div className="bg-gradient-to-r from-gray-50 to-white rounded-2xl p-4 mb-4">
+                    <div className="text-3xl font-black text-gray-900">
                       {stock.market === 'Indian' ? '₹' : '$'}{currentPrice?.toFixed(2)}
                     </div>
-                    <div className="text-sm text-brand-gray">
-                      {isLive ? 'Live price' : `Updated ${Math.floor(Math.random() * 5) + 1} min ago`}
+                    <div className={`text-sm font-bold mt-1 ${isLive ? 'text-green-600' : 'text-gray-500'}`}>
+                      {isLive ? '🔴 LIVE PRICE' : `📊 Updated ${Math.floor(Math.random() * 5) + 1} min ago`}
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               );
             })
           )}
         </div>
         
-        <div className="text-center">
+        <div className="text-center scale-in">
           <Button 
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold"
+            className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 hover:from-purple-700 hover:via-pink-700 hover:to-orange-600 text-white px-12 py-6 rounded-3xl font-black text-xl shadow-2xl neon-glow hover:scale-110 transform transition-all duration-300"
             onClick={() => window.location.href = '/all-stocks'}
           >
-            View All 65+ Stocks
+            View All 96+ Stocks 🚀
           </Button>
         </div>
       </div>

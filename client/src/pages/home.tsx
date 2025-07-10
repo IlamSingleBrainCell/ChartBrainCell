@@ -66,14 +66,19 @@ export default function Home() {
       <FeaturesSection />
       
       {/* Market Summary Section */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Real-Time Market Data
+      <section className="py-20 bg-gradient-to-br from-purple-100 via-pink-50 to-orange-100 relative overflow-hidden">
+        <div className="absolute inset-0 neural-grid opacity-20"></div>
+        <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-r from-purple-400/10 to-pink-400/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-r from-cyan-400/10 to-blue-400/10 rounded-full blur-3xl"></div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16 fade-in">
+            <h2 className="text-4xl lg:text-6xl font-black text-gray-900 mb-6 gradient-text">
+              Real-Time Market Data 📈
             </h2>
-            <p className="text-lg text-gray-600">
-              Live prices from NASDAQ, NYSE, and NSE exchanges powered by Yahoo Finance
+            <p className="text-xl lg:text-2xl text-gray-700 font-medium max-w-3xl mx-auto">
+              <span className="text-purple-600 font-black">Live prices</span> from NASDAQ, NYSE, and NSE exchanges powered by 
+              <span className="text-cyan-600 font-black"> Yahoo Finance API</span> ⚡
             </p>
           </div>
           <MarketSummary />

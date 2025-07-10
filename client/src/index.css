@@ -154,10 +154,22 @@
   }
   
   .gradient-text {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #00f5ff 0%, #ff00f5 50%, #ffff00 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    animation: gradientShift 3s ease-in-out infinite alternate;
+  }
+  
+  .neon-glow {
+    box-shadow: 
+      0 0 20px rgba(0, 245, 255, 0.5),
+      0 0 40px rgba(255, 0, 245, 0.3),
+      0 0 60px rgba(255, 255, 0, 0.2);
+  }
+  
+  .border-3 {
+    border-width: 3px;
   }
   
   .glass-effect {
@@ -218,10 +230,22 @@
 
 @keyframes glowPulse {
   from {
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 30px rgba(0, 245, 255, 0.5), 0 0 60px rgba(255, 0, 245, 0.3);
   }
   to {
-    box-shadow: 0 0 30px rgba(99, 102, 241, 0.8);
+    box-shadow: 0 0 50px rgba(255, 0, 245, 0.7), 0 0 80px rgba(0, 245, 255, 0.5);
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background: linear-gradient(135deg, #00f5ff 0%, #ff00f5 50%, #ffff00 100%);
+  }
+  50% {
+    background: linear-gradient(135deg, #ff00f5 0%, #ffff00 50%, #00f5ff 100%);
+  }
+  100% {
+    background: linear-gradient(135deg, #ffff00 0%, #00f5ff 50%, #ff00f5 100%);
   }
 }
 
