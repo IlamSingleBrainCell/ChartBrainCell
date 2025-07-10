@@ -17,6 +17,13 @@ export function StockChart({ symbol, analysisData, stock, isCustomChart = false 
   const [timeRange, setTimeRange] = useState('3mo');
   const [timeRangeDisplay, setTimeRangeDisplay] = useState('3 Months');
   
+  // Fetch real Yahoo Finance quote for current price
+  const { data: yahooQuote } = useQuery({
+    queryKey: [`/api/yahoo/quote/${symbol}`],
+    queryFn: () => apiRequest('GET', `/api/yahoo/quote/${symbol}`),
+    enabled: !!symbol && symbol !== "CUSTOM_CHART",
+  });
+
   // Fetch real Yahoo Finance historical data
   const { data: historicalData, isLoading, error } = useQuery({
     queryKey: [`/api/yahoo/historical/${symbol}`, timeRange],
@@ -149,13 +156,16 @@ export function StockChart({ symbol, analysisData, stock, isCustomChart = false 
   
   const currentPrice = chartData[chartData.length - 1]?.price;
   const targetPrice = analysisData.targetPrice;
-  const isIndian = stock?.market === 'Indian';
-  const currencySymbol = isIndian ? '₹' : '$';
   
-  // Get real-time price updates
+  // Use Yahoo Finance data to determine currency and current price
+  const isIndian = yahooQuote?.exchange?.includes('NS') || yahooQuote?.exchange?.includes('BO') || stock?.market === 'Indian';
+  const currencySymbol = yahooQuote?.currency === 'INR' ? '₹' : (yahooQuote?.currency === 'USD' ? '$' : (isIndian ? '₹' : '$'));
+  
+  // Get real-time price updates, prioritize Yahoo Finance data
   const { getStockPrice } = useWebSocket();
   const livePrice = getStockPrice(symbol);
-  const displayPrice = livePrice?.currentPrice ?? currentPrice;
+  const displayPrice = yahooQuote?.regularMarketPrice ?? livePrice?.currentPrice ?? currentPrice;
+  const changePercent = yahooQuote?.regularMarketChangePercent ?? livePrice?.changePercent ?? stock?.changePercent;
   
   // Calculate pattern-specific levels and annotations
   const prices = chartData.map(d => d.price);
@@ -447,9 +457,15 @@ export function StockChart({ symbol, analysisData, stock, isCustomChart = false 
             </div>
             <div className="text-right">
               <p className="text-sm text-gray-600">24h Change</p>
-              <p className={`text-lg font-semibold ${livePrice?.changePercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {livePrice?.changePercent >= 0 ? '+' : ''}{livePrice?.changePercent?.toFixed(2) ?? stock?.changePercent?.toFixed(2) ?? '0.00'}%
+              <p className={`text-lg font-semibold ${changePercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {changePercent >= 0 ? '+' : ''}{changePercent?.toFixed(2) ?? '0.00'}%
               </p>
+              {yahooQuote && (
+                <div className="flex items-center justify-end mt-1">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                  <span className="text-xs text-blue-600 font-medium">Yahoo Finance</span>
+                </div>
+              )}
             </div>
           </div>
         )}

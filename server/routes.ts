@@ -119,9 +119,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const timeframes = ["5-10 days", "10-15 days", "15-30 days", "30-45 days"];
       const breakoutTimeframe = timeframes[Math.floor(symbolHash % timeframes.length)];
       
-      // Calculate dynamic prices with book value consideration based on market
+      // Use actual Yahoo Finance price for accurate analysis
       const isIndian = stock.market === 'Indian';
-      const currentPrice = stock.currentPrice || (isIndian ? 2500 : 150);
+      const currentPrice = stock.currentPrice; // Use real Yahoo Finance price
       const bookValue = currentPrice * (0.7 + (symbolHash % 30) / 100); // Simulate book value
       const tenYearGrowth = 8 + (symbolHash % 15); // 8-23% historical growth
       
