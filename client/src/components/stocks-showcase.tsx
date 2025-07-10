@@ -46,52 +46,39 @@ export function StocksShowcase({ onStockSelect }: StocksShowcaseProps) {
   };
 
   return (
-    <section id="stocks" className="py-24 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 neural-grid opacity-30"></div>
-      <div className="absolute top-0 left-0 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl"></div>
-      
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="stocks" className="py-20 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <div className="flex flex-col items-center gap-6 mb-6">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900">Unlimited Global Stock Access</h2>
-            <div className={`flex items-center px-6 py-3 rounded-lg text-lg font-semibold shadow-lg business-hover ${
-              isConnected ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <h2 className="text-3xl lg:text-4xl font-bold text-brand-dark">65+ Supported Stocks</h2>
+            <div className={`flex items-center px-3 py-1 rounded-full text-sm ${
+              isConnected ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
             }`}>
-              {isConnected ? <Wifi size={20} className="mr-3" /> : <WifiOff size={20} className="mr-3" />}
-              {isConnected ? 'Live Data Connected' : 'Offline Mode'}
+              {isConnected ? <Wifi size={16} className="mr-2" /> : <WifiOff size={16} className="mr-2" />}
+              {isConnected ? 'Live Prices' : 'Offline'}
             </div>
           </div>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Access any global stock using Yahoo Finance API. Our 96+ stock database serves as quick-access samples for typeahead search.
+          <p className="text-xl text-brand-gray">
+            Comprehensive coverage of NSE, NYSE, and BSE markets with real-time data
           </p>
         </div>
         
         {/* Market Tabs */}
         <div className="flex justify-center mb-12">
-          <div className="bg-gray-100 rounded-lg p-1 shadow-md">
+          <div className="bg-white rounded-lg p-1 shadow-sm">
             <Button
               onClick={() => setSelectedMarket("US")}
               variant={selectedMarket === "US" ? "default" : "ghost"}
-              className={`px-8 py-3 rounded-md font-semibold transition-all ${
-                selectedMarket === "US" 
-                  ? "bg-blue-600 text-white shadow-md" 
-                  : "text-gray-600 hover:bg-white"
-              }`}
+              className={selectedMarket === "US" ? "bg-blue-600 text-white" : "text-brand-gray"}
             >
-              🇺🇸 US Markets
+              US Markets
             </Button>
             <Button
               onClick={() => setSelectedMarket("Indian")}
               variant={selectedMarket === "Indian" ? "default" : "ghost"}
-              className={`px-8 py-3 rounded-md font-semibold transition-all ${
-                selectedMarket === "Indian" 
-                  ? "bg-blue-600 text-white shadow-md" 
-                  : "text-gray-600 hover:bg-white"
-              }`}
+              className={selectedMarket === "Indian" ? "bg-blue-600 text-white" : "text-brand-gray"}
             >
-              🇮🇳 Indian Markets
+              Indian Markets
             </Button>
           </div>
         </div>
@@ -118,42 +105,42 @@ export function StocksShowcase({ onStockSelect }: StocksShowcaseProps) {
               const isLive = !!livePrice;
               
               return (
-                <div 
+                <Card 
                   key={stock.symbol} 
-                  className="bg-white border border-gray-200 rounded-xl shadow-md p-6 hover:shadow-lg transition-all duration-200 cursor-pointer business-hover"
+                  className="hover:shadow-md transition-shadow cursor-pointer"
                   onClick={() => onStockSelect(stock.symbol)}
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center shadow-sm ${getIconColor(stock.symbol)}`}>
-                      <span className="font-semibold text-lg text-white">{getStockIcon(stock.symbol)}</span>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getIconColor(stock.symbol)}`}>
+                        <span className="font-bold text-lg">{getStockIcon(stock.symbol)}</span>
+                      </div>
+                      <div className="flex items-center">
+                        {changePercent >= 0 ? (
+                          <TrendingUp className="text-green-600 mr-1" size={16} />
+                        ) : (
+                          <TrendingDown className="text-red-500 mr-1" size={16} />
+                        )}
+                        <span className={`text-sm font-medium ${
+                          changePercent >= 0 ? 'text-green-600' : 'text-red-500'
+                        }`}>
+                          {changePercent >= 0 ? '+' : ''}{changePercent.toFixed(2)}%
+                        </span>
+                        {isLive && (
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse ml-2"></div>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex items-center">
-                      {changePercent >= 0 ? (
-                        <TrendingUp className="text-green-600 mr-2" size={16} />
-                      ) : (
-                        <TrendingDown className="text-red-600 mr-2" size={16} />
-                      )}
-                      <span className={`text-sm font-semibold px-2 py-1 rounded ${
-                        changePercent >= 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                      }`}>
-                        {changePercent >= 0 ? '+' : ''}{changePercent.toFixed(2)}%
-                      </span>
-                      {isLive && (
-                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse ml-2"></div>
-                      )}
-                    </div>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1 truncate">{stock.name}</h3>
-                  <p className="text-gray-500 text-sm mb-3">{stock.symbol} • {stock.market === 'Indian' ? '🇮🇳 India' : '🇺🇸 USA'}</p>
-                  <div className="bg-gray-50 rounded-lg p-3">
-                    <div className="text-2xl font-bold text-gray-900">
+                    <h3 className="text-lg font-semibold text-brand-dark mb-1 truncate">{stock.name}</h3>
+                    <p className="text-brand-gray text-sm mb-3">{stock.symbol}</p>
+                    <div className="text-2xl font-bold text-brand-dark">
                       {stock.market === 'Indian' ? '₹' : '$'}{currentPrice?.toFixed(2)}
                     </div>
-                    <div className={`text-xs font-medium mt-1 ${isLive ? 'text-green-600' : 'text-gray-500'}`}>
-                      {isLive ? 'Live Price' : `Updated ${Math.floor(Math.random() * 5) + 1} min ago`}
+                    <div className="text-sm text-brand-gray">
+                      {isLive ? 'Live price' : `Updated ${Math.floor(Math.random() * 5) + 1} min ago`}
                     </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               );
             })
           )}
@@ -161,10 +148,10 @@ export function StocksShowcase({ onStockSelect }: StocksShowcaseProps) {
         
         <div className="text-center">
           <Button 
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold shadow-md business-hover"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold"
             onClick={() => window.location.href = '/all-stocks'}
           >
-            View All Sample Stocks
+            View All 65+ Stocks
           </Button>
         </div>
       </div>

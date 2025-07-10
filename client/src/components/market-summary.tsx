@@ -43,11 +43,11 @@ export function MarketSummary() {
   }
 
   return (
-    <Card className="w-full border border-gray-200 shadow-lg business-shadow">
-      <CardHeader className="pb-6">
-        <CardTitle className="text-xl font-semibold flex items-center gap-3">
-          <span className="text-gray-900">📈 Live Market Summary</span>
-          <Badge variant="outline" className="text-sm px-3 py-1 border border-blue-200 text-blue-700 font-medium">
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle className="text-lg font-semibold flex items-center gap-2">
+          📈 Live Market Summary
+          <Badge variant="outline" className="text-xs">
             NASDAQ • NYSE • NSE
           </Badge>
         </CardTitle>
@@ -57,28 +57,28 @@ export function MarketSummary() {
           {marketData.map((index: MarketIndex) => (
             <div
               key={index.symbol}
-              className="p-4 border border-gray-200 rounded-lg bg-white business-hover"
+              className="p-3 border rounded-lg bg-gradient-to-br from-gray-50 to-white"
             >
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-2">
                 <div>
-                  <h4 className="font-semibold text-base text-gray-900">{index.name}</h4>
-                  <p className="text-sm text-gray-500">{index.exchange}</p>
+                  <h4 className="font-semibold text-sm">{index.name}</h4>
+                  <p className="text-xs text-gray-500">{index.exchange}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-lg text-gray-900">
+                  <p className="font-bold text-lg">
                     {index.price.toLocaleString(undefined, {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2
                     })}
                   </p>
-                  <div className="flex items-center gap-1 justify-end">
+                  <div className="flex items-center gap-1">
                     {index.change >= 0 ? (
-                      <TrendingUp className="w-3 h-3 text-green-600" />
+                      <TrendingUp className="w-3 h-3 text-green-500" />
                     ) : (
-                      <TrendingDown className="w-3 h-3 text-red-600" />
+                      <TrendingDown className="w-3 h-3 text-red-500" />
                     )}
                     <span
-                      className={`text-sm font-medium ${
+                      className={`text-xs font-medium ${
                         index.change >= 0 ? 'text-green-600' : 'text-red-600'
                       }`}
                     >
@@ -88,8 +88,8 @@ export function MarketSummary() {
                   </div>
                 </div>
               </div>
-              <div className="flex justify-between items-center bg-gray-50 rounded-md p-2">
-                <span className="text-sm text-gray-600">
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-gray-600">
                   {index.change >= 0 ? '+' : ''}
                   {index.change.toFixed(2)}
                 </span>
@@ -97,7 +97,7 @@ export function MarketSummary() {
                   variant={index.marketState === 'REGULAR' ? 'default' : 'secondary'}
                   className="text-xs"
                 >
-                  {index.marketState === 'REGULAR' ? 'OPEN' : 'CLOSED'}
+                  {index.marketState}
                 </Badge>
               </div>
             </div>
