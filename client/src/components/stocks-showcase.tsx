@@ -54,7 +54,7 @@ export function StocksShowcase({ onStockSelect }: StocksShowcaseProps) {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-20">
           <div className="flex items-center justify-center gap-6 mb-6">
-            <h2 className="text-4xl lg:text-5xl font-bold text-brand-dark tracking-tight">96+ Global Stocks</h2>
+            <h2 className="text-4xl lg:text-5xl font-bold text-brand-dark tracking-tight">Live Data</h2>
             <div className={`flex items-center px-6 py-3 rounded-2xl text-sm font-semibold shadow-lg ${
               isConnected 
                 ? 'bg-green-500 text-white animate-pulse-glow' 

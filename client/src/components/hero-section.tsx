@@ -25,7 +25,7 @@ export function HeroSection({ onStartAnalysis, onViewDemo }: HeroSectionProps) {
             </div>
             
             <div className="space-y-6">
-              <h1 className="text-5xl lg:text-6xl font-bold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-white">
+              <h1 className="text-5xl lg:text-6xl font-bold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-white overflow-visible">
                 Advanced Stock Pattern Recognition
               </h1>
               
