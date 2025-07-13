@@ -25,7 +25,16 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
     enabled: !!analysis?.stockSymbol && analysis.stockSymbol !== "CUSTOM_CHART",
   });
 
+  // Enhanced currency detection using Yahoo Finance API data
+  const getCurrencySymbol = () => {
+    if (yahooQuote?.currency) {
+      return yahooQuote.currency === 'INR' ? '₹' : yahooQuote.currency === 'USD' ? '$' : '$';
+    }
+    // Fallback to symbol-based detection
+    return (analysis.stockSymbol.endsWith('.NS') || analysis.stockSymbol.endsWith('.BO') || stock?.market === 'Indian') ? '₹' : '$';
+  };
 
+  const currencySymbol = getCurrencySymbol();
   
   if (!analysis) return null;
 
@@ -123,7 +132,7 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                     <div className="text-sm font-medium text-green-700 mb-2">Support Level</div>
                     <div className="text-2xl font-bold text-green-600">
                       {analysis.analysisData?.keyLevels?.support ? 
-                        `${(analysis.stockSymbol.endsWith('.NS') || analysis.stockSymbol.endsWith('.BO') || stock?.market === 'Indian') ? '₹' : '$'}${analysis.analysisData.keyLevels.support.toFixed(2)}` 
+                        `${currencySymbol}${analysis.analysisData.keyLevels.support.toFixed(2)}` 
                         : 'N/A'
                       }
                     </div>
@@ -133,7 +142,7 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                     <div className="text-sm font-medium text-red-700 mb-2">Resistance Level</div>
                     <div className="text-2xl font-bold text-red-600">
                       {analysis.analysisData?.keyLevels?.resistance ? 
-                        `${(analysis.stockSymbol.endsWith('.NS') || analysis.stockSymbol.endsWith('.BO') || stock?.market === 'Indian') ? '₹' : '$'}${analysis.analysisData.keyLevels.resistance.toFixed(2)}` 
+                        `${currencySymbol}${analysis.analysisData.keyLevels.resistance.toFixed(2)}` 
                         : 'N/A'
                       }
                     </div>
@@ -400,7 +409,7 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                         <div className="flex justify-between">
                           <span className="text-brand-gray">Stop Loss</span>
                           <span className="font-semibold text-red-500">
-                            {stock?.market === 'Indian' ? '₹' : '$'}{analysis.stopLoss.toFixed(2)}
+                            {currencySymbol}{analysis.stopLoss.toFixed(2)}
                           </span>
                         </div>
                       )}
