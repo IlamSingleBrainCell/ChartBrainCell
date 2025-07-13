@@ -22,9 +22,24 @@ export function ProfessionalStockChart({ symbol, analysisData, stock, isCustomCh
     enabled: !isCustomChart && !!symbol,
   });
 
-  const formatPrice = (value: number) => {
-    const isIndian = stock?.market === 'Indian' || symbol.endsWith('.NS') || symbol.endsWith('.BO');
+  // Fetch current market data
+  const { data: currentQuote } = useQuery({
+    queryKey: [`/api/yahoo/quote/${symbol}`],
+    queryFn: () => fetch(`/api/yahoo/quote/${symbol}`).then(res => res.json()),
+    enabled: !isCustomChart && !!symbol,
+  });
+
+  // Enhanced currency formatting based on symbol and market
+  const formatPrice = (value: number, showCurrency: boolean = true) => {
+    const isIndian = symbol.endsWith('.NS') || symbol.endsWith('.BO') || stock?.market === 'Indian';
     const currency = isIndian ? '₹' : '$';
+    
+    if (!showCurrency) {
+      if (value >= 10000) return `${(value / 1000).toFixed(1)}K`;
+      if (value >= 1000) return `${(value / 1000).toFixed(2)}K`;
+      return value.toFixed(2);
+    }
+    
     if (value >= 10000) return `${currency}${(value / 1000).toFixed(1)}K`;
     if (value >= 1000) return `${currency}${(value / 1000).toFixed(2)}K`;
     return `${currency}${value.toFixed(2)}`;
@@ -134,13 +149,36 @@ export function ProfessionalStockChart({ symbol, analysisData, stock, isCustomCh
   }));
 
   const prices = chartData.map((d: any) => d.close);
+  const highs = chartData.map((d: any) => d.high);
+  const lows = chartData.map((d: any) => d.low);
   const volumes = chartData.map((d: any) => d.volume);
-  const currentPrice = prices[prices.length - 1];
+  const currentPrice = currentQuote?.regularMarketPrice || prices[prices.length - 1];
   const maxVolume = Math.max(...volumes);
 
   // Calculate support and resistance from actual price data
   const supportLevel = analysisData?.analysisData?.keyLevels?.support || Math.min(...prices);
   const resistanceLevel = analysisData?.analysisData?.keyLevels?.resistance || Math.max(...prices);
+
+  // Generate pattern animation points for Double Bottom
+  const generateDoubleBottomAnimation = () => {
+    if (analysisData?.patternType !== 'Double Bottom') return [];
+    
+    const valleys = [];
+    for (let i = 1; i < lows.length - 1; i++) {
+      if (lows[i] < lows[i - 1] && lows[i] < lows[i + 1]) {
+        valleys.push({ index: i, value: lows[i], date: chartData[i].date });
+      }
+    }
+    
+    // Get the two lowest valleys for double bottom
+    const sortedValleys = valleys.sort((a, b) => a.value - b.value).slice(0, 2);
+    if (sortedValleys.length >= 2) {
+      return sortedValleys.sort((a, b) => a.index - b.index);
+    }
+    return [];
+  };
+
+  const doubleBottomPoints = generateDoubleBottomAnimation();
 
   return (
     <Card className="w-full border border-gray-200 shadow-xl bg-white">
@@ -190,10 +228,10 @@ export function ProfessionalStockChart({ symbol, analysisData, stock, isCustomCh
       </CardHeader>
       
       <CardContent className="p-6">
-        {/* Professional Price Display */}
-        {!isCustomChart && stock && (
+        {/* Professional Price Display with Current Market Data */}
+        {!isCustomChart && (
           <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
-            <div className="grid grid-cols-2 gap-8">
+            <div className="grid grid-cols-3 gap-6">
               <div>
                 <div className="text-sm font-medium text-gray-500 mb-1">Current Price</div>
                 <div className="text-4xl font-bold text-gray-900 mb-2">
@@ -209,15 +247,33 @@ export function ProfessionalStockChart({ symbol, analysisData, stock, isCustomCh
                 </div>
               </div>
               
-              <div className="text-right">
+              <div className="text-center">
                 <div className="text-sm font-medium text-gray-500 mb-1">24h Change</div>
                 <div className={`text-3xl font-bold mb-2 ${
-                  stock.changePercent >= 0 ? 'text-green-600' : 'text-red-500'
+                  (currentQuote?.regularMarketChangePercent || stock?.changePercent || 0) >= 0 ? 'text-green-600' : 'text-red-500'
                 }`}>
-                  {stock.changePercent >= 0 ? '+' : ''}{stock.changePercent?.toFixed(2)}%
+                  {(currentQuote?.regularMarketChangePercent || stock?.changePercent || 0) >= 0 ? '+' : ''}
+                  {(currentQuote?.regularMarketChangePercent || stock?.changePercent || 0)?.toFixed(2)}%
                 </div>
                 <div className="text-sm text-gray-500">
-                  {stock.changePercent >= 0 ? '↗️' : '↘️'} {stock.changePercent >= 0 ? 'Gaining' : 'Declining'}
+                  {(currentQuote?.regularMarketChangePercent || stock?.changePercent || 0) >= 0 ? '↗️' : '↘️'} 
+                  {(currentQuote?.regularMarketChangePercent || stock?.changePercent || 0) >= 0 ? 'Gaining' : 'Declining'}
+                </div>
+              </div>
+
+              <div className="text-right">
+                <div className="text-sm font-medium text-gray-500 mb-1">Market Status</div>
+                <div className="text-lg font-bold text-blue-600 mb-1">
+                  {currentQuote?.marketState || 'REGULAR'}
+                </div>
+                <div className="text-sm text-gray-600">
+                  Vol: {currentQuote?.regularMarketVolume ? 
+                    `${(currentQuote.regularMarketVolume / 1000000).toFixed(1)}M` : 
+                    'N/A'
+                  }
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {currentQuote?.fullExchangeName || currentQuote?.exchange || 'Market'}
                 </div>
               </div>
             </div>
@@ -270,7 +326,7 @@ export function ProfessionalStockChart({ symbol, analysisData, stock, isCustomCh
               
               <Tooltip content={<CustomTooltip />} />
               
-              {/* Support and Resistance Lines */}
+              {/* Support and Resistance Lines with Proper Currency */}
               {supportLevel && (
                 <ReferenceLine 
                   yAxisId="price"
@@ -281,7 +337,7 @@ export function ProfessionalStockChart({ symbol, analysisData, stock, isCustomCh
                   label={{ 
                     value: `Support ${formatPrice(supportLevel)}`, 
                     position: "insideTopLeft",
-                    style: { fill: '#10b981', fontWeight: 'bold', fontSize: '12px' }
+                    style: { fill: '#10b981', fontWeight: 'bold', fontSize: '12px', backgroundColor: 'rgba(255,255,255,0.8)', padding: '2px 4px', borderRadius: '3px' }
                   }}
                 />
               )}
@@ -295,9 +351,45 @@ export function ProfessionalStockChart({ symbol, analysisData, stock, isCustomCh
                   label={{ 
                     value: `Resistance ${formatPrice(resistanceLevel)}`, 
                     position: "insideTopLeft",
-                    style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px' }
+                    style: { fill: '#ef4444', fontWeight: 'bold', fontSize: '12px', backgroundColor: 'rgba(255,255,255,0.8)', padding: '2px 4px', borderRadius: '3px' }
                   }}
                 />
+              )}
+
+              {/* Double Bottom Pattern Animation */}
+              {analysisData?.patternType === 'Double Bottom' && doubleBottomPoints.length >= 2 && (
+                <>
+                  {doubleBottomPoints.map((point, index) => (
+                    <ReferenceLine 
+                      key={`double-bottom-${index}`}
+                      yAxisId="price"
+                      y={point.value} 
+                      stroke="#ff6b35" 
+                      strokeDasharray="4 4" 
+                      strokeWidth={2}
+                      opacity={0.7}
+                      label={{ 
+                        value: `Bottom ${index + 1}`, 
+                        position: index === 0 ? "insideTopLeft" : "insideTopRight",
+                        style: { fill: '#ff6b35', fontWeight: 'bold', fontSize: '11px', backgroundColor: 'rgba(255,255,255,0.9)', padding: '1px 3px', borderRadius: '2px' }
+                      }}
+                    />
+                  ))}
+                  {/* Connect the two bottoms with a dotted line */}
+                  <ReferenceLine 
+                    yAxisId="price"
+                    y={(doubleBottomPoints[0].value + doubleBottomPoints[1].value) / 2} 
+                    stroke="#ff6b35" 
+                    strokeDasharray="2 6" 
+                    strokeWidth={1}
+                    opacity={0.5}
+                    label={{ 
+                      value: "Double Bottom Pattern", 
+                      position: "insideTopLeft",
+                      style: { fill: '#ff6b35', fontWeight: 'bold', fontSize: '10px', backgroundColor: 'rgba(255,107,53,0.1)', padding: '2px 6px', borderRadius: '4px' }
+                    }}
+                  />
+                </>
               )}
               
               {/* Volume bars */}
