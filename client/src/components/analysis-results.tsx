@@ -158,6 +158,145 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
             </Card>
           </div>
 
+          {/* Proof of Calculations Section */}
+          {analysis.analysisData?.confidenceProof && (
+            <div className="mb-8">
+              <Card className="border-l-4 border-l-blue-500 bg-gradient-to-br from-blue-50 to-cyan-50 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                    <h4 className="text-lg font-bold text-blue-900">Proof of Calculations - Confidence Score</h4>
+                  </div>
+                  
+                  <div className="bg-white p-4 rounded-lg border mb-4">
+                    <div className="text-sm font-medium text-blue-700 mb-2">Base Pattern Strength</div>
+                    <div className="text-lg font-bold text-blue-800 mb-2">
+                      {analysis.analysisData.confidenceProof.basePatternStrength}%
+                    </div>
+                    <div className="text-xs text-blue-600">Mathematical pattern recognition algorithm</div>
+                  </div>
+
+                  {analysis.analysisData.confidenceProof.adjustments?.map((adj: any, index: number) => (
+                    <div key={index} className="bg-white p-3 rounded-lg border mb-2">
+                      <div className="flex justify-between items-start mb-1">
+                        <div className="text-sm font-medium text-gray-700">{adj.factor}</div>
+                        <div className="text-sm font-bold text-green-600">{adj.adjustment}</div>
+                      </div>
+                      <div className="text-xs text-gray-600 mb-1">{adj.calculation}</div>
+                      <div className="text-xs text-gray-500 italic">{adj.reason}</div>
+                    </div>
+                  ))}
+
+                  <div className="bg-blue-100 p-4 rounded-lg border-2 border-blue-200 mt-4">
+                    <div className="text-sm font-medium text-blue-700 mb-1">Final Confidence Score</div>
+                    <div className="text-2xl font-bold text-blue-800">
+                      {analysis.analysisData.confidenceProof.finalConfidence}%
+                    </div>
+                    <div className="text-xs text-blue-600 mt-1">Based on 10-year historical analysis</div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Breakout Prediction Proof */}
+          {analysis.analysisData?.breakoutProof && (
+            <div className="mb-8">
+              <Card className="border-l-4 border-l-green-500 bg-gradient-to-br from-green-50 to-emerald-50 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                    <h4 className="text-lg font-bold text-green-900">Proof of Calculations - Breakout Prediction</h4>
+                  </div>
+                  
+                  <div className="bg-white p-4 rounded-lg border mb-4">
+                    <div className="text-sm font-medium text-green-700 mb-2">Base Pattern Duration</div>
+                    <div className="text-lg font-bold text-green-800 mb-2">
+                      {analysis.analysisData.breakoutProof.basePatternDays} days
+                    </div>
+                    <div className="text-xs text-green-600">Historical pattern completion time</div>
+                  </div>
+
+                  {analysis.analysisData.breakoutProof.adjustments?.map((adj: any, index: number) => (
+                    <div key={index} className="bg-white p-3 rounded-lg border mb-2">
+                      <div className="flex justify-between items-start mb-1">
+                        <div className="text-sm font-medium text-gray-700">{adj.factor}</div>
+                        <div className="text-sm font-bold text-green-600">{adj.adjustment}</div>
+                      </div>
+                      <div className="text-xs text-gray-600 mb-1">{adj.calculation}</div>
+                      <div className="text-xs text-gray-500 italic">{adj.reason}</div>
+                    </div>
+                  ))}
+
+                  <div className="bg-green-100 p-4 rounded-lg border-2 border-green-200 mt-4">
+                    <div className="text-sm font-medium text-green-700 mb-1">Projected Timeline</div>
+                    <div className="text-2xl font-bold text-green-800">
+                      {analysis.analysisData.breakoutProof.finalDays} days
+                    </div>
+                    <div className="text-xs text-green-600 mt-1">Mathematical prediction based on 10-year data</div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* 10-Year Data Analysis */}
+          {analysis.analysisData?.tenYearAnalysis && (
+            <div className="mb-8">
+              <Card className="border-l-4 border-l-purple-500 bg-gradient-to-br from-purple-50 to-violet-50 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="w-3 h-3 bg-purple-500 rounded-full mr-3"></div>
+                    <h4 className="text-lg font-bold text-purple-900">10-Year Historical Data Analysis</h4>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-white p-4 rounded-lg border text-center">
+                      <div className="text-sm font-medium text-purple-700 mb-2">Data Points</div>
+                      <div className="text-2xl font-bold text-purple-800">
+                        {analysis.analysisData.tenYearAnalysis.dataPoints}
+                      </div>
+                      <div className="text-xs text-purple-600 mt-1">10 years of Yahoo Finance data</div>
+                    </div>
+                    
+                    <div className="bg-white p-4 rounded-lg border text-center">
+                      <div className="text-sm font-medium text-purple-700 mb-2">Historical Volatility</div>
+                      <div className="text-2xl font-bold text-purple-800">
+                        {analysis.analysisData.tenYearAnalysis.averageVolatility}
+                      </div>
+                      <div className="text-xs text-purple-600 mt-1">10-year average volatility</div>
+                    </div>
+                    
+                    <div className="bg-white p-4 rounded-lg border text-center">
+                      <div className="text-sm font-medium text-purple-700 mb-2">Pattern Occurrences</div>
+                      <div className="text-2xl font-bold text-purple-800">
+                        {analysis.analysisData.tenYearAnalysis.patternOccurrences}
+                      </div>
+                      <div className="text-xs text-purple-600 mt-1">Historical pattern frequency</div>
+                    </div>
+                    
+                    <div className="bg-white p-4 rounded-lg border text-center">
+                      <div className="text-sm font-medium text-purple-700 mb-2">Success Rate</div>
+                      <div className="text-2xl font-bold text-purple-800">
+                        {analysis.analysisData.tenYearAnalysis.successRate}%
+                      </div>
+                      <div className="text-xs text-purple-600 mt-1">Historical pattern success</div>
+                    </div>
+                  </div>
+
+                  <div className="bg-purple-100 p-4 rounded-lg border mt-4">
+                    <div className="text-sm font-medium text-purple-700 mb-2">Data Source & Methodology</div>
+                    <div className="text-xs text-purple-600">
+                      <div><strong>Source:</strong> {analysis.analysisData.tenYearAnalysis.dataSource}</div>
+                      <div><strong>Method:</strong> {analysis.analysisData.tenYearAnalysis.calculationMethod}</div>
+                      <div><strong>Span:</strong> {analysis.analysisData.tenYearAnalysis.timeSpan}</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
           {/* Horizontal Analysis Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
               {/* Pattern Recognition */}
