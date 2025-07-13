@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Target, Shield, AlertTriangle, ShoppingCart, Plus } from "lucide-react";
-import { StockChart } from "./stock-chart";
+import { ProfessionalStockChart } from "./professional-stock-chart";
 import { PatternVisualization } from "./pattern-visualization";
 import { StockNews } from "./stock-news";
 import { AddToPortfolioDialog } from "./add-to-portfolio-dialog";
@@ -98,7 +98,7 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                   </div>
                 )}
                 
-                <StockChart 
+                <ProfessionalStockChart 
                   symbol={analysis.stockSymbol} 
                   analysisData={analysis} 
                   stock={stock} 
