@@ -65,87 +65,104 @@ export class MemStorage implements IStorage {
 
   private async loadStockData() {
     try {
-      // Import JSON files dynamically
+      // Load NSE stocks from CSV file
       const fs = await import('fs');
       const path = await import('path');
       
-      const dataDir = path.join(process.cwd(), 'shared', 'data');
+      const csvPath = path.join(process.cwd(), 'attached_assets', 'EQUITY_L_1752411351496.csv');
       
-      // Read NSE stocks
-      const nseData = JSON.parse(fs.readFileSync(path.join(dataDir, 'nse-stocks.json'), 'utf8'));
-      // Read NYSE stocks  
-      const nyseData = JSON.parse(fs.readFileSync(path.join(dataDir, 'nyse-stocks.json'), 'utf8'));
-      // Read BSE stocks
-      const bseData = JSON.parse(fs.readFileSync(path.join(dataDir, 'bse-stocks.json'), 'utf8'));
+      if (fs.existsSync(csvPath)) {
+        const csvData = fs.readFileSync(csvPath, 'utf8');
+        const lines = csvData.split('\n').slice(1); // Skip header
+        
+        // Process top 100 NSE stocks for better performance
+        const nseStocks = lines.slice(0, 100).map((line, index) => {
+          const [symbol, name] = line.split(',');
+          if (symbol && name) {
+            return {
+              id: index + 1,
+              symbol: symbol.trim(),
+              name: name.trim(),
+              market: "Indian",
+              currentPrice: 0, // Will be updated from Yahoo Finance
+              changePercent: 0,
+              dayHigh: 0,
+              dayLow: 0,
+              volume: 0,
+              marketCap: 0,
+              peRatio: 0,
+              pbRatio: 0,
+              weekHigh52: 0,
+              weekLow52: 0,
+              lastUpdated: new Date()
+            };
+          }
+          return null;
+        }).filter(Boolean);
+        
+        // Add these stocks to our map with .NS suffix for Yahoo Finance
+        nseStocks.forEach(stock => {
+          if (stock) {
+            this.stocks.set(stock.symbol, stock);
+          }
+        });
+        
+        console.log(`Loaded ${nseStocks.length} NSE stocks from CSV`);
+      }
       
-      // Combine all stock data
-      const allStocks = [...nseData, ...nyseData, ...bseData];
+      // Add popular US stocks
+      const usStocks = [
+        { symbol: "AAPL", name: "Apple Inc.", market: "US" },
+        { symbol: "GOOGL", name: "Alphabet Inc.", market: "US" },
+        { symbol: "MSFT", name: "Microsoft Corporation", market: "US" },
+        { symbol: "AMZN", name: "Amazon.com Inc.", market: "US" },
+        { symbol: "TSLA", name: "Tesla Inc.", market: "US" },
+        { symbol: "META", name: "Meta Platforms Inc.", market: "US" },
+        { symbol: "NVDA", name: "NVIDIA Corporation", market: "US" },
+        { symbol: "NFLX", name: "Netflix Inc.", market: "US" },
+        { symbol: "BABA", name: "Alibaba Group Holding Limited", market: "US" },
+        { symbol: "CRM", name: "Salesforce Inc.", market: "US" },
+        { symbol: "ORCL", name: "Oracle Corporation", market: "US" },
+        { symbol: "AMD", name: "Advanced Micro Devices Inc.", market: "US" },
+        { symbol: "PYPL", name: "PayPal Holdings Inc.", market: "US" },
+        { symbol: "ADBE", name: "Adobe Inc.", market: "US" },
+        { symbol: "INTC", name: "Intel Corporation", market: "US" },
+        { symbol: "CSCO", name: "Cisco Systems Inc.", market: "US" },
+        { symbol: "PEP", name: "PepsiCo Inc.", market: "US" },
+        { symbol: "KO", name: "The Coca-Cola Company", market: "US" },
+        { symbol: "DIS", name: "The Walt Disney Company", market: "US" },
+        { symbol: "VZ", name: "Verizon Communications Inc.", market: "US" }
+      ];
       
-      // Process and store stocks
-      allStocks.forEach((stock: any) => {
-        if (!this.stocks.has(stock.symbol)) { // Avoid duplicates
-          const stockWithId = {
-            id: this.currentStockId++,
-            symbol: stock.symbol,
-            name: stock.name,
-            market: stock.market,
-            currentPrice: stock.currentPrice,
-            changePercent: this.generateRealisticChange(stock.symbol, stock.market), // Realistic market-based change
-            lastUpdated: new Date(),
-          };
-          this.stocks.set(stock.symbol, stockWithId);
-        }
+      // Add US stocks to the map
+      usStocks.forEach((stock, index) => {
+        const stockData: Stock = {
+          id: this.stocks.size + index + 1,
+          symbol: stock.symbol,
+          name: stock.name,
+          market: stock.market,
+          currentPrice: 0,
+          changePercent: 0,
+          dayHigh: 0,
+          dayLow: 0,
+          volume: 0,
+          marketCap: 0,
+          peRatio: 0,
+          pbRatio: 0,
+          weekHigh52: 0,
+          weekLow52: 0,
+          lastUpdated: new Date()
+        };
+        this.stocks.set(stock.symbol, stockData);
       });
       
-      console.log(`Loaded ${this.stocks.size} stocks from JSON files`);
+      console.log(`Loaded ${this.stocks.size} stocks total`);
+      
+      // Update all stock prices from Yahoo Finance immediately
+      this.updateStockPricesFromYahoo();
     } catch (error) {
-      console.error('Error loading stock data from JSON:', error);
-      // Fallback to minimal data
-      this.initializeFallbackStocks();
+      console.error('Error loading stock data:', error);
     }
-  }
-  
-  // Generate realistic price changes based on market data patterns
-  private generateRealisticChange(symbol: string, market: string): number {
-    const now = new Date();
-    const hour = now.getHours();
-    
-    // Market hours: Indian (9-15), US (9-16) 
-    const isMarketHours = market === 'Indian' ? 
-      (hour >= 9 && hour <= 15) : 
-      (hour >= 9 && hour <= 16);
-    
-    // Base volatility
-    let volatility = isMarketHours ? 2.5 : 0.8;
-    
-    // Symbol-specific patterns
-    const highVolatilitySymbols = ['TSLA', 'NVDA', 'GME', 'SBIN', 'RELIANCE'];
-    const lowVolatilitySymbols = ['AAPL', 'MSFT', 'TCS', 'INFY'];
-    
-    if (highVolatilitySymbols.includes(symbol)) volatility *= 1.8;
-    if (lowVolatilitySymbols.includes(symbol)) volatility *= 0.6;
-    
-    // Generate realistic change with slight positive bias
-    const change = (Math.random() - 0.45) * volatility;
-    return Math.round(change * 100) / 100;
-  }
-
-  private initializeFallbackStocks() {
-    const fallbackStocks = [
-      { symbol: "AAPL", name: "Apple Inc.", market: "US", currentPrice: 192.53 },
-      { symbol: "RELIANCE", name: "Reliance Industries", market: "Indian", currentPrice: 2756.85 },
-      { symbol: "TCS", name: "Tata Consultancy Services", market: "Indian", currentPrice: 4127.30 },
-    ];
-    
-    fallbackStocks.forEach(stock => {
-      const stockWithId = {
-        id: this.currentStockId++,
-        ...stock,
-        changePercent: this.generateRealisticChange(stock.symbol, stock.market),
-        lastUpdated: new Date(),
-      };
-      this.stocks.set(stock.symbol, stockWithId);
-    });
   }
 
   async getStock(symbol: string): Promise<Stock | undefined> {
@@ -335,32 +352,38 @@ export class MemStorage implements IStorage {
   async updateStockPricesFromYahoo(): Promise<void> {
     try {
       const allStocks = Array.from(this.stocks.values());
-      const symbols = allStocks.map(stock => stock.symbol);
+      let symbols = allStocks.map(stock => {
+        // Add .NS suffix for Indian stocks for Yahoo Finance API
+        return stock.market === 'Indian' ? `${stock.symbol}.NS` : stock.symbol;
+      });
       
       console.log(`Updating prices for ${symbols.length} stocks from Yahoo Finance...`);
       
       const quotes = await yahooFinanceService.getMultipleQuotes(symbols);
       
-      for (const [symbol, quote] of Object.entries(quotes)) {
-        const existingStock = this.stocks.get(symbol);
+      for (const [yahooSymbol, quote] of Object.entries(quotes)) {
+        // Extract original symbol (remove .NS suffix if present)
+        const originalSymbol = yahooSymbol.replace('.NS', '');
+        const existingStock = this.stocks.get(originalSymbol);
+        
         if (existingStock && quote) {
-          // Update with real Yahoo Finance data
+          // Update with real Yahoo Finance data ONLY - no fallbacks
           const updatedStock: Stock = {
             ...existingStock,
-            currentPrice: quote.regularMarketPrice,
-            changePercent: quote.regularMarketChangePercent,
-            dayHigh: quote.regularMarketDayHigh,
-            dayLow: quote.regularMarketDayLow,
-            volume: quote.regularMarketVolume,
-            marketCap: quote.marketCap,
-            peRatio: quote.trailingPE,
-            pbRatio: quote.priceToBook,
-            weekHigh52: quote.fiftyTwoWeekHigh,
-            weekLow52: quote.fiftyTwoWeekLow,
+            currentPrice: quote.regularMarketPrice || 0,
+            changePercent: quote.regularMarketChangePercent || 0,
+            dayHigh: quote.regularMarketDayHigh || 0,
+            dayLow: quote.regularMarketDayLow || 0,
+            volume: quote.regularMarketVolume || 0,
+            marketCap: quote.marketCap || 0,
+            peRatio: quote.trailingPE || 0,
+            pbRatio: quote.priceToBook || 0,
+            weekHigh52: quote.fiftyTwoWeekHigh || 0,
+            weekLow52: quote.fiftyTwoWeekLow || 0,
             lastUpdated: new Date()
           };
           
-          this.stocks.set(symbol, updatedStock);
+          this.stocks.set(originalSymbol, updatedStock);
         }
       }
       
@@ -372,7 +395,9 @@ export class MemStorage implements IStorage {
 
   async getYahooQuote(symbol: string): Promise<YahooQuote | null> {
     try {
-      return await yahooFinanceService.getQuote(symbol);
+      // Add .NS suffix for Indian stocks
+      const yahooSymbol = this.stocks.get(symbol)?.market === 'Indian' ? `${symbol}.NS` : symbol;
+      return await yahooFinanceService.getQuote(yahooSymbol);
     } catch (error) {
       console.error(`Error fetching Yahoo quote for ${symbol}:`, error);
       return null;
@@ -385,7 +410,9 @@ export class MemStorage implements IStorage {
         ? period as '3mo' | '1y' | '5y' | '10y' 
         : '3mo';
       
-      return await yahooFinanceService.getHistoricalData(symbol, validPeriod);
+      // Add .NS suffix for Indian stocks
+      const yahooSymbol = this.stocks.get(symbol)?.market === 'Indian' ? `${symbol}.NS` : symbol;
+      return await yahooFinanceService.getHistoricalData(yahooSymbol, validPeriod);
     } catch (error) {
       console.error(`Error fetching historical data for ${symbol}:`, error);
       return [];

@@ -30,8 +30,7 @@ export function HeroSection({ onStartAnalysis, onViewDemo }: HeroSectionProps) {
               </h1>
               
               <p className="text-xl text-blue-100 leading-relaxed font-light">
-                Analyze live stock charts with enhanced pattern recognition and breakout timing prediction. 
-                Supporting 96+ stocks from NSE, NYSE, and BSE markets with real-time Yahoo Finance data.
+                Analyze <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-400">stocks from NSE, NYSE & NASDAQ</span> with real-time Yahoo Finance data, confidence scores, breakout timing, and key level identification.
               </p>
             </div>
             
@@ -59,8 +58,8 @@ export function HeroSection({ onStartAnalysis, onViewDemo }: HeroSectionProps) {
               <div className="flex items-center space-x-3 bg-white/10 rounded-lg p-4 backdrop-blur-sm">
                 <CheckCircle className="text-green-400 flex-shrink-0" size={20} />
                 <div>
-                  <div className="font-semibold">96+ Stocks</div>
-                  <div className="text-xs text-blue-200">Global Database</div>
+                  <div className="font-semibold">Live Data</div>
+                  <div className="text-xs text-blue-200">Yahoo Finance API</div>
                 </div>
               </div>
               <div className="flex items-center space-x-3 bg-white/10 rounded-lg p-4 backdrop-blur-sm">
@@ -98,8 +97,8 @@ export function HeroSection({ onStartAnalysis, onViewDemo }: HeroSectionProps) {
             </div>
             
             <div className="absolute -top-8 -right-8 bg-gradient-glass backdrop-blur-md rounded-2xl shadow-2xl p-6 text-white border border-white/20 animate-float" style={{ animationDelay: '1s' }}>
-              <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-warning">96+</div>
-              <div className="text-sm text-gray-200 font-medium">Supported Stocks</div>
+              <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-warning">3</div>
+              <div className="text-sm text-gray-200 font-medium">Global Exchanges</div>
               <div className="w-8 h-1 bg-gradient-warning rounded-full mt-2"></div>
             </div>
             

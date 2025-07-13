@@ -105,11 +105,11 @@ export default function Home() {
               <div className="text-sm text-brand-gray">Powered API</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600 mb-2">96+ Stocks</div>
-              <div className="text-sm text-brand-gray">Global Coverage</div>
+              <div className="text-3xl font-bold text-purple-600 mb-2">Live Data</div>
+              <div className="text-sm text-brand-gray">Real-Time Prices</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-orange-600 mb-2">3 Exchanges</div>
+              <div className="text-3xl font-bold text-orange-600 mb-2">Multi-Exchange</div>
               <div className="text-sm text-brand-gray">NASDAQ, NYSE, NSE</div>
             </div>
           </div>
