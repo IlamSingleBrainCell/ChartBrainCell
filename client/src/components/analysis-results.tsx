@@ -110,6 +110,54 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
           
 
 
+          {/* Support & Resistance Levels Card */}
+          <div className="mb-8">
+            <Card className="border-l-4 border-l-orange-500 bg-gradient-to-br from-orange-50 to-amber-50 shadow-lg">
+              <CardContent className="p-6">
+                <div className="flex items-center mb-4">
+                  <div className="w-3 h-3 bg-orange-500 rounded-full mr-3"></div>
+                  <h4 className="text-lg font-bold text-orange-900">Support & Resistance Levels</h4>
+                </div>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="text-center">
+                    <div className="text-sm font-medium text-green-700 mb-2">Support Level</div>
+                    <div className="text-2xl font-bold text-green-600">
+                      {analysis.analysisData?.keyLevels?.support ? 
+                        `${(analysis.stockSymbol.endsWith('.NS') || analysis.stockSymbol.endsWith('.BO') || stock?.market === 'Indian') ? '₹' : '$'}${analysis.analysisData.keyLevels.support.toFixed(2)}` 
+                        : 'N/A'
+                      }
+                    </div>
+                    <div className="text-xs text-green-600 mt-1">Strong support zone</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-sm font-medium text-red-700 mb-2">Resistance Level</div>
+                    <div className="text-2xl font-bold text-red-600">
+                      {analysis.analysisData?.keyLevels?.resistance ? 
+                        `${(analysis.stockSymbol.endsWith('.NS') || analysis.stockSymbol.endsWith('.BO') || stock?.market === 'Indian') ? '₹' : '$'}${analysis.analysisData.keyLevels.resistance.toFixed(2)}` 
+                        : 'N/A'
+                      }
+                    </div>
+                    <div className="text-xs text-red-600 mt-1">Key resistance zone</div>
+                  </div>
+                </div>
+                {analysis.projectedBreakoutDate && (
+                  <div className="mt-4 pt-4 border-t border-orange-200">
+                    <div className="text-center">
+                      <div className="text-sm font-medium text-orange-700 mb-1">Projected Breakout Date</div>
+                      <div className="text-lg font-bold text-orange-800">
+                        {new Date(analysis.projectedBreakoutDate).toLocaleDateString('en-US', { 
+                          year: 'numeric', 
+                          month: 'short', 
+                          day: 'numeric' 
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
           {/* Horizontal Analysis Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
               {/* Pattern Recognition */}

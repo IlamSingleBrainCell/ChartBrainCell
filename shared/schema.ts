@@ -23,6 +23,7 @@ export const stockAnalysis = pgTable("stock_analysis", {
   targetPrice: real("target_price"),
   stopLoss: real("stop_loss"),
   riskReward: text("risk_reward"),
+  projectedBreakoutDate: text("projected_breakout_date"),
   analysisData: jsonb("analysis_data"), // Store chart data and metrics
   createdAt: timestamp("created_at").defaultNow(),
 });
