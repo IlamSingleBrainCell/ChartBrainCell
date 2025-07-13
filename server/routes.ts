@@ -8,6 +8,7 @@ import type { Request } from "express";
 import path from "path";
 import fs from "fs";
 import cron from "node-cron";
+import { parseString } from "xml2js";
 
 // Configure multer for file uploads
 const uploadDir = path.join(process.cwd(), "uploads");
@@ -318,6 +319,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
 
+
+  // SEBI RSS Feed Integration
+  app.get("/api/sebi/news", async (req, res) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 20;
+      
+      // Fetch SEBI RSS feed
+      const response = await fetch('https://www.sebi.gov.in/sebirss.xml');
+      
+      if (!response.ok) {
+        console.log(`SEBI RSS feed error: ${response.status}`);
+        return res.json({ items: [], source: 'sebi', error: 'Failed to fetch SEBI RSS feed' });
+      }
+      
+      const xmlData = await response.text();
+      
+      // Parse XML to JSON
+      parseString(xmlData, (err, result) => {
+        if (err) {
+          console.error('Error parsing SEBI RSS XML:', err);
+          return res.json({ items: [], source: 'sebi', error: 'Failed to parse RSS feed' });
+        }
+        
+        try {
+          const items = result.rss?.channel?.[0]?.item || [];
+          
+          // Transform SEBI RSS items to our format
+          const transformedItems = items.slice(0, limit).map((item: any, index: number) => ({
+            id: `sebi-${index}`,
+            title: item.title?.[0] || 'SEBI Update',
+            description: item.description?.[0] || item.title?.[0] || '',
+            url: item.link?.[0] || '#',
+            pubDate: item.pubDate?.[0] || new Date().toISOString(),
+            category: 'Regulatory',
+            source: 'SEBI',
+            type: getSebiItemType(item.title?.[0] || ''),
+            importance: getSebiImportance(item.title?.[0] || '')
+          }));
+          
+          res.json({
+            items: transformedItems,
+            source: 'sebi',
+            total: transformedItems.length,
+            lastBuildDate: result.rss?.channel?.[0]?.lastBuildDate?.[0] || new Date().toISOString()
+          });
+          
+        } catch (parseError) {
+          console.error('Error processing SEBI RSS items:', parseError);
+          res.json({ items: [], source: 'sebi', error: 'Failed to process RSS items' });
+        }
+      });
+      
+    } catch (error) {
+      console.error('Error fetching SEBI RSS feed:', error);
+      res.json({ 
+        items: [], 
+        source: 'sebi',
+        error: 'Failed to fetch SEBI news'
+      });
+    }
+  });
+
+  // Helper function to categorize SEBI news items
+  function getSebiItemType(title: string): string {
+    const lowerTitle = title.toLowerCase();
+    if (lowerTitle.includes('adjudication') || lowerTitle.includes('order')) return 'enforcement';
+    if (lowerTitle.includes('recovery') || lowerTitle.includes('demand')) return 'recovery';
+    if (lowerTitle.includes('appeal')) return 'appeal';
+    if (lowerTitle.includes('settlement')) return 'settlement';
+    if (lowerTitle.includes('compliance')) return 'compliance';
+    return 'general';
+  }
+
+  // Helper function to determine importance level
+  function getSebiImportance(title: string): 'high' | 'medium' | 'low' {
+    const lowerTitle = title.toLowerCase();
+    if (lowerTitle.includes('adjudication') || lowerTitle.includes('settlement')) return 'high';
+    if (lowerTitle.includes('order') || lowerTitle.includes('appeal')) return 'medium';
+    return 'low';
+  }
 
   // TickerTick News API Integration
   app.get("/api/news/:symbol", async (req, res) => {
