@@ -9,7 +9,7 @@ import { EducationalSection } from "@/components/educational-section";
 import { DisclaimerSection } from "@/components/disclaimer-section";
 import { Footer } from "@/components/footer";
 import { MarketSummary } from "@/components/market-summary";
-import { SebiNews } from "@/components/sebi-news";
+
 import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
@@ -131,30 +131,7 @@ export default function Home() {
       
       <StocksShowcase onStockSelect={handleStockSelect} />
       
-      {/* SEBI Regulatory News Section */}
-      <section className="py-20 bg-gradient-to-br from-indigo-50 via-white to-blue-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center bg-gradient-modern text-white rounded-full px-6 py-3 mb-6 font-semibold text-sm shadow-lg">
-              <div className="w-2 h-2 bg-green-400 rounded-full mr-3 animate-pulse"></div>
-              Regulatory Intelligence
-            </div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-brand-dark mb-6 leading-tight">
-              SEBI Regulatory Updates
-            </h2>
-            <p className="text-xl text-brand-gray leading-relaxed max-w-4xl mx-auto">
-              Stay informed with latest enforcement actions, compliance orders, and regulatory announcements 
-              from India's Securities and Exchange Board affecting NSE and BSE markets
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/50 p-8">
-              <SebiNews limit={8} />
-            </div>
-          </div>
-        </div>
-      </section>
+
       
       <EducationalSection />
       <DisclaimerSection />
