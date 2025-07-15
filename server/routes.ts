@@ -313,40 +313,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (ascendingTriangle.detected && ascendingTriangle.confidence >= 75) {
       console.log(`✅ ASCENDING TRIANGLE CONFIRMED: ${ascendingTriangle.confidence}% confidence`);
       console.log(`📋 Pattern Details: ${ascendingTriangle.details}`);
-      return { pattern: 'Ascending Triangle', direction: 'upward', strength: ascendingTriangle.confidence / 100 };
+      return { pattern: 'Ascending Triangle', direction: 'upward', strength: Math.min(100, ascendingTriangle.confidence) / 100 };
     }
     
     // 2. HEAD AND SHOULDERS: Three-peak reversal pattern
     if (headShoulders.detected) {
       console.log(`✅ HEAD AND SHOULDERS CONFIRMED: ${headShoulders.confidence}% confidence`);
-      return { pattern: 'Head and Shoulders', direction: 'downward', strength: headShoulders.confidence / 100 };
+      return { pattern: 'Head and Shoulders', direction: 'downward', strength: Math.min(100, headShoulders.confidence) / 100 };
     }
     
     // 3. DOUBLE TOP: Two peaks at resistance (only if no ascending triangle)
     if (doubleTop.detected && !ascendingTriangle.detected) {
       console.log(`✅ DOUBLE TOP CONFIRMED: ${doubleTop.confidence}% confidence`);
-      return { pattern: 'Double Top', direction: 'downward', strength: doubleTop.confidence / 100 };
+      return { pattern: 'Double Top', direction: 'downward', strength: Math.min(100, doubleTop.confidence) / 100 };
     }
     
     // 4. DOUBLE BOTTOM: Two lows at support
     const doubleBottom = detectDoubleBottomReal(recentLows);
     if (doubleBottom.detected) {
       console.log(`✅ DOUBLE BOTTOM CONFIRMED: ${doubleBottom.confidence}% confidence`);
-      return { pattern: 'Double Bottom', direction: 'upward', strength: doubleBottom.confidence / 100 };
+      return { pattern: 'Double Bottom', direction: 'upward', strength: Math.min(100, doubleBottom.confidence) / 100 };
     }
     
     // 5. CUP AND HANDLE: Rounded recovery pattern
     const cupHandle = detectCupAndHandleReal(recentPrices);
     if (cupHandle.detected) {
       console.log(`✅ CUP AND HANDLE CONFIRMED: ${cupHandle.confidence}% confidence`);
-      return { pattern: 'Cup and Handle', direction: 'upward', strength: cupHandle.confidence / 100 };
+      return { pattern: 'Cup and Handle', direction: 'upward', strength: Math.min(100, cupHandle.confidence) / 100 };
     }
     
     // 6. BREAKOUT PATTERN: Breaking consolidation
     const breakout = detectBreakoutReal(recentPrices, recentHighs, recentLows);
     if (breakout.detected) {
       console.log(`✅ BREAKOUT PATTERN CONFIRMED: ${breakout.confidence}% confidence, direction: ${breakout.direction}`);
-      return { pattern: 'Breakout Pattern', direction: breakout.direction, strength: breakout.confidence / 100 };
+      return { pattern: 'Breakout Pattern', direction: breakout.direction, strength: Math.min(100, breakout.confidence) / 100 };
     }
     
     // 7. SUPPORT TEST: Multiple bounces
@@ -865,7 +865,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   function calculateAdvancedConfidenceWithProof(patternResult: any, rsi: number, volumeRatio: number, ma20: number, ma50: number, tenYearData: any[], historicalData: any[]) {
     let baseConfidence = patternResult.strength * 100;
     let calculations = {
-      basePatternStrength: Number((patternResult.strength * 100).toFixed(2)),
+      basePatternStrength: Number(Math.min(100, patternResult.strength * 100).toFixed(2)), // Cap at 100%
       adjustments: [],
       finalConfidence: 0,
       methodology: "Mathematical pattern analysis with 10-year historical validation"

@@ -182,7 +182,16 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                     <div className="text-lg font-bold text-blue-800 mb-2">
                       {analysis.analysisData.confidenceProof.basePatternStrength}%
                     </div>
-                    <div className="text-xs text-blue-600">Mathematical pattern recognition algorithm</div>
+                    <div className="text-xs text-blue-600">
+                      <a 
+                        href="https://github.com/IlamSingleBrainCell/stock-chart-analyzer" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="hover:text-blue-800 hover:underline cursor-pointer transition-colors"
+                      >
+                        Mathematical pattern recognition algorithm
+                      </a>
+                    </div>
                   </div>
 
                   {analysis.analysisData.confidenceProof.adjustments?.map((adj: any, index: number) => (
