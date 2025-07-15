@@ -7,6 +7,7 @@ import { ProfessionalStockChart } from "./professional-stock-chart";
 import { PatternVisualization } from "./pattern-visualization";
 import { StockNews } from "./stock-news";
 import { AddToPortfolioDialog } from "./add-to-portfolio-dialog";
+import { PatternDetectionModal } from "./pattern-detection-modal";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -17,6 +18,7 @@ interface AnalysisResultsProps {
 
 export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
   const [showAddToPortfolio, setShowAddToPortfolio] = useState(false);
+  const [showPatternModal, setShowPatternModal] = useState(false);
   
   // Fetch real Yahoo Finance quote for additional data
   const { data: yahooQuote, isLoading: quoteLoading } = useQuery({
@@ -183,14 +185,12 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
                       {analysis.analysisData.confidenceProof.basePatternStrength}%
                     </div>
                     <div className="text-xs text-blue-600">
-                      <a 
-                        href="https://github.com/IlamSingleBrainCell/stock-chart-analyzer" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="hover:text-blue-800 hover:underline cursor-pointer transition-colors"
+                      <button
+                        onClick={() => setShowPatternModal(true)}
+                        className="hover:text-blue-800 hover:underline cursor-pointer transition-colors bg-transparent border-none p-0 text-left"
                       >
                         Mathematical pattern recognition algorithm
-                      </a>
+                      </button>
                     </div>
                   </div>
 
@@ -473,6 +473,14 @@ export function AnalysisResults({ analysis, stock }: AnalysisResultsProps) {
             defaultStock={analysis.stockSymbol}
           />
         )}
+
+        {/* Pattern Detection Modal */}
+        <PatternDetectionModal
+          open={showPatternModal}
+          onOpenChange={setShowPatternModal}
+          analysis={analysis}
+          stock={stock}
+        />
       </div>
     </section>
   );
