@@ -27,8 +27,7 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
-    // Replace 'your-repository-name' with your actual GitHub repository name
-    base: process.env.NODE_ENV === "production" ? "/ChartBrainCell/" : "/",
+    base: "/ChartBrainCell/",
   },
   server: {
     fs: {
