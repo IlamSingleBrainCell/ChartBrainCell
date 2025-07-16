@@ -37,6 +37,13 @@ jobs:
         run: npm run build:client
         env:
           NODE_ENV: production
+          
+      - name: List build output (debug)
+        run: |
+          echo "Contents of dist/public:"
+          ls -la ./dist/public/
+          echo "Contents of dist/public/assets (if exists):"
+          ls -la ./dist/public/assets/ || echo "No assets directory found"
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
