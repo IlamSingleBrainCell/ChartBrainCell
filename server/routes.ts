@@ -1334,6 +1334,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch historical data from Yahoo Finance" });
     }
   });
+
+  // Get chart data from Yahoo Finance
+  app.get("/api/yahoo/chart/:symbol", async (req, res) => {
+    try {
+      const { symbol } = req.params;
+
+      const chartData = await storage.getHistoricalData(symbol, '3mo');
+
+      if (!chartData || chartData.length === 0) {
+        return res.status(404).json({ message: `No chart data found for symbol ${symbol}` });
+      }
+
+      res.json(chartData);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch chart data" });
+    }
+  });
   
   // Manual trigger to update all stock prices from Yahoo Finance
   app.post("/api/yahoo/update-prices", async (req, res) => {

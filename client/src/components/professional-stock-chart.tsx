@@ -17,8 +17,8 @@ export function ProfessionalStockChart({ symbol, analysisData, stock, isCustomCh
   const [selectedPeriod, setSelectedPeriod] = useState('3mo');
 
   const { data: historicalData, isLoading } = useQuery({
-    queryKey: [`/api/yahoo/historical/${symbol}`, selectedPeriod],
-    queryFn: () => fetch(`/api/yahoo/historical/${symbol}?period=${selectedPeriod}`).then(res => res.json()),
+    queryKey: [`/api/yahoo/chart/${symbol}`],
+    queryFn: () => fetch(`/api/yahoo/chart/${symbol}`).then(res => res.json()),
     enabled: !isCustomChart && !!symbol,
   });
 
