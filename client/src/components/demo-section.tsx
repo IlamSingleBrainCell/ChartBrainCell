@@ -8,9 +8,10 @@ import { StockSearch } from "./stock-search";
 
 interface DemoSectionProps {
   onStockAnalyzed: (analysis: any) => void;
+  searchStockMutation: any;
 }
 
-export function DemoSection({ onStockAnalyzed }: DemoSectionProps) {
+export function DemoSection({ onStockAnalyzed, searchStockMutation }: DemoSectionProps) {
   const [selectedStock, setSelectedStock] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
@@ -20,27 +21,6 @@ export function DemoSection({ onStockAnalyzed }: DemoSectionProps) {
   const popularStocks = [
     "AAPL", "GOOGL", "MSFT", "TSLA", "TCS", "RELIANCE", "HDFCBANK", "INFY"
   ];
-
-  const searchStockMutation = useMutation({
-    mutationFn: async (symbol: string) => {
-      const response = await apiRequest("POST", `/api/stocks/${symbol}/analyze`);
-      return response.json();
-    },
-    onSuccess: (data) => {
-      onStockAnalyzed(data);
-      toast({
-        title: "Analysis Complete",
-        description: `Analysis for ${data.stockSymbol} has been completed.`,
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Analysis Failed",
-        description: "Failed to analyze the stock. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
 
   const uploadChartMutation = useMutation({
     mutationFn: async (file: File) => {

@@ -213,9 +213,9 @@ export class YahooFinanceService {
       const results = await yahooFinance.search(query);
       
       return results.quotes?.slice(0, 10).map(quote => ({
-        symbol: quote.symbol || '',
-        name: quote.shortname || quote.longname || '',
-        exchange: quote.exchange || ''
+        symbol: 'symbol' in quote ? quote.symbol || '' : '',
+        name: 'shortname' in quote ? quote.shortname || '' : '',
+        exchange: 'exchange' in quote ? quote.exchange || '' : ''
       })) || [];
     } catch (error) {
       console.error(`Error searching symbols for ${query}:`, error);

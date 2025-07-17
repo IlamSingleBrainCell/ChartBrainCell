@@ -9,6 +9,14 @@ export const stocks = pgTable("stocks", {
   market: text("market").notNull(), // 'US' or 'Indian'
   currentPrice: real("current_price"),
   changePercent: real("change_percent"),
+  dayHigh: real("day_high"),
+  dayLow: real("day_low"),
+  volume: integer("volume"),
+  marketCap: real("market_cap"),
+  peRatio: real("pe_ratio"),
+  pbRatio: real("pb_ratio"),
+  weekHigh52: real("week_high_52"),
+  weekLow52: real("week_low_52"),
   lastUpdated: timestamp("last_updated").defaultNow(),
 });
 
