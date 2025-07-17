@@ -98,7 +98,7 @@ export class MemStorage implements IStorage {
             };
           }
           return null;
-        }).filter(Boolean);
+        }).filter(Boolean) as Stock[];
         
         // Add these stocks to our map with .NS suffix for Yahoo Finance
         nseStocks.forEach(stock => {
@@ -183,6 +183,14 @@ export class MemStorage implements IStorage {
       ...insertStock,
       currentPrice: insertStock.currentPrice ?? null,
       changePercent: insertStock.changePercent ?? null,
+      dayHigh: null,
+      dayLow: null,
+      volume: null,
+      marketCap: null,
+      peRatio: null,
+      pbRatio: null,
+      weekHigh52: null,
+      weekLow52: null,
       lastUpdated: new Date(),
     };
     this.stocks.set(stock.symbol, stock);
@@ -227,6 +235,7 @@ export class MemStorage implements IStorage {
       targetPrice: insertAnalysis.targetPrice ?? null,
       stopLoss: insertAnalysis.stopLoss ?? null,
       riskReward: insertAnalysis.riskReward ?? null,
+      projectedBreakoutDate: insertAnalysis.projectedBreakoutDate ?? null,
       analysisData: insertAnalysis.analysisData ?? null,
       createdAt: new Date(),
     };
@@ -284,6 +293,9 @@ export class MemStorage implements IStorage {
     const updated: Portfolio = {
       ...existing,
       ...updates,
+      quantity: updates.quantity ?? existing.quantity,
+      buyPrice: updates.buyPrice ?? existing.buyPrice,
+      purchaseDate: updates.purchaseDate ?? existing.purchaseDate,
       updatedAt: new Date(),
     };
     
@@ -329,7 +341,7 @@ export class MemStorage implements IStorage {
       const currentStock = await this.getStock(item.stockSymbol);
       if (!currentStock) continue;
 
-      const currentValue = currentStock.currentPrice * item.quantity;
+      const currentValue = (currentStock.currentPrice ?? 0) * item.quantity;
       const investedValue = parseFloat(item.buyPrice) * item.quantity;
       const gainLoss = currentValue - investedValue;
       const gainLossPercent = (gainLoss / investedValue) * 100;
@@ -381,7 +393,7 @@ export class MemStorage implements IStorage {
             weekHigh52: quote.fiftyTwoWeekHigh || 0,
             weekLow52: quote.fiftyTwoWeekLow || 0,
             lastUpdated: new Date()
-          };
+          } as Stock;
           
           this.stocks.set(originalSymbol, updatedStock);
         }

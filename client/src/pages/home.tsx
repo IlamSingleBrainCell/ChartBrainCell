@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRoute } from "wouter";
 import { Header } from "@/components/header";
 import { HeroSection } from "@/components/hero-section";
 import { FeaturesSection } from "@/components/features-section";
@@ -9,16 +10,46 @@ import { EducationalSection } from "@/components/educational-section";
 import { DisclaimerSection } from "@/components/disclaimer-section";
 import { Footer } from "@/components/footer";
 import { MarketSummary } from "@/components/market-summary";
-
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
   const [currentAnalysis, setCurrentAnalysis] = useState<any>(null);
   const [currentStock, setCurrentStock] = useState<any>(null);
+  const [match, params] = useRoute("/stock/:symbol");
+  const { toast } = useToast();
 
   const { data: stocks } = useQuery({
     queryKey: ["/api/stocks"],
   });
+
+  const searchStockMutation = useMutation({
+    mutationFn: async (symbol: string) => {
+      const response = await apiRequest("POST", `/api/stocks/${symbol}/analyze`);
+      return response.json();
+    },
+    onSuccess: (data) => {
+      handleStockAnalyzed(data);
+      toast({
+        title: "Analysis Complete",
+        description: `Analysis for ${data.stockSymbol} has been completed.`,
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Analysis Failed",
+        description: "Failed to analyze the stock. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  useEffect(() => {
+    if (match && params?.symbol) {
+      searchStockMutation.mutate(params.symbol);
+    }
+  }, [match, params?.symbol]);
 
   const handleStockAnalyzed = (analysis: any) => {
     setCurrentAnalysis(analysis);
@@ -37,6 +68,7 @@ export default function Home() {
 
   const handleStockSelect = (symbol: string) => {
     // Trigger analysis for selected stock
+    searchStockMutation.mutate(symbol);
     const demoSection = document.getElementById('demo');
     if (demoSection) {
       demoSection.scrollIntoView({ behavior: 'smooth' });
@@ -117,7 +149,7 @@ export default function Home() {
       </section>
 
       <div id="demo">
-        <DemoSection onStockAnalyzed={handleStockAnalyzed} />
+        <DemoSection onStockAnalyzed={handleStockAnalyzed} searchStockMutation={searchStockMutation} />
       </div>
       
       {currentAnalysis && (

@@ -159,7 +159,7 @@ export default function AllStocks() {
                     </div>
                   </div>
                   
-                  <Link href="/">
+                  <Link href={`/stock/${stock.symbol}`}>
                     <Button className="w-full mt-4" size="sm">
                       Analyze Stock
                     </Button>

@@ -238,7 +238,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const volumeRatio = recentVolume / avgVolume;
     
     // 100% Accurate Pattern Detection Logic for 3-Month Data
-    const patternResult = detectExactPattern(prices, highs, lows, volumes);
+    const patternResult = detectExactPattern(prices, highs, lows);
     
     // Calculate precise support and resistance
     const supportResistance = calculateSupportResistance(prices, highs, lows);
@@ -764,7 +764,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Calculate projected breakout date based on pattern and holding time
   function calculateProjectedBreakoutDate(patternResult: any, historicalData: any[]): string {
-    const patternHoldingDays = {
+    const patternHoldingDays: { [key: string]: number } = {
       'Head and Shoulders': 8,
       'Double Top': 12,
       'Double Bottom': 10,
@@ -784,7 +784,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Get timeframe based on pattern type and confidence
   function getTimeframeFromPattern(pattern: string, confidence: number): string {
-    const patternTimeframes = {
+    const patternTimeframes: { [key: string]: string } = {
       'Head and Shoulders': confidence >= 90 ? "5-8 days" : "8-12 days",
       'Double Top': confidence >= 90 ? "7-10 days" : "10-15 days",
       'Double Bottom': confidence >= 90 ? "5-10 days" : "10-14 days",
@@ -817,7 +817,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   function calculatePatternFrequency(prices: number[], pattern: string): number {
     // Simplified pattern frequency calculation
     // In a real implementation, this would analyze historical occurrences
-    const patternFrequencies = {
+    const patternFrequencies: { [key: string]: number } = {
       'Head and Shoulders': 0.3,
       'Double Top': 0.4,
       'Double Bottom': 0.4,
@@ -864,7 +864,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // PROOF OF CALCULATION: Advanced Confidence Scoring with Mathematical Transparency
   function calculateAdvancedConfidenceWithProof(patternResult: any, rsi: number, volumeRatio: number, ma20: number, ma50: number, tenYearData: any[], historicalData: any[]) {
     let baseConfidence = patternResult.strength * 100;
-    let calculations = {
+    let calculations: {
+      basePatternStrength: number;
+      adjustments: { factor: string; calculation: string; adjustment: string; reason: string; }[];
+      finalConfidence: number;
+      methodology: string;
+    } = {
       basePatternStrength: Number(Math.min(100, patternResult.strength * 100).toFixed(2)), // Cap at 100%
       adjustments: [],
       finalConfidence: 0,
@@ -961,7 +966,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // PROOF OF CALCULATION: Projected Breakout Date with 10-Year Historical Analysis
   function calculateProjectedBreakoutWithProof(patternResult: any, historicalData: any[], tenYearData: any[]) {
-    const patternHoldingDays = {
+    const patternHoldingDays: { [key: string]: number } = {
       'Head and Shoulders': 8,
       'Double Top': 12,
       'Double Bottom': 10,
@@ -973,7 +978,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     };
     
     let baseDays = patternHoldingDays[patternResult.pattern] || 10;
-    let calculations = {
+    let calculations: {
+      basePatternDays: number;
+      adjustments: { factor: string; calculation: string; adjustment: string; reason: string; }[];
+      finalDays: number;
+      methodology: string;
+    } = {
       basePatternDays: baseDays,
       adjustments: [],
       finalDays: 0,
@@ -1030,7 +1040,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Get historical success rate for pattern types
   function getPatternSuccessRate(pattern: string): number {
-    const successRates = {
+    const successRates: { [key: string]: number } = {
       'Head and Shoulders': 84,
       'Double Top': 78,
       'Double Bottom': 82,
